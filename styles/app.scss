@@ -1,15 +1,47 @@
 @import '~bulma';
 
 :root {
+    --color-worst: #8a0000;
+    --color-worst-alt: #640000;
+    --color-bad: #8a7100;
+    --color-bad-alt: #644100;
+    --color-ok: #00758a;
+    --color-ok-alt: #00638a;
     --color-good: #00478a;
+    --color-good-alt: #003464;
     --color-epic: #119100;
-
+    --color-epic-alt: #0c6600;
     --color-text: #ececec;
 }
 
-.monthly, .quarterly {
+html, body {
+    background: #131313;
+}
+
+.table, .navbar {
+    background: transparent;
     color: var(--color-text);
 }
 
-.monthly { background-color: var(--color-epic); }
-.quarterly { background-color: var(--color-good); }
+.navbar-brand a {
+    color: var(--color-epic) !important;
+    font-weight: bold;
+    font-size: 1.4em;
+}
+
+.content table thead th { color: var(--color-text); }
+.content table tbody td { border: none; }
+
+.monthly { --background-color: var(--color-epic); --hover-color: var(--color-epic-alt); }
+.quarterly { --background-color: var(--color-good); --hover-color: var(--color-good-alt); }
+.annual, .annual_interim, .annually, .bi-annually { --background-color: var(--color-ok); --hover-color: var(--color-ok-alt); }
+.no-dividend { --background-color: var(--color-bad); --hover-color: var(--color-bad-alt); }
+.temporarily_suspended { --background-color: var(--color-worst); --hover-color: var(--color-worst-alt); }
+
+.monthly, .quarterly, .temporarily_suspended, .no-dividend, .annual, .annually, .annual_interim, .bi-annually
+{
+    background-color: var(--background-color);
+    color: var(--color-text);
+
+    &:hover { background-color: var(--hover-color); }
+}
