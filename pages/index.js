@@ -40,6 +40,7 @@ export default function SmartWealth({ ...props }) {
         break
     }
 
+    /* filter by dividend frequency */
     switch(dividendFrequencyFilter) {
       case 'all': break
       case 'monthly':
@@ -65,6 +66,7 @@ export default function SmartWealth({ ...props }) {
         break
     }
 
+    /* filter by text (name, ticker) */
     if (textFilter !== '') {
       filtered = filtered.filter(s => {
         return s.name.match(textFilter) || s.ticker.match(textFilter)
