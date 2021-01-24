@@ -32,8 +32,8 @@ function stockTable(stocks) {
           <td>{stock.share_price}</td>
           <td>{stock.dividend_frequency}</td>
           <td>{stock.dividend_yield}</td>
-          <td>{stock.dividend_aristocrat ? CROWN : ''}</td>
-          <td>{stock.dividend_king ? (
+          <td>{stock.dividend_aristocrat === "Yes" ? CROWN : ''}</td>
+          <td>{stock.dividend_king === "Yes" ? (
             <>
             {CROWN}
             {CROWN}
