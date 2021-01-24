@@ -4,7 +4,7 @@ import Navbar from '../Components/Navbar'
 import slug from '../Functions/slug'
 
 function stockTable(stocks) {
-  return <table className='table is-narrow'>
+  return <table className='table stock-table is-narrow'>
     <thead>
       <tr>
         <th>Ticker</th>
@@ -21,6 +21,7 @@ function stockTable(stocks) {
       {stocks.map(stock => {
         let rowClasses = []
         if (stock.dividend_frequency) { rowClasses.push(slug(stock.dividend_frequency)) }
+        else { rowClasses.push('no-dividend') }
 
         return <tr className={rowClasses.join(' ')}>
           <td>{stock.ticker}</td>
