@@ -15,7 +15,7 @@
 }
 
 html, body {
-    background: #131313;
+    background: #06061b;
 }
 
 .table, .navbar {
@@ -55,3 +55,5 @@ html, body {
     width: var(--icon-size);
     height: var(--icon-size);
 }
+
+.select { margin-right: .5em; }
