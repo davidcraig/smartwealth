@@ -12,10 +12,11 @@
     --color-epic: #119100;
     --color-epic-alt: #0c6600;
     --color-text: #ececec;
+    --color-bg: #06061b;
 }
 
 html, body {
-    background: #06061b;
+    background: var(--color-bg);
 }
 
 .table, .navbar {
@@ -61,9 +62,9 @@ html, body {
 
 .table.is-narrow td, .table.is-narrow th { padding: 0.1em; }
 
-.input, .select select {
-    background-color: var(--background-color);
-    color: var(--color-text);
+.input, .select select, select option {
+    background: var(--color-bg) !important;
+    color: var(--color-text) !important;
 }
 
 .input::placeholder {
