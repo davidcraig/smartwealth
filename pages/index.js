@@ -7,6 +7,7 @@ function stockTable(stocks) {
   return <table className='table is-narrow'>
     <thead>
       <tr>
+        <th>Ticker</th>
         <th>Name</th>
         <th>Currency</th>
         <th>Price</th>
@@ -19,6 +20,7 @@ function stockTable(stocks) {
         if (stock.dividend_frequency) { rowClasses.push(slug(stock.dividend_frequency)) }
 
         return <tr className={rowClasses.join(' ')}>
+          <td>{stock.ticker}</td>
           <td>{stock.name}</td>
           <td>{stock.currency}</td>
           <td>{stock.share_price}</td>
