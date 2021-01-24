@@ -60,3 +60,12 @@ html, body {
 .select { margin-right: .5em; }
 
 .table.is-narrow td, .table.is-narrow th { padding: 0.1em; }
+
+.input, .select select {
+    background-color: var(--background-color);
+    color: var(--color-text);
+}
+
+.input::placeholder {
+    color: var(--color-text);
+}

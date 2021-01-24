@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { Column, Columns } from '@davidcraig/react-bulma'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
-import slug from '../Functions/slug'
 import StockTable from '../Components/StockTable'
 import StockCardGrid from '../Components/StockCardGrid'
 
 export default function SmartWealth({ ...props }) {
   const [filteredStocks, setFilteredStocks] = useState(props.stocks)
   const [dividendStatusFilter, setDividendStatusFilter] = useState('any')
+  const [textFilter, setTextFilter] = useState('')
   const [dividendFrequencyFilter, setDividendFrequencyFilter] = useState('any')
 
   useEffect(
@@ -17,17 +18,15 @@ export default function SmartWealth({ ...props }) {
 
   useEffect(
     () => { filterStocks() },
-    [props.stocks, dividendStatusFilter, dividendFrequencyFilter]
+    [props.stocks, dividendStatusFilter, dividendFrequencyFilter, textFilter]
   )
 
   const filterStocks = () => {
-    const statusFilter = dividendStatusFilter
-    const freqFilter = dividendFrequencyFilter
     let stocks = props.stocks
     let filtered = stocks
 
     /* filter first by status */
-    switch(statusFilter) {
+    switch(dividendStatusFilter) {
       case 'any': break
       case 'king':
         filtered = stocks.filter(s => {
@@ -40,7 +39,7 @@ export default function SmartWealth({ ...props }) {
         })
         break
     }
-    
+
     switch(dividendFrequencyFilter) {
       case 'all': break
       case 'monthly':
@@ -66,9 +65,16 @@ export default function SmartWealth({ ...props }) {
         break
     }
 
+    if (textFilter !== '') {
+      filtered = filtered.filter(s => {
+        return s.name.match(textFilter) || s.ticker.match(textFilter)
+      })
+    }
+
     setFilteredStocks(filtered)
   }
 
+  const changeTextFilter = (e) => { setTextFilter(e.target.value) }
   const changeStatusFilter = (e) => { setDividendStatusFilter(e.target.value) }
   const changeDividendFrequencyFilter = (e) => { setDividendFrequencyFilter(e.target.value) }
 
@@ -83,23 +89,32 @@ export default function SmartWealth({ ...props }) {
 
       <div className='content'>
         <div className='container is-fluid'>
-          <div className="select">
-            <select onChange={changeStatusFilter}>
-              <option value='any'>Type: Any</option>
-              <option value='aristocrat'>Dividend Aristocrats</option>
-              <option value='king'>Dividend Kings</option>
-            </select>
-          </div>
+          <Columns>
+            <Column>
+              <div class="control">
+                <input class="input" type="text" placeholder="Search" onChange={changeTextFilter} />
+              </div>
+            </Column>
+            <Column>
+              <div className="select">
+                <select onChange={changeStatusFilter}>
+                  <option value='any'>Type: Any</option>
+                  <option value='aristocrat'>Dividend Aristocrats</option>
+                  <option value='king'>Dividend Kings</option>
+                </select>
+              </div>
 
-          <div className="select">
-            <select onChange={changeDividendFrequencyFilter}>
-              <option value='all'>Dividend Frequency: All</option>
-              <option value='monthly'>Monthly</option>
-              <option value='quarterly'>Quarterly</option>
-              <option value='annual'>Annual</option>
-              <option value='other'>Other</option>
-            </select>
-          </div>
+              <div className="select">
+                <select onChange={changeDividendFrequencyFilter}>
+                  <option value='all'>Dividend Frequency: All</option>
+                  <option value='monthly'>Monthly</option>
+                  <option value='quarterly'>Quarterly</option>
+                  <option value='annual'>Annual</option>
+                  <option value='other'>Other</option>
+                </select>
+              </div>
+            </Column>
+          </Columns>
 
           {StockTable(filteredStocks)}
           {/* {filteredStocks.length >= 20 && StockTable(filteredStocks)}
