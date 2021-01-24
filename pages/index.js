@@ -1,44 +1,55 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import slug from '../Functions/slug'
+import stockTable from '../Components/StockTable'
 
-function stockTable(stocks) {
-  return <table className='table stock-table is-narrow'>
-    <thead>
-      <tr>
-        <th>Ticker</th>
-        <th>Name</th>
-        <th>Currency</th>
-        <th>Price</th>
-        <th>Dividend Frequency</th>
-        <th>Dividend Yield</th>
-        <th>Dividend Aristocrat</th>
-        <th>Dividend King</th>
-      </tr>
-    </thead>
-    <tbody>
-      {stocks.map(stock => {
-        let rowClasses = []
-        if (stock.dividend_frequency) { rowClasses.push(slug(stock.dividend_frequency)) }
-        else { rowClasses.push('no-dividend') }
+export default function SmartWealth({ ...props }) {
+  const [filteredStocks, setFilteredStocks] = useState(props.stocks)
+  const [dividendStatusFilter, setDividendStatusFilter] = useState('any')
 
-        return <tr className={rowClasses.join(' ')}>
-          <td>{stock.ticker}</td>
-          <td>{stock.name}</td>
-          <td>{stock.currency}</td>
-          <td>{stock.share_price}</td>
-          <td>{stock.dividend_frequency}</td>
-          <td>{stock.dividend_yield}</td>
-          <td>{stock.dividend_aristocrat}</td>
-          <td>{stock.dividend_king}</td>
-        </tr>
-      })}
-    </tbody>
-  </table>
-}
+  useEffect(
+    () => { setFilteredStocks(props.stocks) },
+    []
+  )
 
-export default function Home({ ...props }) {
+  useEffect(
+    () => { filterStocks() },
+    [props.stocks, dividendStatusFilter]
+  )
+
+  const filterStocks = () => {
+    const statusFilter = dividendStatusFilter
+    let stocks = props.stocks
+    let filtered = stocks
+
+    /* filter first by status */
+    switch(statusFilter) {
+      case 'any': break
+      case 'king':
+        filtered = stocks.filter(s => {
+          return s.dividend_king === "Yes"
+        })
+        break
+      case 'aristocrat':
+        filtered = stocks.filter(s => {
+          return s.dividend_aristocrat === "Yes"
+        })
+        break
+      case 'aristocrat-king':
+        filtered = stocks.filter(s => {
+          return s.dividend_aristocrat === "Yes" || s.dividend_king === "Yes"
+        })
+        break
+    }
+
+    setFilteredStocks(filtered)
+  }
+
+  const changeStatusFilter = (e) => {
+    setDividendStatusFilter(e.target.value)
+  }
+
   return (
     <div>
       <Head>
@@ -50,11 +61,18 @@ export default function Home({ ...props }) {
 
       <div className='content'>
         <div className='container is-fluid'>
-          {stockTable(props.stocks)}
+          <div className="select">
+            <select onChange={changeStatusFilter}>
+              <option value='any'>Any</option>
+              <option value='aristocrat'>Dividend Aristocrats Only</option>
+              <option value='aristocrat-king'>Dividend Aristocrats + Kings</option>
+              <option value='king'>Dividend Kings</option>
+            </select>
+          </div>
+
+          {stockTable(filteredStocks)}
         </div>
       </div>
-
-      
     </div>
   )
 }
