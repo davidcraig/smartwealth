@@ -8,6 +8,7 @@ import StockCardGrid from '../Components/StockCardGrid'
 export default function SmartWealth({ ...props }) {
   const [filteredStocks, setFilteredStocks] = useState(props.stocks)
   const [dividendStatusFilter, setDividendStatusFilter] = useState('any')
+  const [dividendFrequencyFilter, setDividendFrequencyFilter] = useState('any')
 
   useEffect(
     () => { setFilteredStocks(props.stocks) },
@@ -16,11 +17,12 @@ export default function SmartWealth({ ...props }) {
 
   useEffect(
     () => { filterStocks() },
-    [props.stocks, dividendStatusFilter]
+    [props.stocks, dividendStatusFilter, dividendFrequencyFilter]
   )
 
   const filterStocks = () => {
     const statusFilter = dividendStatusFilter
+    const freqFilter = dividendFrequencyFilter
     let stocks = props.stocks
     let filtered = stocks
 
@@ -37,9 +39,29 @@ export default function SmartWealth({ ...props }) {
           return s.dividend_aristocrat === "Yes"
         })
         break
-      case 'aristocrat-king':
-        filtered = stocks.filter(s => {
-          return s.dividend_aristocrat === "Yes" || s.dividend_king === "Yes"
+    }
+    
+    switch(dividendFrequencyFilter) {
+      case 'all': break
+      case 'monthly':
+        filtered = filtered.filter(s => {
+          return s.dividend_frequency === "Monthly"
+        })
+        break
+      case 'quarterly':
+        filtered = filtered.filter(s => {
+          return s.dividend_frequency === "Quarterly"
+        })
+        break
+      case 'other':
+        filtered = filtered.filter(s => {
+          return s.dividend_frequency === "Annual + Interim" ||
+            s.dividend_frequency === "Bi-Annually"
+        })
+        break
+      case 'annual':
+        filtered = filtered.filter(s => {
+          return s.dividend_frequency === "Annually"
         })
         break
     }
@@ -47,9 +69,8 @@ export default function SmartWealth({ ...props }) {
     setFilteredStocks(filtered)
   }
 
-  const changeStatusFilter = (e) => {
-    setDividendStatusFilter(e.target.value)
-  }
+  const changeStatusFilter = (e) => { setDividendStatusFilter(e.target.value) }
+  const changeDividendFrequencyFilter = (e) => { setDividendFrequencyFilter(e.target.value) }
 
   return (
     <div>
@@ -64,10 +85,19 @@ export default function SmartWealth({ ...props }) {
         <div className='container is-fluid'>
           <div className="select">
             <select onChange={changeStatusFilter}>
-              <option value='any'>Any</option>
-              <option value='aristocrat'>Dividend Aristocrats Only</option>
-              <option value='aristocrat-king'>Dividend Aristocrats + Kings</option>
+              <option value='any'>Type: Any</option>
+              <option value='aristocrat'>Dividend Aristocrats</option>
               <option value='king'>Dividend Kings</option>
+            </select>
+          </div>
+
+          <div className="select">
+            <select onChange={changeDividendFrequencyFilter}>
+              <option value='all'>Dividend Frequency: All</option>
+              <option value='monthly'>Monthly</option>
+              <option value='quarterly'>Quarterly</option>
+              <option value='annual'>Annual</option>
+              <option value='other'>Other</option>
             </select>
           </div>
 
