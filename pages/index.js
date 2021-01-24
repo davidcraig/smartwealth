@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import slug from '../Functions/slug'
-import stockTable from '../Components/StockTable'
+import StockTable from '../Components/StockTable'
+import StockCardGrid from '../Components/StockCardGrid'
 
 export default function SmartWealth({ ...props }) {
   const [filteredStocks, setFilteredStocks] = useState(props.stocks)
@@ -70,7 +71,9 @@ export default function SmartWealth({ ...props }) {
             </select>
           </div>
 
-          {stockTable(filteredStocks)}
+          {StockTable(filteredStocks)}
+          {/* {filteredStocks.length >= 20 && StockTable(filteredStocks)}
+          {filteredStocks.length < 20 && StockCardGrid(filteredStocks)} */}
         </div>
       </div>
     </div>
