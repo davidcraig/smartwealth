@@ -43,6 +43,9 @@ function stockTable(stocks) {
         </tr>
       })}
     </tbody>
+    <tfoot>
+      <tr><td colSpan={8}>Showing: {stocks.length} stocks</td></tr>
+    </tfoot>
   </table>
 }
 
