@@ -48,12 +48,15 @@ html, body {
 
 .stock-table {
     margin-bottom: 1em;
+    font-family: 'Hack', 'Ubuntu Mono', monospace;
 }
 
 .table .svg-inline--fa {
-    --icon-size: 24px;
+    --icon-size: 16px;
     width: var(--icon-size);
     height: var(--icon-size);
 }
 
 .select { margin-right: .5em; }
+
+.table.is-narrow td, .table.is-narrow th { padding: 0.1em; }
