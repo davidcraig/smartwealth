@@ -1,1 +1,15 @@
 @import '~bulma';
+
+:root {
+    --color-good: #00478a;
+    --color-epic: #119100;
+
+    --color-text: #ececec;
+}
+
+.monthly, .quarterly {
+    color: var(--color-text);
+}
+
+.monthly { background-color: var(--color-epic); }
+.quarterly { background-color: var(--color-good); }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
+import slug from '../Functions/slug'
 
 function stockTable(stocks) {
   return <table className='table is-narrow'>
@@ -9,14 +10,19 @@ function stockTable(stocks) {
         <th>Name</th>
         <th>Currency</th>
         <th>Price</th>
+        <th>Dividend Frequency</th>
       </tr>
     </thead>
     <tbody>
       {stocks.map(stock => {
-        return <tr>
+        let rowClasses = []
+        if (stock.dividend_frequency) { rowClasses.push(slug(stock.dividend_frequency)) }
+
+        return <tr className={rowClasses.join(' ')}>
           <td>{stock.name}</td>
           <td>{stock.currency}</td>
           <td>{stock.share_price}</td>
+          <td>{stock.dividend_frequency}</td>
         </tr>
       })}
     </tbody>
@@ -34,7 +40,9 @@ export default function Home({ ...props }) {
       <Navbar />
 
       <div className='content'>
-        {stockTable(props.stocks)}
+        <div className='container is-fluid'>
+          {stockTable(props.stocks)}
+        </div>
       </div>
 
       
