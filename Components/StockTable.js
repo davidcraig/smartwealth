@@ -1,4 +1,9 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCrown } from '@fortawesome/free-solid-svg-icons'
+
 import slug from '../Functions/slug'
+
+const CROWN = <FontAwesomeIcon icon={ faCrown } size="xs" />
 
 function stockTable(stocks) {
   return <table className='table stock-table is-narrow'>
@@ -27,8 +32,14 @@ function stockTable(stocks) {
           <td>{stock.share_price}</td>
           <td>{stock.dividend_frequency}</td>
           <td>{stock.dividend_yield}</td>
-          <td>{stock.dividend_aristocrat}</td>
-          <td>{stock.dividend_king}</td>
+          <td>{stock.dividend_aristocrat ? CROWN : ''}</td>
+          <td>{stock.dividend_king ? (
+            <>
+            {CROWN}
+            {CROWN}
+            {CROWN}
+            </>
+          ) : ''}</td>
         </tr>
       })}
     </tbody>

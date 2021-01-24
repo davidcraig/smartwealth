@@ -49,3 +49,9 @@ html, body {
 .stock-table {
     margin-bottom: 1em;
 }
+
+.table .svg-inline--fa {
+    --icon-size: 24px;
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
