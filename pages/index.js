@@ -10,6 +10,7 @@ export default function SmartWealth({ ...props }) {
   const [dividendStatusFilter, setDividendStatusFilter] = useState('any')
   const [textFilter, setTextFilter] = useState('')
   const [dividendFrequencyFilter, setDividendFrequencyFilter] = useState('any')
+  const [brokerFilter, setBrokerFilter] = useState('any')
 
   useEffect(
     () => { setFilteredStocks(props.stocks) },
@@ -18,7 +19,7 @@ export default function SmartWealth({ ...props }) {
 
   useEffect(
     () => { filterStocks() },
-    [props.stocks, dividendStatusFilter, dividendFrequencyFilter, textFilter]
+    [props.stocks, dividendStatusFilter, dividendFrequencyFilter, textFilter, brokerFilter]
   )
 
   const filterStocks = () => {
@@ -66,6 +67,27 @@ export default function SmartWealth({ ...props }) {
         break
     }
 
+    /* filter by stock broker */
+    switch(brokerFilter) {
+      case 'all': break
+      case 'trading212':
+        filtered = filtered.filter(s => {
+          return s.trading_212 !== "No"
+        })
+        break
+      case 'freetrade':
+        filtered = filtered.filter(s => {
+          return s.freetrade_free !== "No"
+        })
+        break
+      case 'etoro':
+        filtered = filtered.filter(s => {
+          return s.etoro !== "No"
+        })
+        break
+      default: break
+    }
+
     /* filter by text (name, ticker) */
     if (textFilter !== '') {
       filtered = filtered.filter(s => {
@@ -76,6 +98,7 @@ export default function SmartWealth({ ...props }) {
     setFilteredStocks(filtered)
   }
 
+  const changeBrokerFilter = (e) => { setBrokerFilter(e.target.value) }
   const changeTextFilter = (e) => { setTextFilter(e.target.value) }
   const changeStatusFilter = (e) => { setDividendStatusFilter(e.target.value) }
   const changeDividendFrequencyFilter = (e) => { setDividendFrequencyFilter(e.target.value) }
@@ -113,6 +136,22 @@ export default function SmartWealth({ ...props }) {
                   <option value='quarterly'>Quarterly</option>
                   <option value='annual'>Annual</option>
                   <option value='other'>Other</option>
+                </select>
+              </div>
+
+              <div className="select">
+                <select onChange={changeBrokerFilter}>
+                  <option value='all'>Broker: All</option>
+                  <option value='trading212'>Trading 212</option>
+                  <option value='freetrade'>Freetrade</option>
+                  {/* <option value='freetrade-plus'>Freetrade Plus</option> */}
+                  <option value='etoro'>eToro</option>
+                  <option value='webull'>WeBull</option>
+                  {/* <option value='revolut'>Revolut</option> */}
+                  {/* <option value='robinhood'>Robinhood</option> */}
+                  {/* <option value='m1'>M1 Finance</option> */}
+                  {/* <option value='fidelity'>Fidelity</option> */}
+                  {/* <option value='vanguard'>Vanguard</option> */}
                 </select>
               </div>
             </Column>
