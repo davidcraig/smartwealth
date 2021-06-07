@@ -1,15 +1,12 @@
 import React from 'react'
 import NextHighchart from '../NextHighchart'
 
-const themeColour1 = '#2e313b'
 const themeColour2 = '#494e5c'
-const wowOkColour = '#3292f1'
-const wowEpicColour = '#c56fff'
 
 const chartOptions = (dividendData, months) => {
   // We need to create dividendData
   const series = []
-  Object.keys(dividendData).map(company => {
+  Object.keys(dividendData).forEach(company => {
     series.push({
       name: company,
       data: dividendData[company],
@@ -30,7 +27,7 @@ const chartOptions = (dividendData, months) => {
     },
     tooltip: {
       backgroundColor: '#111111',
-      pointFormat: "{series.name}<br/>£{point.y:.2f}"
+      pointFormat: "{series.name}<br/>£{point.y:.2f}" // eslint-disable-line
     },
     yAxis: {
       stackLabels: {
@@ -42,13 +39,13 @@ const chartOptions = (dividendData, months) => {
       minorTicks: true,
       title: {
         text: 'Dividend'
-      },
+      }
     },
     plotLines: [{
       color: 'green', // Color value
       dashStyle: 'longdashdot', // Style of the plot line. Default to solid
       value: 2000, // Value of where the line will appear
-      width: 1 // Width of the line    
+      width: 1 // Width of the line
     }],
     legend: {
       enabled: false
@@ -57,7 +54,7 @@ const chartOptions = (dividendData, months) => {
       column: {
         stacking: 'normal',
         dataLabels: {
-          enabled: false,
+          enabled: false
         }
       },
       colors: undefined,
