@@ -24,8 +24,6 @@ function PieStats ({ positionsHeld }) {
     }
   })
 
-  console.log(pies)
-
   return (
     <table className='table is-narrow pie-summary'>
       <thead>
@@ -39,7 +37,6 @@ function PieStats ({ positionsHeld }) {
         {
           pies && Object.keys(pies).length > 0 && Object.keys(pies).map(k => {
             const pie = pies[k]
-            console.log(pie)
 
             return (
               <tr key={pie.name}>
