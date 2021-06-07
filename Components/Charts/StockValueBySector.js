@@ -76,7 +76,7 @@ export function AsPie ({ positionsHeld, stocks }) {
       },
       tooltip: {
         backgroundColor: '#111111',
-        pointFormat: "{series.name}<br/>{point.y}"
+        pointFormat: "{series.name}<br/>{point.y}" // eslint-disable-line
       },
       accessibility: {
         point: {
