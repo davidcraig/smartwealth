@@ -1,106 +1,151 @@
-import React, { useEffect, useState } from 'react'
-import { Column, Columns } from '@davidcraig/react-bulma'
+import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
-import StockTable from '../Components/StockTable'
+import { Column, Columns, Card, TabbedContent } from '@davidcraig/react-bulma'
+import DividendForecast from '../Components/Charts/dividendForecast'
+import SharesForecast from '../Components/Charts/sharesForecast'
+import StocksBySector from '../Components/Charts/StocksBySector'
 
-export default function SmartWealth ({ ...props }) {
-  const [filteredStocks, setFilteredStocks] = useState(props.stocks)
-  const [dividendStatusFilter, setDividendStatusFilter] = useState('any')
-  const [textFilter, setTextFilter] = useState('')
-  const [dividendFrequencyFilter, setDividendFrequencyFilter] = useState('any')
-  const [brokerFilter, setBrokerFilter] = useState('any')
+function ForecastContent (forecast, forecastLog) {
+  if (typeof forecast === 'undefined') {
+    return
+  }
+  function forTimeframe (time, forecast, filteredLog) {
+    const showLog = false
 
-  useEffect(
-    () => { setFilteredStocks(props.stocks) },
-    []
-  )
+    return (
+      <>
+        <h2 className='h2'>{time}</h2>
+        <h4 className='h4'>Dividends Chart</h4>
+        {DividendForecast(forecast)}
+        <h4 className='h4'>Shares Chart</h4>
+        {SharesForecast(forecast)}
+        {
+          showLog && (
+            <>
+              <h4 className='h4'>Forecast Log</h4>
+              <table className='table forecast-log'>
+                <tbody>
+                  {
+                    filteredLog.map(f => {
+                      return <tr key={f.id} className={f.level}><td>[{f.month}] {f.message}</td></tr>
+                    })
+                  }
+                </tbody>
+              </table>
+            </>
+          )
+        }
+      </>
+    )
+  }
 
-  useEffect(
-    () => { filterStocks() },
-    [props.stocks, dividendStatusFilter, dividendFrequencyFilter, textFilter, brokerFilter]
-  )
-
-  const filterStocks = () => {
-    const stocks = props.stocks
-    let filtered = stocks
-
-    /* filter first by status */
-    switch (dividendStatusFilter) {
-      case 'any': break
-      case 'king':
-        filtered = stocks.filter(s => {
-          return s.dividend_king === 'Yes'
-        })
-        break
-      case 'aristocrat':
-        filtered = stocks.filter(s => {
-          return s.dividend_aristocrat === 'Yes'
-        })
-        break
+  const forecastTabs = [
+    {
+      title: '1 Year',
+      content: forTimeframe('1 Year', forecast.oneYear, forecastLog.filter(f => f.year == 1))
+    },
+    {
+      title: '5 Years',
+      content: forTimeframe('5 Years', forecast.fiveYears, forecastLog.filter(f => f.year < 6))
+    },
+    {
+      title: '10 Years',
+      content: forTimeframe('10 Years', forecast.tenYears, forecastLog.filter(f => f.year < 11))
+    },
+    {
+      title: '30 Years',
+      content: forTimeframe('30 Years', forecast.thirtyYears, forecastLog)
     }
+  ]
 
-    /* filter by dividend frequency */
-    switch (dividendFrequencyFilter) {
-      case 'all': break
-      case 'monthly':
-        filtered = filtered.filter(s => {
-          return s.dividend_frequency === 'Monthly'
-        })
-        break
-      case 'quarterly':
-        filtered = filtered.filter(s => {
-          return s.dividend_frequency === 'Quarterly'
-        })
-        break
-      case 'other':
-        filtered = filtered.filter(s => {
-          return s.dividend_frequency === 'Annual + Interim' ||
-            s.dividend_frequency === 'Bi-Annually'
-        })
-        break
-      case 'annual':
-        filtered = filtered.filter(s => {
-          return s.dividend_frequency === 'Annually'
-        })
-        break
-    }
+  return <TabbedContent content={forecastTabs} />
+}
 
-    /* filter by stock broker */
-    switch (brokerFilter) {
-      case 'all': break
-      case 'trading212':
-        filtered = filtered.filter(s => {
-          return s.trading_212 !== 'No'
-        })
-        break
-      case 'freetrade':
-        filtered = filtered.filter(s => {
-          return s.freetrade_free !== 'No'
-        })
-        break
-      case 'etoro':
-        filtered = filtered.filter(s => {
-          return s.etoro !== 'No'
-        })
-        break
-      default: break
-    }
+export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
+  const [forecast, setForecast] = useState([])
+  const [pies, setPies] = useState([])
+  const [pieContributions, setPieContributions] = useState([])
+  const [forecastLog, setForecastLog] = useState([])
 
-    /* filter by text (name, ticker) */
-    if (textFilter !== '') {
-      filtered = filtered.filter(s => {
-        return s.name.match(textFilter) || s.ticker.match(textFilter)
+  /* Send the message to perform forecast on position load */
+  useEffect(() => {
+    let CalculationWorker = new Worker('/js/calculations.js')
+    const performForecasting = false
+
+    if (performForecasting) {
+      CalculationWorker.postMessage({
+        type: 'perform-forecast',
+        positions: positionsHeld,
+        pieContributions: pieContributions
       })
     }
 
-    setFilteredStocks(filtered)
-  }
+    CalculationWorker.onmessage = (e => {
+      const type = e.data.type
+      const data = e.data.data
 
-  const changeBrokerFilter = (e) => { setBrokerFilter(e.target.value) }
-  const changeTextFilter = (e) => { setTextFilter(e.target.value) }
-  const changeStatusFilter = (e) => { setDividendStatusFilter(e.target.value) }
-  const changeDividendFrequencyFilter = (e) => { setDividendFrequencyFilter(e.target.value) }
+      switch (type) {
+        case 'forecast-log':
+          setForecastLog(data)
+          break
+        case 'forecast-log-entry': {
+          const entry = data
+          const log = [...forecastLog, entry]
+          setForecastLog(log)
+          break
+        }
+        case 'pie-data': {
+          const pieData = data
+          const pies = Object.keys(pieData).map(key => {
+            const pie = pieData[key]
+            return {
+              name: key,
+              holdings: pie.holdings,
+              positions: pie.positions
+            }
+          })
+          setPies(pies)
+          break
+        }
+        case 'forecast-results': {
+          const results = JSON.parse(data)
+          setForecast(results)
+          break
+        }
+        default:
+          break
+      }
+    })
+
+    window.CalculationWorker = CalculationWorker
+
+    return () => {
+      CalculationWorker = null
+    }
+
+    /* Trigger the forecast */
+  }, [positionsHeld, pieContributions])
+
+  let forecastOutput = ForecastContent(forecast, forecastLog)
+
+  function updatePieMonthlyContributions () {
+    const pieContributions = []
+    setForecast([])
+    pies.forEach(pie => {
+      pieContributions.push({
+        name: pie.name,
+        monthlyContribution: pie.monthlyContribution || 0
+      })
+    })
+    // setPieContributions(pieContributions)
+
+    window.CalculationWorker.postMessage({
+      type: 'perform-forecast',
+      positions: positionsHeld,
+      pieContributions: pieContributions
+    })
+  }
 
   return (
     <div>
@@ -111,52 +156,79 @@ export default function SmartWealth ({ ...props }) {
 
       <Navbar />
 
-      <div className='content'>
-        <div className='container is-fluid'>
+      <div className='container is-fluid'>
+        <div className='content'>
           <Columns>
             <Column>
-              <div className='control'>
-                <input className='input' type='text' placeholder='Search' onChange={changeTextFilter} />
-              </div>
+              <Card title='Forecast'>
+                {forecastOutput}
+              </Card>
             </Column>
-            <Column>
-              <div className='select'>
-                <select onChange={changeStatusFilter}>
-                  <option value='any'>Type: Any</option>
-                  <option value='aristocrat'>Dividend Aristocrats</option>
-                  <option value='king'>Dividend Kings</option>
-                </select>
-              </div>
+            <Column class='is-one-quarter'>
+              <Card title='Forecasting'>
+                <table className='table is-compact pie-summary'>
+                  <thead>
+                    <tr>
+                      <th>Pie</th>
+                      <th>#</th>
+                      <th>%</th>
+                      <th>£ / Mo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      pies && pies.length > 0 && pies.map(pie => {
+                        return (
+                          <tr key={pie.name}>
+                            <td>{pie.name}</td>
+                            <td>{pie.holdings}</td>
+                            <td>
+                              {
+                                pie.positions.length > 0
+                                  ? pie.positions.length > 1
+                                      ? pie.positions.reduce((prev, curr) => {
+                                          let p = 0
+                                          if (typeof prev === 'object') {
+                                            p = prev.pieWeight
+                                          }
+                                          if (typeof prev === 'number') {
+                                            p = prev
+                                          }
+                                          return parseInt(p) + parseInt(curr.pieWeight)
+                                        })
+                                      : pie.positions[0].pieWeight
+                                  : ''
+                              }
+                            </td>
+                            <td>
+                              <input
+                                data-pie={pie.name}
+                                onChange={e => pie.monthlyContribution = parseFloat(e.target.value)}
+                              />
+                            </td>
+                          </tr>
+                        )
+                      })
+                    }
+                  </tbody>
+                </table>
 
-              <div className='select'>
-                <select onChange={changeDividendFrequencyFilter}>
-                  <option value='all'>Dividend Frequency: All</option>
-                  <option value='monthly'>Monthly</option>
-                  <option value='quarterly'>Quarterly</option>
-                  <option value='annual'>Annual</option>
-                  <option value='other'>Other</option>
-                </select>
-              </div>
+                <button onClick={updatePieMonthlyContributions}>Forecast</button>
+              </Card>
+              <Card title='Stats'>
+                <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
+                {positionsHeld.length === 0 && (
+                  <p>To add stocks go to the My Holdings tab!</p>
+                )}
+              </Card>
+              <Card title='Diversification'>
+                <h4 className='h4'>Stocks by Sector</h4>
+                <StocksBySector positionsHeld={positionsHeld} stocks={stocks} />
 
-              <div className='select'>
-                <select onChange={changeBrokerFilter}>
-                  <option value='all'>Broker: All</option>
-                  <option value='trading212'>Trading 212</option>
-                  <option value='freetrade'>Freetrade</option>
-                  {/* <option value='freetrade-plus'>Freetrade Plus</option> */}
-                  <option value='etoro'>eToro</option>
-                  <option value='webull'>WeBull</option>
-                  {/* <option value='revolut'>Revolut</option> */}
-                  {/* <option value='robinhood'>Robinhood</option> */}
-                  {/* <option value='m1'>M1 Finance</option> */}
-                  {/* <option value='fidelity'>Fidelity</option> */}
-                  {/* <option value='vanguard'>Vanguard</option> */}
-                </select>
-              </div>
+                <h4 className='h4'>Stock Value by Sector</h4>
+              </Card>
             </Column>
           </Columns>
-
-          {StockTable(filteredStocks)}
         </div>
       </div>
     </div>
