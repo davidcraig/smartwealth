@@ -7,19 +7,20 @@ console.log('Spreadsheet Worker Initialised')
 /* Takes a string and cleans it up for use as a jskey */
 function slug(string) {
   return string
-    .replace(' ', '_')
-    .replace('(', '')
-    .replace(')', '')
-    .replace("\r\n", '')
-    .replace("\r", '')
-    .replace("\n", '')
-    .replace('?', '')
-    .toLowerCase();
+    .replace(/ /g, '_')
+    .replace(/\+/g, '')
+    .replace(/\(/g, '')
+    .replace(/\)/g, '')
+    .replace(/\r\n/g, '')
+    .replace(/\r/g, '')
+    .replace(/\n/g, '')
+    .replace(/\?/g, '')
+    .toLowerCase()
 }
 
-function buildObjectArray (headers, data) {
+function buildObjectArray(headers, data) {
   const output = []
-  Object.keys(data).forEach(itemIndex => {
+  Object.keys(data).map(itemIndex => {
     let object = {}
 
     Object.keys(headers).map(index => {
@@ -34,24 +35,23 @@ function buildObjectArray (headers, data) {
 }
 
 self.addEventListener(
-  'message',
-  function (e) {
+  "message",
+  function(e) {
     const event = e.data
-    if (event.type === 'parse') {
+    if (event.type = 'parse') {
       fetch(event.url)
       .then(res => {
-        res.json()
-        .then(json => {
+        res.json().then(json => {
           const data = {}
           const headers = {}
           const headerRow = event.headerRow
           json.feed.entry.forEach(e => {
-            const cell = e["gs$cell"]
-            const row = cell.row
-            const col = cell.col
-            const content = e.content["$t"]
+            let cell = e["gs$cell"]
+            let row = cell.row
+            let col = cell.col
+            let content = e.content["$t"]
 
-            if (row === headerRow) {
+            if (row == headerRow) {
               headers[col] = { name: content, key: slug(content) }
             }
             if (row > headerRow) {
@@ -66,10 +66,12 @@ self.addEventListener(
           self.postMessage({
             type: 'parse-result',
             data: output
-          })
+          });
         })
       })
     }
+
+    // 
   },
   false
-)
+);
