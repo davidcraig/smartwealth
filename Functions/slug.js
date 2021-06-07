@@ -1,14 +1,13 @@
 function slug (string) {
   return string
-    .replace(' ', '_')
-    .replace('+', '')
-    .replace('(', '')
-    .replace(')', '')
-    .replace("\r\n", '')
-    .replace("\r", '')
-    .replace("\n", '')
-    .replace('?', '')
-    .replace(' ', '')
+    .replace(/ /g, '_')
+    .replace(/\+/g, '')
+    .replace(/\(/g, '')
+    .replace(/\)/g, '')
+    .replace(/\r\n/g, '')
+    .replace(/\r/g, '')
+    .replace(/\n/g, '')
+    .replace(/\?/g, '')
     .toLowerCase()
 }
 
