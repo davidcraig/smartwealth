@@ -1,6 +1,6 @@
-import { Navbar, Brand, Item } from '@davidcraig/react-bulma'
+import { Navbar, Brand } from '@davidcraig/react-bulma'
 
-function SmartWealthNavbar() {
+function SmartWealthNavbar () {
   return (
     <Navbar>
       <Brand title='SmartWealth' />

@@ -1,4 +1,4 @@
-function slug(string) {
+function slug (string) {
   return string
     .replace(' ', '_')
     .replace('+', '')
@@ -9,7 +9,7 @@ function slug(string) {
     .replace("\n", '')
     .replace('?', '')
     .replace(' ', '')
-    .toLowerCase();
+    .toLowerCase()
 }
 
 export default slug
