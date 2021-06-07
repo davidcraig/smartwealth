@@ -3,7 +3,6 @@ import { Column, Columns } from '@davidcraig/react-bulma'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import StockTable from '../Components/StockTable'
-import StockCardGrid from '../Components/StockCardGrid'
 
 export default function SmartWealth({ ...props }) {
   const [filteredStocks, setFilteredStocks] = useState(props.stocks)
@@ -23,11 +22,11 @@ export default function SmartWealth({ ...props }) {
   )
 
   const filterStocks = () => {
-    let stocks = props.stocks
+    const stocks = props.stocks
     let filtered = stocks
 
     /* filter first by status */
-    switch(dividendStatusFilter) {
+    switch (dividendStatusFilter) {
       case 'any': break
       case 'king':
         filtered = stocks.filter(s => {
@@ -42,7 +41,7 @@ export default function SmartWealth({ ...props }) {
     }
 
     /* filter by dividend frequency */
-    switch(dividendFrequencyFilter) {
+    switch (dividendFrequencyFilter) {
       case 'all': break
       case 'monthly':
         filtered = filtered.filter(s => {
@@ -68,21 +67,21 @@ export default function SmartWealth({ ...props }) {
     }
 
     /* filter by stock broker */
-    switch(brokerFilter) {
+    switch (brokerFilter) {
       case 'all': break
       case 'trading212':
         filtered = filtered.filter(s => {
-          return s.trading_212 !== "No"
+          return s.trading_212 !== 'No'
         })
         break
       case 'freetrade':
         filtered = filtered.filter(s => {
-          return s.freetrade_free !== "No"
+          return s.freetrade_free !== 'No'
         })
         break
       case 'etoro':
         filtered = filtered.filter(s => {
-          return s.etoro !== "No"
+          return s.etoro !== 'No'
         })
         break
       default: break
@@ -107,7 +106,7 @@ export default function SmartWealth({ ...props }) {
     <div>
       <Head>
         <title>SmartWealth</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
 
       <Navbar />
@@ -116,12 +115,12 @@ export default function SmartWealth({ ...props }) {
         <div className='container is-fluid'>
           <Columns>
             <Column>
-              <div class="control">
-                <input class="input" type="text" placeholder="Search" onChange={changeTextFilter} />
+              <div className='control'>
+                <input className='input' type='text' placeholder='Search' onChange={changeTextFilter} />
               </div>
             </Column>
             <Column>
-              <div className="select">
+              <div className='select'>
                 <select onChange={changeStatusFilter}>
                   <option value='any'>Type: Any</option>
                   <option value='aristocrat'>Dividend Aristocrats</option>
@@ -129,7 +128,7 @@ export default function SmartWealth({ ...props }) {
                 </select>
               </div>
 
-              <div className="select">
+              <div className='select'>
                 <select onChange={changeDividendFrequencyFilter}>
                   <option value='all'>Dividend Frequency: All</option>
                   <option value='monthly'>Monthly</option>
@@ -139,7 +138,7 @@ export default function SmartWealth({ ...props }) {
                 </select>
               </div>
 
-              <div className="select">
+              <div className='select'>
                 <select onChange={changeBrokerFilter}>
                   <option value='all'>Broker: All</option>
                   <option value='trading212'>Trading 212</option>
@@ -158,8 +157,6 @@ export default function SmartWealth({ ...props }) {
           </Columns>
 
           {StockTable(filteredStocks)}
-          {/* {filteredStocks.length >= 20 && StockTable(filteredStocks)}
-          {filteredStocks.length < 20 && StockCardGrid(filteredStocks)} */}
         </div>
       </div>
     </div>
