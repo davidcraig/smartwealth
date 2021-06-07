@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { Column, Columns } from '@davidcraig/react-bulma'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import StockTable from '../Components/StockTable'
 
-export default function SmartWealth({ ...props }) {
+export default function SmartWealth ({ ...props }) {
   const [filteredStocks, setFilteredStocks] = useState(props.stocks)
   const [dividendStatusFilter, setDividendStatusFilter] = useState('any')
   const [textFilter, setTextFilter] = useState('')
@@ -30,12 +30,12 @@ export default function SmartWealth({ ...props }) {
       case 'any': break
       case 'king':
         filtered = stocks.filter(s => {
-          return s.dividend_king === "Yes"
+          return s.dividend_king === 'Yes'
         })
         break
       case 'aristocrat':
         filtered = stocks.filter(s => {
-          return s.dividend_aristocrat === "Yes"
+          return s.dividend_aristocrat === 'Yes'
         })
         break
     }
@@ -45,23 +45,23 @@ export default function SmartWealth({ ...props }) {
       case 'all': break
       case 'monthly':
         filtered = filtered.filter(s => {
-          return s.dividend_frequency === "Monthly"
+          return s.dividend_frequency === 'Monthly'
         })
         break
       case 'quarterly':
         filtered = filtered.filter(s => {
-          return s.dividend_frequency === "Quarterly"
+          return s.dividend_frequency === 'Quarterly'
         })
         break
       case 'other':
         filtered = filtered.filter(s => {
-          return s.dividend_frequency === "Annual + Interim" ||
-            s.dividend_frequency === "Bi-Annually"
+          return s.dividend_frequency === 'Annual + Interim' ||
+            s.dividend_frequency === 'Bi-Annually'
         })
         break
       case 'annual':
         filtered = filtered.filter(s => {
-          return s.dividend_frequency === "Annually"
+          return s.dividend_frequency === 'Annually'
         })
         break
     }
