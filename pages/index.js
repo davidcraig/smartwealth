@@ -75,7 +75,7 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
   /* Send the message to perform forecast on position load */
   useEffect(() => {
     let CalculationWorker = new Worker('/js/calculations.js')
-    const performForecasting = false
+    const performForecasting = true
 
     if (performForecasting) {
       CalculationWorker.postMessage({
