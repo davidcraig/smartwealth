@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
+import GetStock from '../Functions/GetStock'
+import GetPositionValue from '../Functions/GetPositionValue'
 import { Column, Columns, Card, TabbedContent } from '@davidcraig/react-bulma'
 import DividendForecast from '../Components/Charts/dividendForecast'
 import SharesForecast from '../Components/Charts/sharesForecast'
 import StocksBySector from '../Components/Charts/StocksBySector'
 import StockValueBySector from '../Components/Charts/StockValueBySector'
+import BaseCurrency from '../Functions/Formatting/BaseCurrency'
 
 function ForecastContent (forecast, forecastLog) {
   if (typeof forecast === 'undefined') {
@@ -148,6 +151,8 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
     })
   }
 
+  const hasPositions = positionsHeld && positionsHeld.length > 0
+
   return (
     <div>
       <Head>
@@ -217,8 +222,26 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
                 <button onClick={updatePieMonthlyContributions}>Forecast</button>
               </Card>
               <Card title='Stats'>
-                <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
-                {positionsHeld.length === 0 && (
+                {
+                  hasPositions > 0 && (
+                    <>
+                      <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
+                      <p>Portfolio Value: {
+                        BaseCurrency(positionsHeld.reduce((prev, pos) => {
+                          const stock = GetStock(pos.stock.ticker, stocks)
+
+                          if (typeof prev === 'object') {
+                            return GetPositionValue(pos, stock)
+                          }
+
+                          return prev + GetPositionValue(pos, stock)
+                        }))
+                      }
+                      </p>
+                    </>
+                  )
+                }
+                {!hasPositions && (
                   <p>To add stocks go to the My Holdings tab!</p>
                 )}
               </Card>
