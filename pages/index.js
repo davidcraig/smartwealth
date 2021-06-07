@@ -5,6 +5,7 @@ import { Column, Columns, Card, TabbedContent } from '@davidcraig/react-bulma'
 import DividendForecast from '../Components/Charts/dividendForecast'
 import SharesForecast from '../Components/Charts/sharesForecast'
 import StocksBySector from '../Components/Charts/StocksBySector'
+import StockValueBySector from '../Components/Charts/StockValueBySector'
 
 function ForecastContent (forecast, forecastLog) {
   if (typeof forecast === 'undefined') {
@@ -226,6 +227,7 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
                 <StocksBySector positionsHeld={positionsHeld} stocks={stocks} />
 
                 <h4 className='h4'>Stock Value by Sector</h4>
+                <StockValueBySector positionsHeld={positionsHeld} stocks={stocks} />
               </Card>
             </Column>
           </Columns>

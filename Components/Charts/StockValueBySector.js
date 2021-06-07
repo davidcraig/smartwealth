@@ -1,5 +1,6 @@
 import GetSectorColour from '../../Functions/GetSectorColour'
 import GetStock from '../../Functions/GetStock'
+import GetPositionValue from '../../Functions/GetPositionValue'
 import Percentage from '../../Functions/Percentage'
 import NextHighchart from '../NextHighchart'
 
@@ -71,7 +72,7 @@ export function AsPie ({ positionsHeld, stocks }) {
         type: 'pie'
       },
       title: {
-        text: 'Stocks by Sector'
+        text: 'Stock Value by Sector'
       },
       tooltip: {
         backgroundColor: '#111111',
@@ -117,7 +118,6 @@ function StocksBySector ({ positionsHeld, stocks }) {
     if (!pos.stock) { return null }
     if (!stock) { return null }
     if (!stock.gics_sector) {
-      sectors.unknown = sectors.unknown + 1
       return null
     }
     if (!Object.prototype.hasOwnProperty.call(sectors, stock.gics_sector)) {
@@ -126,7 +126,7 @@ function StocksBySector ({ positionsHeld, stocks }) {
     }
 
     const sector = stock.gics_sector
-    sectors[sector] = sectors[sector] + 1
+    sectors[sector] = sectors[sector] + GetPositionValue(pos, stock)
   })
 
   return sectors
