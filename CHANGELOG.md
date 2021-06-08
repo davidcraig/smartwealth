@@ -4,7 +4,11 @@
 
 ### Changed
 
- - Change chart title fore dividend and share forecasts.
+ - Adjust app styles:
+   * Change heading colour.
+ - Chart improvements:
+   * Set chart height on portfolio by sector pies.
+   * Change chart title for dividend and share forecasts.
  - Improve forecasting pie controls:
    * remove # and weight columns.
    * Reduce overall size.

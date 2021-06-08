@@ -22,8 +22,7 @@ const chartOptions = (dividendData, months) => {
     title: {
       text: 'Dividends Forecast',
       style: {
-        color: '#ececec',
-        fontSize: '18px'
+        display: 'none'
       }
     },
     xAxis: {
