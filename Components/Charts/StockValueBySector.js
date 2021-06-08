@@ -8,10 +8,10 @@ export function AsTable ({ positionsHeld, stocks }) {
   if (!positionsHeld || positionsHeld.length === 0) {
     return ''
   }
-  const sectors = StocksBySector({ positionsHeld, stocks })
+  const sectors = StockValueBySector({ positionsHeld, stocks })
 
-  const sectorStocksTotal = Object.keys(sectors).map(key => {
-    return sectors[key]
+  const sectorStocksTotal = sectors.map(s => {
+    return s.value
   }).reduce((prev, curr) => prev + curr)
 
   return (
@@ -25,12 +25,12 @@ export function AsTable ({ positionsHeld, stocks }) {
       </thead>
       <tbody>
         {
-          Object.keys(sectors).map(key => {
+          sectors.map(s => {
             return (
-              <tr key={key}>
-                <td>{key}</td>
-                <td>{sectors[key]}</td>
-                <td>{Percentage((sectors[key] / sectorStocksTotal) * 100)}</td>
+              <tr key={s.name}>
+                <td>{s.name}</td>
+                <td>{s.value}</td>
+                <td>{Percentage((s.value / sectorStocksTotal) * 100)}</td>
               </tr>
             )
           })
@@ -44,7 +44,7 @@ export function AsPie ({ positionsHeld, stocks }) {
   if (!positionsHeld || positionsHeld.length === 0) {
     return ''
   }
-  const sectors = StocksBySector({ positionsHeld, stocks })
+  const sectors = StockValueBySector({ positionsHeld, stocks })
 
   const chartOptions = (sectors) => {
     // We need to create dividendData
@@ -55,12 +55,12 @@ export function AsPie ({ positionsHeld, stocks }) {
         colorByPoint: true
       }
     ]
-    Object.keys(sectors).forEach(key => {
-      const colour = GetSectorColour(key)
+    sectors.forEach(sector => {
+      const colour = GetSectorColour(sector.name)
 
       series[0].data.push({
-        name: key,
-        y: sectors[key],
+        name: sector.name,
+        y: sector.value,
         color: colour
       })
     })
@@ -109,12 +109,13 @@ export function AsPie ({ positionsHeld, stocks }) {
   )
 }
 
-function StocksBySector ({ positionsHeld, stocks }) {
+function StockValueBySector ({ positionsHeld, stocks }) {
   if (!positionsHeld || positionsHeld.length === 0) {
     return null
   }
 
   const sectors = {}
+  const arr = []
 
   positionsHeld.forEach(pos => {
     const stock = GetStock(pos.stock.ticker, stocks)
@@ -132,7 +133,14 @@ function StocksBySector ({ positionsHeld, stocks }) {
     sectors[sector] = sectors[sector] + GetPositionValue(pos, stock)
   })
 
-  return sectors
+  Object.keys(sectors).forEach(key => {
+    const sector = sectors[key]
+    arr.push({ name: key, value: sector })
+  })
+
+  return arr.sort((sA, sB) => {
+    return sA.value < sB.value
+  })
 }
 
 export default AsPie
