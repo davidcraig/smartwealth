@@ -15,15 +15,18 @@ function ForecastContent (forecast, forecastLog) {
     return
   }
   function forTimeframe (time, forecast, filteredLog) {
-    const showLog = false
+    const showLog = true
 
     return (
       <>
         <h2 className='h2'>{time}</h2>
+
         <h4 className='h4'>Dividends Chart</h4>
         {DividendForecast(forecast)}
+
         <h4 className='h4'>Shares Chart</h4>
         {SharesForecast(forecast)}
+
         {
           showLog && (
             <>
@@ -32,7 +35,12 @@ function ForecastContent (forecast, forecastLog) {
                 <tbody>
                   {
                     filteredLog.map(f => {
-                      return <tr key={f.id} className={f.level}><td>[{f.month}] {f.message}</td></tr>
+                      return (
+                        <tr key={f.id} className={f.level}>
+                          <td>[{f.month}]</td>
+                          <td>{f.message}</td>
+                        </tr>
+                      )
                     })
                   }
                 </tbody>
@@ -47,7 +55,7 @@ function ForecastContent (forecast, forecastLog) {
   const forecastTabs = [
     {
       title: '1 Year',
-      content: forTimeframe('1 Year', forecast.oneYear, forecastLog.filter(f => f.year == 1))
+      content: forTimeframe('1 Year', forecast.oneYear, forecastLog.filter(f => f.year === 1))
     },
     {
       title: '5 Years',
@@ -66,32 +74,52 @@ function ForecastContent (forecast, forecastLog) {
   return <TabbedContent content={forecastTabs} />
 }
 
+function PortfolioValue ({ positionsHeld, stocks }) {
+  // return 100
+
+  return BaseCurrency(positionsHeld.reduce((prev, pos) => {
+    const stock = GetStock(pos.stock.ticker, stocks)
+
+    if (typeof prev === 'object') {
+      return GetPositionValue(pos, stock)
+    }
+
+    return prev + GetPositionValue(pos, stock)
+  }))
+}
+
 export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
   const [forecast, setForecast] = useState([])
   const [pies, setPies] = useState([])
   const [pieContributions, setPieContributions] = useState([])
   const [forecastLog, setForecastLog] = useState([])
+  const [isForecasting, setIsForecasting] = useState(false)
 
   /* Send the message to perform forecast on position load */
   useEffect(() => {
     let CalculationWorker = new Worker('/js/calculations.js')
-    const performForecasting = true
 
-    if (performForecasting) {
+    if (
+      !isForecasting &&
+      positionsHeld &&
+      positionsHeld.length > 0
+    ) {
       CalculationWorker.postMessage({
         type: 'perform-forecast',
         positions: positionsHeld,
         pieContributions: pieContributions
       })
+      setIsForecasting(true)
     }
 
-    CalculationWorker.onmessage = (e => {
+    CalculationWorker.onmessage = e => {
       const type = e.data.type
       const data = e.data.data
 
       switch (type) {
         case 'forecast-log':
           setForecastLog(data)
+          setIsForecasting(false)
           break
         case 'forecast-log-entry': {
           const entry = data
@@ -114,13 +142,14 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
         }
         case 'forecast-results': {
           const results = JSON.parse(data)
+          setIsForecasting(false)
           setForecast(results)
           break
         }
         default:
           break
       }
-    })
+    }
 
     window.CalculationWorker = CalculationWorker
 
@@ -131,7 +160,7 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
     /* Trigger the forecast */
   }, [positionsHeld, pieContributions])
 
-  let forecastOutput = ForecastContent(forecast, forecastLog)
+  const forecastOutput = ForecastContent(forecast, forecastLog)
 
   function updatePieMonthlyContributions () {
     const pieContributions = []
@@ -226,17 +255,7 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
                   hasPositions > 0 && (
                     <>
                       <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
-                      <p>Portfolio Value: {
-                        BaseCurrency(positionsHeld.reduce((prev, pos) => {
-                          const stock = GetStock(pos.stock.ticker, stocks)
-
-                          if (typeof prev === 'object') {
-                            return GetPositionValue(pos, stock)
-                          }
-
-                          return prev + GetPositionValue(pos, stock)
-                        }))
-                      }
+                      <p>Portfolio Value: <PortfolioValue positionsHeld={positionsHeld} />
                       </p>
                     </>
                   )

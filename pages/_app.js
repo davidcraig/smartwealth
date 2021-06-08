@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import GetStock from '../Functions/GetStock'
 import '../styles/app.scss'
 
-function MyApp({ Component, pageProps }) {
+function MyApp ({ Component, pageProps }) {
   const [stocks, setStocks] = useState([])
   const [positionsHeld, setPositionsHeld] = useState([])
-  const [currentValue, setCurrentValue] = useState([])
 
   // Load Stocks from SmartWealth public spreadsheet
   useEffect(() => {
@@ -20,26 +20,35 @@ function MyApp({ Component, pageProps }) {
       setStocks(stocks)
     }
 
-    SpreadsheetWorker.onmessage = (e => {
+    SpreadsheetWorker.onmessage = e => {
       if (e.data.type === 'parse-result') {
         store.setItem('stocks', JSON.stringify(e.data.data))
         setStocks(e.data.data)
       }
-    })
+    }
   }, [])
 
   // Load any held positions from localStorage.
   useEffect(() => {
-    let store = localStorage
-
-    let positions = store.getItem('positions')
+    const positions = localStorage.getItem('positions')
 
     if (positions == null) {
       //
     } else {
-      setPositionsHeld(JSON.parse(positions))
+      if (stocks.length === 0) {
+        const pos = JSON.parse(positions)
+        setPositionsHeld(pos)
+      } else {
+        let pos = JSON.parse(positions)
+        pos = pos.map(p => {
+          const stock = GetStock(p.stock.ticker, stocks)
+          p.stock = stock
+          return p
+        })
+        setPositionsHeld(pos)
+      }
     }
-  }, [])
+  }, [stocks])
 
   return (
     <Component

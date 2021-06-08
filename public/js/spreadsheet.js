@@ -2,7 +2,7 @@
 
 // const spreadsheetUrl = 'https://spreadsheets.google.com/feeds/cells/1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0/1/public/values?alt=json'
 
-console.log('Spreadsheet Worker Initialised')
+console.debug('Spreadsheet Worker Initialised')
 
 /* Takes a string and cleans it up for use as a jskey */
 function slug(string) {
@@ -66,12 +66,10 @@ self.addEventListener(
           self.postMessage({
             type: 'parse-result',
             data: output
-          });
+          })
         })
       })
     }
-
-    // 
   },
   false
-);
+)
