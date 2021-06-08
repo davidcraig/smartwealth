@@ -4,6 +4,7 @@
 
 ### Changed
 
+ - Change chart title fore dividend and share forecasts.
  - Improve forecasting pie controls:
    * remove # and weight columns.
    * Reduce overall size.

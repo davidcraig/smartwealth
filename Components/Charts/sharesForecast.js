@@ -24,7 +24,11 @@ const chartOptions = (shareData, months) => {
       type: 'column'
     },
     title: {
-      text: 'Share Quantity Forecast'
+      text: 'Share Quantity Forecast',
+      style: {
+        color: '#ececec',
+        fontSize: '18px'
+      }
     },
     tooltip: {
       backgroundColor: '#111111',

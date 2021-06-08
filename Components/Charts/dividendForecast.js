@@ -20,7 +20,11 @@ const chartOptions = (dividendData, months) => {
       type: 'column'
     },
     title: {
-      text: 'Dividends Forecast'
+      text: 'Dividends Forecast',
+      style: {
+        color: '#ececec',
+        fontSize: '18px'
+      }
     },
     xAxis: {
       categories: months

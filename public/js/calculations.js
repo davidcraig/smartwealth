@@ -508,9 +508,7 @@ function handlePerformForecast (event) {
   let logEntries = []
   const date = new Date()
   let thisMonth = date.getMonth() // april = 3
-  // TODO: Replace years once working again
   const years = 30
-  // const years = 2
   const timeToForecast = years * 12 // (30 years * 12 months)
   let year = 0
   // Perform the forecasting
