@@ -1,6 +1,6 @@
 # SmartWealth Changelog
 
-## [Unreleased]
+## [Untagged]
 
 ### Changed
 
@@ -11,6 +11,7 @@
  - Chart improvements:
    * Set chart height on portfolio by sector pies.
    * Change chart title for dividend and share forecasts.
+   * Order StockValueBySector pie by slice size.
  - Improve forecasting pie controls:
    * remove # and weight columns.
    * Reduce overall size.
