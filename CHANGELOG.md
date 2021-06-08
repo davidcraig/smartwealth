@@ -6,6 +6,10 @@
 
  - Fix logic issue resulting in pie shares amount being incorrect (issue #1).
 
+### Changed
+
+ - Refactor dividend/share buying logic around pie vs non-pie logic for cleaner code separation.
+
 ## [2021-06-07]
 
 ### Changed
