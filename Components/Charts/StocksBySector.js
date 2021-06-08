@@ -68,10 +68,13 @@ export function AsPie ({ positionsHeld, stocks }) {
     return {
       chart: {
         styledMode: false,
-        type: 'pie'
+        type: 'pie',
+        height: '200px'
       },
       title: {
-        text: 'Stocks by Sector'
+        style: {
+          display: 'none'
+        }
       },
       tooltip: {
         backgroundColor: '#111111',
