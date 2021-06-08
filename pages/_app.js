@@ -12,16 +12,31 @@ function MyApp ({ Component, pageProps }) {
     const SpreadsheetWorker = new Worker('/js/spreadsheet.js')
     let store = localStorage
 
+    const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
+
     const stocks = JSON.parse(store.getItem('stocks'))
+    const stocksLastUpdated = JSON.parse(store.getItem('stocks-updated'))
 
     if (stocks == null) {
-      SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
+      requestStocksUpdate()
     } else {
       setStocks(stocks)
     }
 
+    if (stocksLastUpdated === null) {
+      requestStocksUpdate()
+    } else {
+      const lastUpdated = new Date(stocksLastUpdated)
+      const now = new Date()
+      const diff = now - lastUpdated
+      if (diff > (1000 * 60 * 60 * 24)) {
+        requestStocksUpdate()
+      }
+    }
+
     SpreadsheetWorker.onmessage = e => {
       if (e.data.type === 'parse-result') {
+        store.setItem('stocks-updated', JSON.stringify(new Date()))
         store.setItem('stocks', JSON.stringify(e.data.data))
         setStocks(e.data.data)
       }
