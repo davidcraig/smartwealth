@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import GetStock from '../Functions/GetStock'
@@ -211,7 +211,7 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
                     {
                       pies && pies.length > 0 && pies.map(pie => {
                         return (
-                          <>
+                          <Fragment key={pie.name}>
                             <tr key={pie.name}>
                               <td>{pie.name}</td>
                             </tr>
@@ -224,7 +224,7 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
                                 />
                               </td>
                             </tr>
-                          </>
+                          </Fragment>
                         )
                       })
                     }
