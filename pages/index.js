@@ -194,54 +194,37 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
       <div className='container is-fluid'>
         <div className='content'>
           <Columns>
-            <Column>
-              <Card title='Forecast'>
+            <Column class='is-three-quarters'>
+              <Card className='is-compact' title='Forecast'>
                 {forecastOutput}
               </Card>
             </Column>
             <Column class='is-one-quarter'>
-              <Card title='Forecasting'>
-                <table className='table is-compact pie-summary'>
+              <Card className='is-compact' title='Forecasting'>
+                <table className='table is-compact pie-forecast-controls'>
                   <thead>
                     <tr>
                       <th>Pie</th>
-                      <th>#</th>
-                      <th>%</th>
-                      <th>£ / Mo</th>
                     </tr>
                   </thead>
                   <tbody>
                     {
                       pies && pies.length > 0 && pies.map(pie => {
                         return (
-                          <tr key={pie.name}>
-                            <td>{pie.name}</td>
-                            <td>{pie.holdings}</td>
-                            <td>
-                              {
-                                pie.positions.length > 0
-                                  ? pie.positions.length > 1
-                                      ? pie.positions.reduce((prev, curr) => {
-                                          let p = 0
-                                          if (typeof prev === 'object') {
-                                            p = prev.pieWeight
-                                          }
-                                          if (typeof prev === 'number') {
-                                            p = prev
-                                          }
-                                          return parseInt(p) + parseInt(curr.pieWeight)
-                                        })
-                                      : pie.positions[0].pieWeight
-                                  : ''
-                              }
-                            </td>
-                            <td>
-                              <input
-                                data-pie={pie.name}
-                                onChange={e => pie.monthlyContribution = parseFloat(e.target.value)}
-                              />
-                            </td>
-                          </tr>
+                          <>
+                            <tr key={pie.name}>
+                              <td>{pie.name}</td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <input
+                                  placeholder='£ / month, blank = 0'
+                                  data-pie={pie.name}
+                                  onChange={e => pie.monthlyContribution = parseFloat(e.target.value)}
+                                />
+                              </td>
+                            </tr>
+                          </>
                         )
                       })
                     }

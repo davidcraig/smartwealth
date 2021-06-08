@@ -1,5 +1,16 @@
 # SmartWealth Changelog
 
+## [Unreleased]
+
+### Changed
+
+ - Improve forecasting pie controls:
+   * remove # and weight columns.
+   * Reduce overall size.
+   * Move input onto new line and make 100% width.
+   * Increase text size of input.
+   * Adjust input border.
+
 ## [2021-06-08]
 
 ### Fixed
