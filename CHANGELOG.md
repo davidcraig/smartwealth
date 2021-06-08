@@ -6,6 +6,8 @@
 
  - Adjust app styles:
    * Change heading colour.
+   * Add box-shadow to cards.
+   * Update forecasting button.
  - Chart improvements:
    * Set chart height on portfolio by sector pies.
    * Change chart title for dividend and share forecasts.

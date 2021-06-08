@@ -231,7 +231,7 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
                   </tbody>
                 </table>
 
-                <button onClick={updatePieMonthlyContributions}>Forecast</button>
+                <button className='button is-success' onClick={updatePieMonthlyContributions}>Forecast</button>
               </Card>
               <Card title='Stats'>
                 {
