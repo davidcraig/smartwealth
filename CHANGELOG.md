@@ -2,6 +2,9 @@
 
 ## [Untagged]
 
+### Added
+
+ - Add £5/mo dividend goal.
 ### Changed
 
  - Adjust style of completed goals
