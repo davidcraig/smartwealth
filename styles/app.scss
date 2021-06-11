@@ -36,6 +36,12 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-text);
 }
 
+a {
+  &:hover {
+    color: var(--color-link);
+  }
+}
+
 .navbar-brand a {
   color: var(--color-link) !important;
   font-weight: bold;
