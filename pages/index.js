@@ -73,6 +73,10 @@ function ForecastContent (forecast, forecastLog) {
   return <TabbedContent content={forecastTabs} />
 }
 
+const noPositions = (
+  <p>To add stocks go to the <a href='/holdings'>My Holdings</a> page!</p>
+)
+
 function PortfolioValue ({ positionsHeld, stocks }) {
   // return 100
 
@@ -194,66 +198,65 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
         <div className='content'>
           <Columns>
             <Column class='is-three-quarters'>
-              <Card className='is-compact' title='Forecast'>
-                {forecastOutput}
-              </Card>
-            </Column>
-            <Column class='is-one-quarter'>
-              <Card className='is-compact' title='Forecasting'>
-                <table className='table is-compact pie-forecast-controls'>
-                  <thead>
-                    <tr>
-                      <th>Pie</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {
-                      pies && pies.length > 0 && pies.map(pie => {
-                        return (
-                          <Fragment key={pie.name}>
-                            <tr key={pie.name}>
-                              <td>{pie.name}</td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <input
-                                  placeholder='£ / month, blank = 0'
-                                  data-pie={pie.name}
-                                  onChange={e => pie.monthlyContribution = parseFloat(e.target.value)}
-                                />
-                              </td>
-                            </tr>
-                          </Fragment>
-                        )
-                      })
-                    }
-                  </tbody>
-                </table>
-
-                <button className='button is-success' onClick={updatePieMonthlyContributions}>Forecast</button>
-              </Card>
-              <Card title='Stats'>
+              <Card className={hasPositions ? 'is-compact' : ''} title={hasPositions ? 'Forecast' : 'Welcome'}>
                 {
-                  hasPositions > 0 && (
-                    <>
-                      <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
-                      <p>Portfolio Value: <PortfolioValue positionsHeld={positionsHeld} />
-                      </p>
-                    </>
-                  )
+                  hasPositions
+                    ? forecastOutput
+                    : noPositions
                 }
-                {!hasPositions && (
-                  <p>To add stocks go to the My Holdings tab!</p>
-                )}
-              </Card>
-              <Card title='Diversification'>
-                <h4 className='h4'>Stocks by Sector</h4>
-                <StocksBySector positionsHeld={positionsHeld} stocks={stocks} />
-
-                <h4 className='h4'>Stock Value by Sector</h4>
-                <StockValueBySector positionsHeld={positionsHeld} stocks={stocks} />
               </Card>
             </Column>
+            {
+              hasPositions && (
+                <Column class='is-one-quarter'>
+                  <Card className='is-compact' title='Forecasting'>
+                    <table className='table is-compact pie-forecast-controls'>
+                      <thead>
+                        <tr>
+                          <th>Pie</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          pies && pies.length > 0 && pies.map(pie => {
+                            return (
+                              <Fragment key={pie.name}>
+                                <tr key={pie.name}>
+                                  <td>{pie.name}</td>
+                                </tr>
+                                <tr>
+                                  <td>
+                                    <input
+                                      placeholder='£ / month, blank = 0'
+                                      data-pie={pie.name}
+                                      onChange={e => pie.monthlyContribution = parseFloat(e.target.value)}
+                                    />
+                                  </td>
+                                </tr>
+                              </Fragment>
+                            )
+                          })
+                        }
+                      </tbody>
+                    </table>
+
+                    <button className='button is-success' onClick={updatePieMonthlyContributions}>Forecast</button>
+                  </Card>
+
+                  <Card title='Stats'>
+                    <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
+                    <p>Portfolio Value: <PortfolioValue positionsHeld={positionsHeld} /></p>
+                  </Card>
+                  <Card title='Diversification'>
+                    <h4 className='h4'>Stocks by Sector</h4>
+                    <StocksBySector positionsHeld={positionsHeld} stocks={stocks} />
+
+                    <h4 className='h4'>Stock Value by Sector</h4>
+                    <StockValueBySector positionsHeld={positionsHeld} stocks={stocks} />
+                  </Card>
+                </Column>
+              )
+            }
           </Columns>
         </div>
       </div>
