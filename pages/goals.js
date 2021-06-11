@@ -21,6 +21,7 @@ const defaultGoals = {
     { text: '£1,000,000 Invested', value: 1000000, id: 'inv1000000', complete: false }
   ],
   monthlyDividends: [
+    { text: '£5 / Month', value: 5, id: 'mdiv5', complete: false },
     { text: '£10 / Month', value: 10, id: 'mdiv10', complete: false },
     { text: '£25 / Month', value: 25, id: 'mdiv25', complete: false },
     { text: '£50 / Month', value: 50, id: 'mdiv50', complete: false },
