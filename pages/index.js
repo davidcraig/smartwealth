@@ -123,6 +123,21 @@ function PortfolioValue ({ positionsHeld, stocks }) {
   }))
 }
 
+function nextTwelveMonthsDividends (forecast) {
+  if (!forecast || !forecast.hasOwnProperty('oneYear')) {
+    return 0
+  }
+
+  let total = 0
+  Object.keys(forecast.oneYear.dividendData).forEach(key => {
+    const dividendArr = forecast.oneYear.dividendData[key]
+    dividendArr.forEach(dividend => {
+      total = total + dividend
+    })
+  })
+  return total
+}
+
 export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
   const [forecast, setForecast] = useState([])
   const [pies, setPies] = useState([])
@@ -280,6 +295,7 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
                   <Card title='Stats'>
                     <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
                     <p>Portfolio Value: <PortfolioValue positionsHeld={positionsHeld} /></p>
+                    <p>Dividends forecast over next 12 months: {BaseCurrency(nextTwelveMonthsDividends(forecast))}</p>
                   </Card>
                   <Card title='Diversification'>
                     <h4 className='h4'>Stocks by Sector</h4>

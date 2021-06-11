@@ -4,6 +4,7 @@
 
 ### Added
 
+ - Add stat: Dividends forecast over next 12 months.
  - Add £5/mo dividend goal.
  - Add a howto to the holdings page.
  - Show pie average yield and pie weighted yield on forcasting (index) page.
