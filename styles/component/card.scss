@@ -1,0 +1,27 @@
+.card {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  margin-bottom: 0.8rem;
+  box-shadow: 0 0 8px #212121;
+}
+
+.card.is-compact {
+  & .card-content {
+    padding: 0.2rem;
+
+    .tabs li a {
+      padding: 0.3rem 0.6rem;
+    }
+    .tabs ul {
+      margin: 0;
+    }
+  }
+}
+
+.card-header-title {
+  color: var(--color-text);
+}
+
+.card-header {
+  background-color: var(--color-bg-alt);
+}

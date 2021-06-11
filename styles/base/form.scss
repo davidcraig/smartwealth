@@ -1,0 +1,10 @@
+.select { margin-right: .5em; }
+
+.input, .select select, select option {
+  background: var(--color-bg) !important;
+  color: var(--color-text) !important;
+}
+
+.input::placeholder {
+  color: var(--color-text);
+}

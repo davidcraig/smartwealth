@@ -1,0 +1,10 @@
+.table .svg-inline--fa {
+  --icon-size: 16px;
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+
+.table.is-narrow td, .table.is-narrow th { padding: 0.1em; }
+.table.is-striped tbody tr:not(.is-selected):nth-child(2n) {
+  background-color: var(--color-bg-alt) !important;
+}
