@@ -92,13 +92,13 @@ const calculatePieYields = (pie) => {
   }
 
   const sliceCount = pie.holdings
-  const avgYield = pie
-    .positions
-    .map(p => getPositionDividendYield(p))
-    .reduce((p, n) => { return (p || 0) + (n || 0) / sliceCount })
+  const avgYield = (
+    pie
+      .positions
+      .map(p => getPositionDividendYield(p))
+      .reduce((p, n) => { return (p || 0) + (n || 0) }) / sliceCount
+  )
     .toFixed(2)
-
-  console.log(pie.positions[0])
 
   const weightedYield = pie
     .positions
