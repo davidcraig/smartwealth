@@ -1,7 +1,7 @@
 import GetSectorColour from '../../Functions/GetSectorColour'
 import GetStock from '../../Functions/GetStock'
 import GetPositionValue from '../../Functions/GetPositionValue'
-import Percentage from '../../Functions/Percentage'
+import AsPercentage from '../../Functions/Formatting/AsPercentage'
 import NextHighchart from '../NextHighchart'
 
 export function AsTable ({ positionsHeld, stocks }) {
@@ -19,7 +19,7 @@ export function AsTable ({ positionsHeld, stocks }) {
       <thead>
         <tr>
           <th>Sector</th>
-          <th># Stocks</th>
+          <th>£ of Stocks</th>
           <th>%</th>
         </tr>
       </thead>
@@ -30,7 +30,7 @@ export function AsTable ({ positionsHeld, stocks }) {
               <tr key={s.name}>
                 <td>{s.name}</td>
                 <td>{s.value}</td>
-                <td>{Percentage((s.value / sectorStocksTotal) * 100)}</td>
+                <td>{AsPercentage((s.value / sectorStocksTotal) * 100)}</td>
               </tr>
             )
           })

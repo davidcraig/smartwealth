@@ -8,6 +8,8 @@
 ### Changed
 
  - Adjust style of completed goals
+ - Move Percentage to Formatting/AsPercentage for additional clarity of purpose.
+ - Stocks by Sector pie chart now sorted by slice size.
 
 ## [2021-06-11]
 

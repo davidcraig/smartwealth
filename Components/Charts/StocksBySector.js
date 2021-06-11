@@ -1,6 +1,6 @@
 import GetSectorColour from '../../Functions/GetSectorColour'
 import GetStock from '../../Functions/GetStock'
-import Percentage from '../../Functions/Percentage'
+import AsPercentage from '../../Functions/Formatting/AsPercentage'
 import NextHighchart from '../NextHighchart'
 
 export function AsTable ({ positionsHeld, stocks }) {
@@ -9,9 +9,9 @@ export function AsTable ({ positionsHeld, stocks }) {
   }
   const sectors = StocksBySector({ positionsHeld, stocks })
 
-  const sectorStocksTotal = Object.keys(sectors).map(key => {
-    return sectors[key]
-  }).reduce((prev, curr) => prev + curr)
+  const sectorStocksTotal = sectors.map(sector => {
+    return sector.count
+  }).reduce((prev, curr) => (prev || 0) + (curr || 0))
 
   return (
     <table className='table is-narrow'>
@@ -24,12 +24,12 @@ export function AsTable ({ positionsHeld, stocks }) {
       </thead>
       <tbody>
         {
-          Object.keys(sectors).map(key => {
+          sectors.map(sector => {
             return (
-              <tr key={key}>
-                <td>{key}</td>
-                <td>{sectors[key]}</td>
-                <td>{Percentage((sectors[key] / sectorStocksTotal) * 100)}</td>
+              <tr key={sector.name}>
+                <td>{sector.name}</td>
+                <td>{sector.count}</td>
+                <td>{AsPercentage((sector.count / sectorStocksTotal) * 100)}</td>
               </tr>
             )
           })
@@ -54,12 +54,12 @@ export function AsPie ({ positionsHeld, stocks }) {
         colorByPoint: true
       }
     ]
-    Object.keys(sectors).forEach(key => {
-      const colour = GetSectorColour(key)
+    sectors.forEach(sector => {
+      const colour = GetSectorColour(sector.name)
 
       series[0].data.push({
-        name: key,
-        y: sectors[key],
+        name: sector.name,
+        y: sector.count,
         color: colour
       })
     })
@@ -114,6 +114,7 @@ function StocksBySector ({ positionsHeld, stocks }) {
   }
 
   const sectors = {}
+  const arr = []
 
   positionsHeld.forEach(pos => {
     const stock = GetStock(pos.stock.ticker, stocks)
@@ -132,7 +133,14 @@ function StocksBySector ({ positionsHeld, stocks }) {
     sectors[sector] = sectors[sector] + 1
   })
 
-  return sectors
+  Object.keys(sectors).forEach(key => {
+    const sector = sectors[key]
+    arr.push({ name: key, count: sector })
+  })
+
+  return arr.sort((sA, sB) => {
+    return sA.count < sB.count
+  })
 }
 
 export default AsPie

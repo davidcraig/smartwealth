@@ -3,8 +3,8 @@
  * @param {*} number Number to be formatted.
  * @returns string
  */
-export function Percentage (number) {
+export function AsPercentage (number) {
   return number.toFixed(2)
 }
 
-export default Percentage
+export default AsPercentage
