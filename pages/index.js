@@ -14,7 +14,7 @@ function ForecastContent (forecast, forecastLog) {
   if (typeof forecast === 'undefined') { return }
 
   function forTimeframe (time, forecast, filteredLog) {
-    const showLog = true
+    const showLog = false
 
     return (
       <>
