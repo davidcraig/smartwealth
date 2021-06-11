@@ -11,9 +11,8 @@ import StockValueBySector from '../Components/Charts/StockValueBySector'
 import BaseCurrency from '../Functions/Formatting/BaseCurrency'
 
 function ForecastContent (forecast, forecastLog) {
-  if (typeof forecast === 'undefined') {
-    return
-  }
+  if (typeof forecast === 'undefined') { return }
+
   function forTimeframe (time, forecast, filteredLog) {
     const showLog = true
 
