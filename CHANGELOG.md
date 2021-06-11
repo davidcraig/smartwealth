@@ -16,6 +16,10 @@
  - Move Percentage to Formatting/AsPercentage for additional clarity of purpose.
  - Stocks by Sector pie chart now sorted by slice size.
 
+### Fixed
+
+ - Fix container-fluid which should be container is-fluid on holdings page.
+
 ## [2021-06-11]
 
 ### Added

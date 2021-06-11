@@ -200,7 +200,7 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
 
       <Navbar />
 
-      <main className='container-fluid'>
+      <main className='container is-fluid'>
         <div className='content'>
           <h1 className='h1'>My Holdings</h1>
           <Columns>
