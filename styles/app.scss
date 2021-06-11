@@ -90,3 +90,21 @@ button, input {
 @import './component/card.scss';
 @import './component/navbar.scss';
 @import './highcharts.scss';
+
+.tabs {
+  ul {
+    border-bottom: none;
+  }
+
+  li.is-active {
+    font-weight: 600;
+  }
+
+  li:not(.is-active) a {
+    color: var(--color-ok);
+
+    &:hover {
+      color: var(--color-link) !important;
+    }
+  }
+}

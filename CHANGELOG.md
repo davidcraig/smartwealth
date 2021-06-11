@@ -8,6 +8,7 @@
  - Add a howto to the holdings page.
 ### Changed
 
+ - Improve visuals of the tabs.
  - Hide unusable sections when no positions are held.
  - Set hyperlink hover colour.
  - Hide forecast tools and sidebar on index route when no positions are held.
