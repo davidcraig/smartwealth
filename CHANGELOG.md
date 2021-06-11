@@ -2,6 +2,13 @@
 
 ## [Untagged]
 
+### Added
+
+ - Add a goals page for tracking progress in the following areas:
+   * Amount Invested / Portfolio Size
+   * Monthly Dividends
+   * Emergency Fund
+
 ### Changed
 
  - Adjust app styles:
@@ -18,6 +25,8 @@
    * Move input onto new line and make 100% width.
    * Increase text size of input.
    * Adjust input border.
+ - Performance improvements:
+   * Only send forecast data once on completion.
 
 ## [2021-06-08]
 
