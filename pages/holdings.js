@@ -276,7 +276,7 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
               {
                 !hasPositions && (
                   <Card title='How to add your holdings'>
-                    <p>To add your positions use the stock search on the left to search for a stock.</p>
+                    <p>To add your positions use the stock search on the left to search for a stock (not all positions might be available but the most common ones are, if you would like to request a stock you can do so on our discord).</p>
                     <p>You can search by name eg "Coca-Cola" or by ticker symbol eg "KO" you will see the results appear as you type.</p>
                     <p>To add a stock click the plus symbol, after which this part of the screen will change.</p>
                     <p>To add a stock to a pie simply enter a name in the pie text box, then a weighting in the box after.</p>
