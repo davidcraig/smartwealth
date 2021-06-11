@@ -72,6 +72,8 @@ function PieStats ({ positionsHeld }) {
 export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
   const [searchFilteredStocks, setSearchFilteredStocks] = useState([])
 
+  const hasPositions = positionsHeld && positionsHeld.length > 0
+
   /**
    * Adds ability to search stocks.
    * @param {*} e Search input event
@@ -203,68 +205,85 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
           <h1 className='h1'>My Holdings</h1>
           <Columns>
             <Column class='is-three-quarters'>
-              <Card title='Positions' className='positions-table-card'>
-                <table className='table is-striped is-narrow holdings-table'>
-                  <thead>
-                    <tr>
-                      <th>Ticker</th>
-                      <th onClick={sortByStockName}>Stock</th>
-                      <th colSpan={2}>Quantity</th>
-                      <th onClick={sortByPieName}>Pie</th>
-                      <th>Pie Weight</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {positionsHeld && positionsHeld.length > 0 && positionsHeld.map((p, idx) => {
-                      return p && <tr key={`${p.stock.ticker}${p.stock.name}`}>
-                        <td>{p.stock.ticker}</td>
-                        <td>{p.stock.name}</td>
-                        <td>{p.quantity}</td>
-                        <td>
-                          <input
-                            type='text'
-                            placeholder='Quantity owned'
-                            value={p.quantity}
-                            onChange={updatePositionQuantity.bind(p)}
-                            pattern='[0-9.]+'
-                            data-ticker={p.stock.ticker}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type='text'
-                            placeholder='Pie Name? or blank if individual'
-                            value={p.pie}
-                            onChange={updatePositionPieName.bind(p)}
-                            data-ticker={p.stock.ticker}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type='text'
-                            placeholder='Pie Weight (%)'
-                            value={p.pieWeight}
-                            onChange={updatePositionPieWeight.bind(p)}
-                            pattern='[0-9.]+'
-                            data-ticker={p.stock.ticker}
-                          />
-                        </td>
-                        <td>
-                          <a onClick={() => {
-                            let x = confirm('Are you sure')
-                            if (x) {
-                              deletePositionByIndex(idx)
-                            }
-                          }}
-                          >
-                            x
-                          </a>
-                        </td>
-                      </tr>
-                    })}
-                  </tbody>
-                </table>
-              </Card>
+              {
+                hasPositions && (
+                  <Card title='Positions' className='positions-table-card'>
+                    <table className='table is-striped is-narrow holdings-table'>
+                      <thead>
+                        <tr>
+                          <th>Ticker</th>
+                          <th onClick={sortByStockName}>Stock</th>
+                          <th colSpan={2}>Quantity</th>
+                          <th onClick={sortByPieName}>Pie</th>
+                          <th>Pie Weight</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {positionsHeld && positionsHeld.length > 0 && positionsHeld.map((p, idx) => {
+                          return p && (
+                            <tr key={`${p.stock.ticker}${p.stock.name}`}>
+                              <td>{p.stock.ticker}</td>
+                              <td>{p.stock.name}</td>
+                              <td>{p.quantity}</td>
+                              <td>
+                                <input
+                                  type='text'
+                                  placeholder='Quantity owned'
+                                  value={p.quantity}
+                                  onChange={updatePositionQuantity.bind(p)}
+                                  pattern='[0-9.]+'
+                                  data-ticker={p.stock.ticker}
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type='text'
+                                  placeholder='Pie Name? or blank if individual'
+                                  value={p.pie}
+                                  onChange={updatePositionPieName.bind(p)}
+                                  data-ticker={p.stock.ticker}
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type='text'
+                                  placeholder='Pie Weight (%)'
+                                  value={p.pieWeight}
+                                  onChange={updatePositionPieWeight.bind(p)}
+                                  pattern='[0-9.]+'
+                                  data-ticker={p.stock.ticker}
+                                />
+                              </td>
+                              <td>
+                                <a onClick={() => {
+                                  let x = confirm('Are you sure')
+                                  if (x) {
+                                    deletePositionByIndex(idx)
+                                  }
+                                }}
+                                >
+                                  x
+                                </a>
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </Card>
+                )
+              }
+              {
+                !hasPositions && (
+                  <Card title='How to add your holdings'>
+                    <p>To add your positions use the stock search on the left to search for a stock.</p>
+                    <p>You can search by name eg "Coca-Cola" or by ticker symbol eg "KO" you will see the results appear as you type.</p>
+                    <p>To add a stock click the plus symbol, after which this part of the screen will change.</p>
+                    <p>To add a stock to a pie simply enter a name in the pie text box, then a weighting in the box after.</p>
+                    <p>To remove a stock you can click the x button to the right of the stock table for that row.</p>
+                  </Card>
+                )
+              }
             </Column>
             <Column class='is-one-quarter'>
               <Card title='Stock Search'>
@@ -281,13 +300,19 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                 </ul>
               </Card>
 
-              <Card title='Actions'>
-                <button className='button is-danger' onClick={resetPies}>Reset Pies</button>
-              </Card>
+              {
+                hasPositions && (
+                  <>
+                    <Card title='Actions'>
+                      <button className='button is-danger' onClick={resetPies}>Reset Pies</button>
+                    </Card>
 
-              <Card title='Pies'>
-                <PieStats positionsHeld={positionsHeld} />
-              </Card>
+                    <Card title='Pies'>
+                      <PieStats positionsHeld={positionsHeld} />
+                    </Card>
+                  </>
+                )
+              }
             </Column>
           </Columns>
         </div>
