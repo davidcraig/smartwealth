@@ -1,5 +1,11 @@
 # SmartWealth Changelog
 
+## [Untagged]
+
+### Changed
+
+ - Adjust style of completed goals
+
 ## [2021-06-11]
 
 ### Added

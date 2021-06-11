@@ -67,6 +67,12 @@ function toggleGoalComplete (goals, key, goal, setGoals) {
   saveGoals(goals, setGoals)
 }
 
+const completedGoalStyle = {
+  color: 'limegreen',
+  fontStyle: 'italic',
+  padding: '0.2em 0.75em'
+}
+
 function renderGoals (goals, key, title, setGoals) {
   if (!goals || !goals[key] || goals[key].length < 1) {
     return null
@@ -79,11 +85,21 @@ function renderGoals (goals, key, title, setGoals) {
           <tbody>
             {goals[key].map(goal => {
               return (
-                <tr key={goal.id} style={goal.complete ? {
-                  
-                } : {}}>
-                  <td>{goal.text}</td>
-                  <td>
+                <tr key={goal.id}>
+                  <td
+                    style={
+                      goal.complete
+                        ? completedGoalStyle
+                        : {}
+                    }
+                  >{goal.text}</td>
+                  <td
+                    style={
+                      goal.complete
+                        ? completedGoalStyle
+                        : {}
+                    }
+                  >
                     <input
                       type='checkbox'
                       defaultChecked={goal.complete}
