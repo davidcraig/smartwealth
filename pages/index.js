@@ -77,6 +77,38 @@ const noPositions = (
   <p>To add stocks go to the <a href='/holdings'>My Holdings</a> page!</p>
 )
 
+const calculatePieYields = (pie) => {
+  const parsePercent = (v) => v.replace('%', '')
+  const getPositionDividendYield = (pos) => {
+    if (pos.stock.hasOwnProperty('dividend_yield')) {
+      return parseFloat(parsePercent(pos.stock.dividend_yield))
+    }
+
+    if (pos.stock.hasOwnProperty('dividendYield')) {
+      return parseFloat(parsePercent(pos.stock.dividendYield))
+    }
+
+    return 0
+  }
+
+  const sliceCount = pie.holdings
+  const avgYield = pie
+    .positions
+    .map(p => getPositionDividendYield(p))
+    .reduce((p, n) => { return (p || 0) + (n || 0) / sliceCount })
+    .toFixed(2)
+
+  console.log(pie.positions[0])
+
+  const weightedYield = pie
+    .positions
+    .map(p => { return getPositionDividendYield(p) * (p.pieWeight / 100) })
+    .reduce((p, n) => { return (p || 0) + (n || 0) })
+    .toFixed(2)
+
+  return [avgYield, weightedYield]
+}
+
 function PortfolioValue ({ positionsHeld, stocks }) {
   // return 100
 
@@ -219,10 +251,12 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
                       <tbody>
                         {
                           pies && pies.length > 0 && pies.map(pie => {
+                            const [pieAvg, pieYield] = calculatePieYields(pie)
+
                             return (
                               <Fragment key={pie.name}>
                                 <tr key={pie.name}>
-                                  <td>{pie.name}</td>
+                                  <td>{pie.name} <span style={{ float: 'right' }}>avg.yld: {pieAvg} pie.yld: {pieYield}</span></td>
                                 </tr>
                                 <tr>
                                   <td>
