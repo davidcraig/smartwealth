@@ -524,9 +524,9 @@ function handlePerformForecast (event) {
     // Perform the forecast
     [positions, pies, forecastChartData, logEntries] = performMonthForecast(thisMonth, currPeriod, year, positions, forecastChartData, logEntries, pies, pieContributions)
     switch (currPeriod) {
-      case 11:
-      case 59:
-      case 119:
+      // case 11:
+      // case 59:
+      // case 119:
       case 359:
         console.log('sending data for period', currPeriod)
         self.postMessage({
