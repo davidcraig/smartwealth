@@ -4,19 +4,29 @@
 
 ### Added
 
- - Add stat: Dividends forecast over next 12 months.
- - Add £5/mo dividend goal.
  - Add a howto to the holdings page.
- - Show pie average yield and pie weighted yield on forcasting (index) page.
+ - [Goals]
+   * Add £5/mo dividend goal.
+ - [Dashboard]
+   * Add stat: Dividends forecast over next 12 months.
+   * Show pie average yield and pie weighted yield on forcasting (index) page.
+
 ### Changed
 
- - Improve visuals of the tabs.
- - Hide unusable sections when no positions are held.
- - Set hyperlink hover colour.
  - Hide forecast tools and sidebar on index route when no positions are held.
  - Adjust style of completed goals.
  - Move Percentage to Formatting/AsPercentage for additional clarity of purpose.
- - Stocks by Sector pie chart now sorted by slice size.
+ - [Dashboard]
+   * Improve visuals of the tabs.
+   * Stocks by Sector pie chart now sorted by slice size.
+   * Increase size of diversification pie charts.
+   * Adjust border colour of diversification pie charts.
+ - [Holdings]
+   * Merge pie weight and actions column as there is only one action currently.
+ - [Multiple]
+   * Hide unusable sections when no positions are held.
+ - [Global]
+   * Set hyperlink hover colour.
 
 ### Fixed
 

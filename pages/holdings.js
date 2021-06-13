@@ -215,7 +215,7 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                           <th onClick={sortByStockName}>Stock</th>
                           <th colSpan={2}>Quantity</th>
                           <th onClick={sortByPieName}>Pie</th>
-                          <th>Pie Weight</th>
+                          <th colSpan={2}>Pie Weight</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -233,6 +233,7 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                                   onChange={updatePositionQuantity.bind(p)}
                                   pattern='[0-9.]+'
                                   data-ticker={p.stock.ticker}
+                                  style={{ maxWidth: '9em' }}
                                 />
                               </td>
                               <td>
@@ -252,6 +253,7 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                                   onChange={updatePositionPieWeight.bind(p)}
                                   pattern='[0-9.]+'
                                   data-ticker={p.stock.ticker}
+                                  style={{ maxWidth: '3em' }}
                                 />
                               </td>
                               <td>

@@ -69,7 +69,7 @@ export function AsPie ({ positionsHeld, stocks }) {
       chart: {
         styledMode: false,
         type: 'pie',
-        height: '200px'
+        height: '225px'
       },
       title: {
         style: {
@@ -88,6 +88,7 @@ export function AsPie ({ positionsHeld, stocks }) {
       plotOptions: {
         pie: {
           allowPointSelect: true,
+          borderColor: '#383838',
           cursor: 'pointer',
           dataLabels: {
             enabled: false
