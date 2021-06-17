@@ -46,6 +46,10 @@ a {
   }
 }
 
+a.navbar-item:hover {
+  background: var(--color-bg-alt);
+}
+
 .content table thead th { color: var(--color-text); }
 .content table tbody td { border: none; }
 

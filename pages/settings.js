@@ -17,7 +17,8 @@ function Settings ({ preferences, setPreferences }) {
     { value: 'original', name: 'Original' },
     { value: 'trading212', name: 'Trading 212' },
     { value: 'light', name: 'Light' },
-    { value: 'darkmode', name: 'Dark Mode' }
+    { value: 'darkmode', name: 'Dark Mode' },
+    { value: 'maroon', name: 'Maroon' }
   ]
 
   return (
@@ -66,12 +67,14 @@ function Settings ({ preferences, setPreferences }) {
                   Generic Input
                 </label>
                 <input type='textbox' />
-                <TabbedContent content={
-                  [
-                    { title: 'Test Tab 1', content: <p>Test content 1</p> },
-                    { title: 'Test Tab 2', content: <p>Test content 2</p> }
-                  ]
-                } />
+                <TabbedContent
+                  content={
+                    [
+                      { title: 'Test Tab 1', content: <p>Test content 1</p> },
+                      { title: 'Test Tab 2', content: <p>Test content 2</p> }
+                    ]
+                  }
+                />
               </Card>
             </Column>
           </Columns>

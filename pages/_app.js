@@ -6,6 +6,7 @@ import trading212theme from '../Themes/trading212'
 import originalTheme from '../Themes/original'
 import lightTheme from '../Themes/light'
 import darkTheme from '../Themes/darkmode'
+import maroonTheme from '../Themes/maroon'
 
 function loadTheme (styles) {
   const root = document.querySelector(':root')
@@ -26,6 +27,9 @@ function handlePreferences (preferences) {
           break
         case 'darkmode':
           loadTheme(darkTheme)
+          break
+        case 'maroon':
+          loadTheme(maroonTheme)
           break
         case 'original':
         default:
