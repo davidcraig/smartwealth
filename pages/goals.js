@@ -72,7 +72,7 @@ function toggleGoalComplete (goals, key, goal, setGoals) {
 const completedGoalStyle = {
   color: 'limegreen',
   fontStyle: 'italic',
-  padding: '0.2em 0.75em'
+  padding: '0 0.75em'
 }
 
 function renderGoals (goals, key, title, setGoals) {
