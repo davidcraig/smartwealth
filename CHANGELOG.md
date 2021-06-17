@@ -9,6 +9,7 @@
    * Trading 212
    * Light
    * Dark Mode
+   * Maroon
 
 ## [2021-06-17]
 

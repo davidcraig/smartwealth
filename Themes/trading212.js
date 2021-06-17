@@ -1,3 +1,5 @@
+import ratingColours from './base/ratingColours'
+
 const link = '#29bb15'
 
 const styles = [
@@ -8,7 +10,8 @@ const styles = [
   { var: '--color-border', val: '#494e5c' },
   { var: '--color-heading', val: '#e0e8ff' },
   { var: '--color-button', val: '#00a7e1' },
-  { var: '--color-link', val: link }
+  { var: '--color-link', val: link },
+  ...ratingColours
 ]
 
 export default styles

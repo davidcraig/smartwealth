@@ -1,3 +1,5 @@
+import ratingColours from './base/ratingColours'
+
 const bgAlt = '#292929'
 const tertiary = '#157ebb'
 const black = '#000'
@@ -12,7 +14,8 @@ const styles = [
   { var: '--color-border', val: black },
   { var: '--color-heading', val: tertiary },
   { var: '--color-button', val: tertiary },
-  { var: '--color-link', val: link }
+  { var: '--color-link', val: link },
+  ...ratingColours
 ]
 
 export default styles

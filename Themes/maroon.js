@@ -1,3 +1,4 @@
+import ratingColours from './base/ratingColours'
 
 const p = '#390000'
 const s = '#571414'
@@ -13,7 +14,8 @@ const styles = [
   { var: '--color-heading', val: '#ffbaba' },
   { var: '--color-button', val: '#e10054' },
   { var: '--color-link', val: '#bb1525' },
-  { var: '--color-link-alt', val: '#bb2020' }
+  { var: '--color-link-alt', val: '#bb2020' },
+  ...ratingColours
 ]
 
 export default styles

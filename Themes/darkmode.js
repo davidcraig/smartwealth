@@ -1,3 +1,5 @@
+import ratingColours from './base/ratingColours'
+
 const p = '#161616'
 const s = '#222222'
 const txt = '#ececec'
@@ -13,7 +15,8 @@ const styles = [
   { var: '--color-border', val: t },
   { var: '--color-heading', val: h },
   { var: '--color-button', val: t },
-  { var: '--color-link', val: link }
+  { var: '--color-link', val: link },
+  ...ratingColours
 ]
 
 export default styles

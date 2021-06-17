@@ -55,14 +55,14 @@ a.navbar-item:hover {
 
 .monthly { --background-color: var(--color-epic); --hover-color: var(--color-epic-alt); }
 .quarterly { --background-color: var(--color-good); --hover-color: var(--color-good-alt); }
-.annual, .annual_interim, .annually, .bi-annually { --background-color: var(--color-ok); --hover-color: var(--color-ok-alt); }
+.annual, .annualinterim, .annual__interim, .annual_interim, .annually, .bi-annually { --background-color: var(--color-ok); --hover-color: var(--color-ok-alt); }
 .no-dividend { --background-color: var(--color-bad); --hover-color: var(--color-bad-alt); }
-.temporarily_suspended { --background-color: var(--color-worst); --hover-color: var(--color-worst-alt); }
+.temporarily_suspended, .suspended, .irregular { --background-color: var(--color-worst); --hover-color: var(--color-worst-alt); }
 
 .monthly, .quarterly,
-.temporarily_suspended,
-.annual, .annually, .annual_interim, .bi-annually,
-.no-dividend
+.temporarily_suspended, .suspended,
+.annualinterim, .annual__interim, .annual_interim, .annual, .annually, .annual_interim, .bi-annually,
+.no-dividend, .irregular
 {
   background-color: var(--background-color);
   color: var(--color-text);
