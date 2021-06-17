@@ -247,7 +247,7 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
         <div className='content'>
           <Columns>
             <Column class='is-three-quarters'>
-              <Card className={hasPositions ? 'is-compact' : ''} title={hasPositions ? 'Forecast' : 'Welcome'}>
+              <Card className={hasPositions ? 'is-semi-compact' : ''} title={hasPositions ? 'Forecast' : 'Welcome'}>
                 {
                   hasPositions
                     ? forecastOutput

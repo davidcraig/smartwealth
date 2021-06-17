@@ -10,6 +10,7 @@ function SmartWealthNavbar () {
         <Item href='/screener' title='Screener' />
         <Item href='/holdings' title='My Holdings' />
         <Item href='/goals' title='Goals' />
+        <Item href='/settings' title='Settings' />
       </End>
     </Navbar>
   )

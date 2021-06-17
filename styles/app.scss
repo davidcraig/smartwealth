@@ -16,6 +16,8 @@
   --color-bg-alt: #292929;
   --color-link: #29bb15;
   --color-heading: #157ebb;
+  --color-border: #000000;
+  --color-button: #157ebb;
 }
 
 * {
@@ -74,16 +76,22 @@ a {
 
   input {
     width: 100%;
-    border: 1px solid #000;
+    border: 1px solid var(--color-border);
     font-size: 1rem;
   }
 }
 
 button, input {
-  background-color: var(--color-bg-alt);
   color: var(--color-text);
-  border-radius: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0 !important;
 }
+
+button, button.is-success {
+  background-color: var(--color-button) !important;
+}
+
+input { background-color: var(--color-bg-alt); }
 
 @import './base/table.scss';
 @import './base/form.scss';
@@ -107,4 +115,8 @@ button, input {
       color: var(--color-link) !important;
     }
   }
+}
+
+.label {
+  color: var(--color-text);
 }

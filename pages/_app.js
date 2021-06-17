@@ -3,9 +3,53 @@ import React, { useState, useEffect } from 'react'
 import GetStock from '../Functions/GetStock'
 import '../styles/app.scss'
 
+function loadTheme (styles) {
+  const root = document.querySelector(':root')
+  styles.forEach(s => {
+    root.style.setProperty(s.var, s.val)
+  })
+}
+
+function themeTrading212 () {
+  const styles = [
+    { var: '--color-bg', val: '#2e313b' },
+    { var: '--color-bg-alt', val: '#363945' },
+    { var: '--color-border', val: '#494e5c' },
+    { var: '--color-heading', val: '#e0e8ff' },
+    { var: '--color-button', val: '#00a7e1' }
+  ]
+  loadTheme(styles)
+}
+
+function handlePreferences (preferences) {
+  if (Object.keys(preferences).length > 0) {
+    if (preferences.theme) {
+      switch (preferences.theme) {
+        case 'trading212':
+          themeTrading212()
+          break
+        default:
+          break
+      }
+    }
+  } else {
+    themeTrading212()
+  }
+}
+
 function MyApp ({ Component, pageProps }) {
   const [stocks, setStocks] = useState([])
+  const [preferences, setPreferences] = useState([])
   const [positionsHeld, setPositionsHeld] = useState([])
+
+  // Load user preferences if there are any.
+  useEffect(() => {
+    const preferences = JSON.parse(localStorage.getItem('preferences'))
+    if (preferences) {
+      handlePreferences(preferences)
+      setPreferences(preferences)
+    }
+  }, [])
 
   // Load Stocks from SmartWealth public spreadsheet
   useEffect(() => {
@@ -44,6 +88,8 @@ function MyApp ({ Component, pageProps }) {
     }
   }, [])
 
+  useEffect(() => { handlePreferences(preferences) }, [preferences])
+
   // Load any held positions from localStorage.
   useEffect(() => {
     const positions = localStorage.getItem('positions')
@@ -72,6 +118,8 @@ function MyApp ({ Component, pageProps }) {
       stocks={stocks}
       positionsHeld={positionsHeld}
       setPositionsHeld={setPositionsHeld}
+      preferences={preferences}
+      setPreferences={setPreferences}
     />
   )
 }
