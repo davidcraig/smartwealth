@@ -3,10 +3,14 @@ function GetStockColour (stock) {
     case '3M': return '#FF0000'
     case 'A.O. Smith Corporation': return '#007e44'
     case 'AbbVie Inc': return '#071d49'
+    case 'Abbott Laboratories': return '#5bc2e7'
+    case 'AFLAC Inc.': return '#00A7E1'
     case 'AGNC Investment Corp':
     case 'American Capital Agency Corp':
       return '#000'
     case 'Air Products and Chemicals, Inc.': return '#009a49'
+    case 'Albemarle': return '#008576'
+    case 'AllianceBernstein Holding': return '#1e9bd7'
     case 'Altus Midstream Company': return '#243746'
     case 'Altria Group': return '#06c'
     case 'Amcor plc': return '#00395a'
@@ -23,27 +27,43 @@ function GetStockColour (stock) {
     case 'Automatic Data Processing, Inc.': return '#d0271d'
     case 'Aviva': return '#004fb6'
     case 'Bank of Nova Scotia': return '#ed0722'
+    case 'Becton Dickinson & Co': return '#004593'
+    case 'BlackRock Capital Investment Corporation': return '#161616'
     case 'Brookfield Property Partners L.P.':
     case 'Brookfield Renewable Partners L.P.':
       return '#0F3557'
     case 'Brown Forman Inc.': return '#787268'
     case 'Cardinal Health Inc': return '#e41f35'
+    case 'Caterpillar Inc.': return '#ffcd11'
     case 'Chevron Corporation': return '#009DD9'
     case 'Chimera Investment': return '#000'
     case 'Chubb Ltd': return '#e41913'
+    case 'Church & Dwight': return '#ba0c2f'
+    case 'Cincinnati Financial Corporation': return '#004d71'
+    case 'Cintas Corp': return '#002b80'
     case 'Coca-Cola': return '#F70000'
+    case 'Colgate-Palmolive Company': return '#28a4c3'
+    case 'Consolidated Edison, Inc': return '#0078cf'
     case 'Dynex Capital, Inc.': return '#031554'
     case 'Doric Nimrod Air One Limited':
     case 'Doric Nimrod Air Two Limited':
     case 'Doric Nimrod Air Three Limited':
       return '#336699'
+    case 'Dover Corp': return '#004b8d'
+    case 'Ecolab': return '#007ac9'
+    case 'Electronic Arts': return '#FF4747'
+    case 'Emerson Electric Co': return '#004b8d'
     case 'Enbridge':
     case 'Enbridge Inc':
       return '#ffb81c'
     case 'Enterprise Products Partners': return '#002147'
     case 'Essex Property Trust, Inc.': return '#c75109'
+    case 'Extra Space Storage Inc.': return '#91C717'
     case 'Exxon Mobil': return '#fe000c'
     case 'Federal Realty Investment Trust': return '#262626'
+    case 'Franklin Resources, Inc.': return '#005598'
+    case 'General Dynamics': return '#003087'
+    case 'Genuine Parts Company': return '#0054A3'
     case 'Gladstone Capital':
     case 'Gladstone Commercial':
     case 'Gladstone Investment':
@@ -52,6 +72,7 @@ function GetStockColour (stock) {
     case 'Global Net Lease, Inc': return '#0F75BC'
     case 'Grainger W.W. Inc': return '#c8102e'
     case 'Hercules Capital': return '#f66536'
+    case 'Hormel Foods Corp': return '#008841'
     case 'IBM': return '#0062ff'
     case 'Icahn Enterprises': return '#547ba6'
     case 'Illinois Tool Works Inc': return '#8a1538'
@@ -129,7 +150,6 @@ function GetStockColour (stock) {
     case 'West Pharmaceutical': return '#4080b0'
     case 'Xtrackers Russell 2000 UCITS ETF 1C': return '#009da2'
     default:
-      console.log(stock)
       return '#ececec'
   }
 }
