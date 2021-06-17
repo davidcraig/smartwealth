@@ -39,8 +39,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
+  color: var(--color-link);
+
   &:hover {
-    color: var(--color-link);
+    color: var(--color-link-alt, var(--color-link));
   }
 }
 
@@ -114,7 +116,7 @@ input { background-color: var(--color-bg-alt); }
   }
 
   li:not(.is-active) a {
-    color: var(--color-ok);
+    color: var(--color-link);
 
     &:hover {
       color: var(--color-link) !important;

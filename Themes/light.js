@@ -5,7 +5,8 @@ const styles = [
   { var: '--color-text', val: '#232323' },
   { var: '--color-border', val: '#232323' },
   { var: '--color-heading', val: '#157ebb' },
-  { var: '--color-button', val: '#157ebb' }
+  { var: '--color-button', val: '#157ebb' },
+  { var: '--color-link', val: '#8000FF' }
 ]
 
 export default styles
