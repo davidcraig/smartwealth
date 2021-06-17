@@ -1,6 +1,6 @@
 # SmartWealth Changelog
 
-## [Untagged]
+## [2021-06-17]
 
 ### Added
 
