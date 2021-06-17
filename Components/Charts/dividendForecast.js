@@ -10,6 +10,7 @@ const chartOptions = (dividendData, months) => {
   if (months.length === 360) {
     const totalData = {
       name: 'Dividends',
+      color: '#127905',
       data: []
     }
 

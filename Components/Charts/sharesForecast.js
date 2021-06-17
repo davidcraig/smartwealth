@@ -14,6 +14,7 @@ const chartOptions = (shareData, months) => {
   if (months.length === 360) {
     const totalData = {
       name: 'Total Shares',
+      color: '#00758a',
       data: []
     }
 
