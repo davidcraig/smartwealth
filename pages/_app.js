@@ -17,7 +17,7 @@ function themeOriginal () {
     { var: '--color-text', val: '#ececec' },
     { var: '--color-border', val: '#000000' },
     { var: '--color-heading', val: '#157ebb' },
-    { var: '--color-button', val: '#157ebb' },
+    { var: '--color-button', val: '#157ebb' }
   ]
   loadTheme(styles)
 }
