@@ -8,6 +8,7 @@
    * Original
    * Trading 212
    * Light
+   * Dark Mode
 
 ## [2021-06-17]
 
