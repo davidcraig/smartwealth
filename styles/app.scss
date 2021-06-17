@@ -91,6 +91,11 @@ button, button.is-success {
   background-color: var(--color-button) !important;
 }
 
+.select select {
+  border-color: var(--color-border);
+  border-radius: 0 !important;
+}
+
 input { background-color: var(--color-bg-alt); }
 
 @import './base/table.scss';
