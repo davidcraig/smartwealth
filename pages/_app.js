@@ -10,6 +10,18 @@ function loadTheme (styles) {
   })
 }
 
+function themeOriginal () {
+  const styles = [
+    { var: '--color-bg', val: '#383838' },
+    { var: '--color-bg-alt', val: '#292929' },
+    { var: '--color-text', val: '#ececec' },
+    { var: '--color-border', val: '#000000' },
+    { var: '--color-heading', val: '#157ebb' },
+    { var: '--color-button', val: '#157ebb' },
+  ]
+  loadTheme(styles)
+}
+
 function themeTrading212 () {
   const styles = [
     { var: '--color-bg', val: '#2e313b' },
@@ -28,12 +40,14 @@ function handlePreferences (preferences) {
         case 'trading212':
           themeTrading212()
           break
+        case 'original':
         default:
+          themeOriginal()
           break
       }
     }
   } else {
-    themeTrading212()
+    // themeTrading212()
   }
 }
 

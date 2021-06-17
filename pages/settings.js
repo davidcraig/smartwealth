@@ -1,5 +1,5 @@
 /* global localStorage */
-import React, { useEffect } from 'react'
+import React from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
@@ -13,9 +13,8 @@ function setThemePreference (theme, preferences, setPreferences) {
 }
 
 function Settings ({ preferences, setPreferences }) {
-  const defaultTheme = 'Trading 212'
   const themes = [
-    { value: 0, name: `Default (${defaultTheme})` },
+    { value: 'original', name: 'Original' },
     { value: 'trading212', name: 'Trading 212' }
   ]
 
@@ -38,7 +37,7 @@ function Settings ({ preferences, setPreferences }) {
                 </label>
                 <div className='select'>
                   <select
-                    value={preferences.theme ?? 0}
+                    value={preferences.theme ?? 'original'}
                     onChange={(e) => {
                       setThemePreference(e.target.value, preferences, setPreferences)
                     }}
@@ -48,7 +47,6 @@ function Settings ({ preferences, setPreferences }) {
                         <option
                           key={t.name}
                           value={t.value}
-                          // selected={t.value === preferences.theme}
                         >
                           {t.name}
                         </option>
