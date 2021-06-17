@@ -21,6 +21,7 @@
    * Stocks by Sector pie chart now sorted by slice size.
    * Increase size of diversification pie charts.
    * Adjust border colour of diversification pie charts.
+   * Simplify 30 year charts by showing only amounts instead of broken down by company (Performance Improvement).
  - [Holdings]
    * Merge pie weight and actions column as there is only one action currently.
  - [Multiple]

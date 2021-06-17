@@ -1,5 +1,6 @@
 import React from 'react'
 import NextHighchart from '../NextHighchart'
+import GetStockColour from '../../Functions/GetStockColour'
 
 // const themeColour1 = '#2e313b'
 const themeColour2 = '#494e5c'
@@ -9,13 +10,30 @@ const themeColour2 = '#494e5c'
 const chartOptions = (shareData, months) => {
   // We need to create dividendData
   const series = []
-  Object.keys(shareData).forEach(company => {
-    series.push({
-      name: company,
-      data: shareData[company],
-      borderWidth: 0
+
+  if (months.length === 360) {
+    const totalData = {
+      name: 'Total Shares',
+      data: []
+    }
+
+    Object.keys(shareData).forEach(company => {
+      for (let i = 0; i < 360; i++) {
+        totalData.data[i] = (totalData.data[i] || 0) + shareData[company][i]
+      }
     })
-  })
+
+    series.push(totalData)
+  } else {
+    Object.keys(shareData).forEach(company => {
+      series.push({
+        name: company,
+        color: GetStockColour(company),
+        data: shareData[company],
+        borderWidth: 0
+      })
+    })
+  }
 
   // Final chart data
   return {
@@ -55,14 +73,15 @@ const chartOptions = (shareData, months) => {
     },
     plotOptions: {
       column: {
-        stacking: 'normal',
         allowPointSelect: true,
+        borderWidth: 0,
         colors: undefined,
         cursor: 'pointer',
         dataLabels: {
           enabled: false
         },
-        showInLegend: true
+        showInLegend: true,
+        stacking: 'normal'
       }
     },
     series
