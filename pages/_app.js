@@ -1,3 +1,4 @@
+/* global localStorage, Worker */
 import React, { useState, useEffect } from 'react'
 import GetStock from '../Functions/GetStock'
 import '../styles/app.scss'
@@ -10,7 +11,7 @@ function MyApp ({ Component, pageProps }) {
   useEffect(() => {
     const spreadsheetUrl = 'https://spreadsheets.google.com/feeds/cells/1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0/1/public/values?alt=json'
     const SpreadsheetWorker = new Worker('/js/spreadsheet.js')
-    let store = localStorage
+    const store = localStorage
 
     const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
 

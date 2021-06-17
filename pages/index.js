@@ -1,3 +1,4 @@
+/* global Worker */
 import React, { useState, useEffect, Fragment } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
@@ -9,6 +10,7 @@ import SharesForecast from '../Components/Charts/sharesForecast'
 import StocksBySector from '../Components/Charts/StocksBySector'
 import StockValueBySector from '../Components/Charts/StockValueBySector'
 import BaseCurrency from '../Functions/Formatting/BaseCurrency'
+import { hasProp } from '../Functions/Helpers'
 
 function ForecastContent (forecast, forecastLog) {
   if (typeof forecast === 'undefined') { return }
@@ -80,11 +82,11 @@ const noPositions = (
 const calculatePieYields = (pie) => {
   const parsePercent = (v) => v.replace('%', '')
   const getPositionDividendYield = (pos) => {
-    if (pos.stock.hasOwnProperty('dividend_yield')) {
+    if (hasProp(pos.stock, 'dividend_yield')) {
       return parseFloat(parsePercent(pos.stock.dividend_yield))
     }
 
-    if (pos.stock.hasOwnProperty('dividendYield')) {
+    if (hasProp(pos.stock, 'dividendYield')) {
       return parseFloat(parsePercent(pos.stock.dividendYield))
     }
 
@@ -124,7 +126,7 @@ function PortfolioValue ({ positionsHeld, stocks }) {
 }
 
 function nextTwelveMonthsDividends (forecast) {
-  if (!forecast || !forecast.hasOwnProperty('oneYear')) {
+  if (!forecast || !hasProp(forecast, 'oneYear')) {
     return 0
   }
 
@@ -141,7 +143,7 @@ function nextTwelveMonthsDividends (forecast) {
 export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
   const [forecast, setForecast] = useState([])
   const [pies, setPies] = useState([])
-  const [pieContributions, setPieContributions] = useState([])
+  const [pieContributions, setPieContributions] = useState([]) // eslint-disable-line no-unused-vars
   const [forecastLog, setForecastLog] = useState([])
   const [isForecasting, setIsForecasting] = useState(false)
 
@@ -278,7 +280,9 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
                                     <input
                                       placeholder='£ / month, blank = 0'
                                       data-pie={pie.name}
-                                      onChange={e => pie.monthlyContribution = parseFloat(e.target.value)}
+                                      onChange={(e) => {
+                                        pie.monthlyContribution = parseFloat(e.target.value)
+                                      }}
                                     />
                                   </td>
                                 </tr>

@@ -1,3 +1,4 @@
+/* global localStorage */
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
@@ -93,7 +94,9 @@ function renderGoals (goals, key, title, setGoals) {
                         ? completedGoalStyle
                         : {}
                     }
-                  >{goal.text}</td>
+                  >
+                    {goal.text}
+                  </td>
                   <td
                     style={
                       goal.complete

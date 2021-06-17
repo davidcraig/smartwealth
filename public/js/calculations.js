@@ -1,3 +1,4 @@
+/* global self */
 'use strict'
 // Handles: { type: 'perform-forecast', positions }
 // Messages out: forecast-log-entry, forecast-results
@@ -9,8 +10,12 @@ const cache = {
 
 function uuidv4 () {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
+    /* eslint-disable */
+    const r = Math.random() * 16 | 0, v = c === 'x'
+      ? r
+      : (r & 0x3 | 0x8)
     return v.toString(16)
+    /* eslint-enable */
   })
 }
 
@@ -144,8 +149,7 @@ function getDividendMonths (stock) {
       .split(',')
       .map(n => parseInt(n))
     return cacheResult(stock, months)
-  }
-  catch (err) {
+  } catch (err) {
     console.error('Error in getDividendMonths', err)
     return []
   }
@@ -360,7 +364,6 @@ function performMonthForecast (jsMonth, currentPeriod, year, positions, forecast
     const pie = pies[key]
     const pieWeights = pie.positions.map((p) => parseFloat(p.pieWeight))
     const minOrderValue = 1.00 / (Math.min(...pieWeights) / 100)
-    const pieName = pie.name
 
     if (pie.dripValue > minOrderValue) {
       pie.positions = pie.positions.map((piePosition) => {
@@ -498,7 +501,7 @@ function handlePerformForecast (event) {
   // Create the empty arrays for share and dividend charts
   positions.forEach((position) => {
     const stock = position.stock
-    Object.keys(forecastChartData).map(key => {
+    Object.keys(forecastChartData).forEach(key => {
       const time = forecastChartData[key]
       time.dividendData[stock.name] = []
       time.shareData[stock.name] = []

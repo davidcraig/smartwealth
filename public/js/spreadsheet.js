@@ -1,3 +1,4 @@
+/* global self, fetch */
 /* This is a Web Worker to fetch and parse a google sheets public spreadshet into a json object */
 
 // const spreadsheetUrl = 'https://spreadsheets.google.com/feeds/cells/1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0/1/public/values?alt=json'
@@ -5,7 +6,7 @@
 console.debug('Spreadsheet Worker Initialised')
 
 /* Takes a string and cleans it up for use as a jskey */
-function slug(string) {
+function slug (string) {
   return string
     .replace(/ /g, '_')
     .replace(/\+/g, '')
@@ -18,13 +19,13 @@ function slug(string) {
     .toLowerCase()
 }
 
-function buildObjectArray(headers, data) {
+function buildObjectArray (headers, data) {
   const output = []
-  Object.keys(data).map(itemIndex => {
-    let object = {}
+  Object.keys(data).forEach(itemIndex => {
+    const object = {}
 
-    Object.keys(headers).map(index => {
-      let header = headers[index]
+    Object.keys(headers).forEach(index => {
+      const header = headers[index]
       object[header.key] = data[itemIndex][index]
     })
 
@@ -35,40 +36,40 @@ function buildObjectArray(headers, data) {
 }
 
 self.addEventListener(
-  "message",
-  function(e) {
+  'message',
+  function (e) {
     const event = e.data
-    if (event.type = 'parse') {
+    if (event.type === 'parse') {
       fetch(event.url)
-      .then(res => {
-        res.json().then(json => {
-          const data = {}
-          const headers = {}
-          const headerRow = event.headerRow
-          json.feed.entry.forEach(e => {
-            let cell = e["gs$cell"]
-            let row = cell.row
-            let col = cell.col
-            let content = e.content["$t"]
+        .then(res => {
+          res.json().then(json => {
+            const data = {}
+            const headers = {}
+            const headerRow = event.headerRow
+            json.feed.entry.forEach(e => {
+              const cell = e.gs$cell
+              const row = cell.row
+              const col = cell.col
+              const content = e.content.$t
 
-            if (row == headerRow) {
-              headers[col] = { name: content, key: slug(content) }
-            }
-            if (row > headerRow) {
-              if (!data[row]) { data[row] = [] }
-              data[row][col] = content
-            }
-          })
+              if (row === headerRow) {
+                headers[col] = { name: content, key: slug(content) }
+              }
+              if (row > headerRow) {
+                if (!data[row]) { data[row] = [] }
+                data[row][col] = content
+              }
+            })
 
-          const output = buildObjectArray(headers, data)
+            const output = buildObjectArray(headers, data)
 
-          // Send the data back to main thread (react).
-          self.postMessage({
-            type: 'parse-result',
-            data: output
+            // Send the data back to main thread (react).
+            self.postMessage({
+              type: 'parse-result',
+              data: output
+            })
           })
         })
-      })
     }
   },
   false

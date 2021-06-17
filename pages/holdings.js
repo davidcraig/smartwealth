@@ -1,3 +1,4 @@
+/* global localStorage, confirm */
 import Head from 'next/head'
 import React, { useState } from 'react'
 import Navbar from '../Components/Navbar'
@@ -92,7 +93,7 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
 
   function addStock () {
     const stock = this
-    if (positionsHeld.find(p => p.name == stock.name)) {
+    if (positionsHeld.find(p => p.name === stock.name)) {
       return
     }
     const positions = [...positionsHeld, {
@@ -171,7 +172,7 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
 
   function sortByStockName () {
     const positions = positionsHeld.sort((a, b) => {
-      return a.stock.name.localeCompare(b.stock.name);
+      return a.stock.name.localeCompare(b.stock.name)
     }).filter(Boolean)
 
     localStorage.setItem('positions', JSON.stringify(positions))
@@ -258,7 +259,7 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                               </td>
                               <td>
                                 <a onClick={() => {
-                                  let x = confirm('Are you sure')
+                                  const x = confirm('Are you sure')
                                   if (x) {
                                     deletePositionByIndex(idx)
                                   }
