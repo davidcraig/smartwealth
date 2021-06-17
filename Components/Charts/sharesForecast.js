@@ -50,7 +50,7 @@ const chartOptions = (shareData, months) => {
     },
     tooltip: {
       backgroundColor: '#111111',
-      pointFormat: "{series.name}<br/>{point.y:.6f}"
+      pointFormat: "{series.name}<br/>{point.y:.6f}" // eslint-disable-line
     },
     accessibility: {
       point: {
