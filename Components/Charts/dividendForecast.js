@@ -4,10 +4,17 @@ import GetStockColour from '../../Functions/GetStockColour'
 
 const themeColour2 = '#494e5c'
 
+const is30Year = (months) => {
+  return months.length === 360
+}
+
 const chartOptions = (dividendData, months) => {
   const series = []
   // We need to create dividendData
-  if (months.length === 360) {
+  let tickInterval = 100
+  if (is30Year(months)) { tickInterval = 500 }
+
+  if (is30Year(months)) {
     const totalData = {
       name: 'Dividends',
       color: '#127905',
@@ -36,7 +43,8 @@ const chartOptions = (dividendData, months) => {
   // Final chart data
   return {
     chart: {
-      type: 'column'
+      type: 'column',
+      height: 500
     },
     title: {
       text: 'Dividends Forecast',
@@ -57,7 +65,7 @@ const chartOptions = (dividendData, months) => {
       },
       gridLineColor: themeColour2,
       minorGridLineColor: '#2a2d35',
-      tickInterval: 100,
+      tickInterval: tickInterval,
       minorTicks: true,
       title: {
         text: 'Dividends'

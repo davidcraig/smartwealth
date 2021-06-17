@@ -7,9 +7,15 @@ const themeColour2 = '#494e5c'
 // const wowOkColour = '#3292f1'
 // const wowEpicColour = '#c56fff'
 
+const is30Year = (months) => {
+  return months.length === 360
+}
+
 const chartOptions = (shareData, months) => {
   // We need to create dividendData
   const series = []
+  let tickInterval = 100
+  if (is30Year(months)) { tickInterval = 500 }
 
   if (months.length === 360) {
     const totalData = {
@@ -40,7 +46,8 @@ const chartOptions = (shareData, months) => {
   return {
     chart: {
       styledMode: false,
-      type: 'column'
+      type: 'column',
+      height: 350
     },
     title: {
       text: 'Share Quantity Forecast',
@@ -69,8 +76,8 @@ const chartOptions = (shareData, months) => {
       },
       gridLineColor: themeColour2,
       minorGridLineColor: '#2a2d35',
-      tickInterval: 50,
-      minorTicks: true
+      tickInterval: tickInterval,
+      minorTicks: false
     },
     plotOptions: {
       column: {
