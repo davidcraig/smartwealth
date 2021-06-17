@@ -70,7 +70,7 @@ function toggleGoalComplete (goals, key, goal, setGoals) {
 }
 
 const completedGoalStyle = {
-  color: 'limegreen',
+  color: '#18b518',
   fontStyle: 'italic',
   padding: '0 0.75em'
 }
