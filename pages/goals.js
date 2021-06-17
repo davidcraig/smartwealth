@@ -66,7 +66,7 @@ function toggleGoalComplete (goals, key, goal, setGoals) {
     return g
   })
 
-  saveGoals(goals, setGoals)
+  saveGoals({ ...goals }, setGoals)
 }
 
 const completedGoalStyle = {
@@ -76,9 +76,7 @@ const completedGoalStyle = {
 }
 
 function renderGoals (goals, key, title, setGoals) {
-  if (!goals || !goals[key] || goals[key].length < 1) {
-    return null
-  }
+  if (!goals || !goals[key] || goals[key].length < 1) { return null }
 
   return (
     <>
@@ -92,7 +90,7 @@ function renderGoals (goals, key, title, setGoals) {
                     style={
                       goal.complete
                         ? completedGoalStyle
-                        : {}
+                        : null
                     }
                   >
                     {goal.text}
@@ -123,6 +121,8 @@ function renderGoals (goals, key, title, setGoals) {
 }
 
 function Goals () {
+  const [goals, setGoals] = useState({})
+
   useEffect(() => {
     const storedGoals = localStorage.getItem('goals')
 
@@ -133,8 +133,6 @@ function Goals () {
       saveGoals(defaultGoals, setGoals)
     }
   }, [])
-
-  const [goals, setGoals] = useState({})
 
   return (
     <div>
