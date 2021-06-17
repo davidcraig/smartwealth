@@ -47,10 +47,10 @@ self.addEventListener(
             const headers = {}
             const headerRow = event.headerRow
             json.feed.entry.forEach(e => {
-              const cell = e.gs$cell
+              const cell = e["gs$cell"] // eslint-disable-line dot-notation, quotes
               const row = cell.row
               const col = cell.col
-              const content = e.content.$t
+              const content = e.content["$t"] // eslint-disable-line dot-notation, quotes
 
               if (row === headerRow) {
                 headers[col] = { name: content, key: slug(content) }
