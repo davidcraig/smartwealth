@@ -4,9 +4,10 @@
 
 ### Added
 
- - Add ability to choose theme, currently 2 are available:
+ - Add ability to choose theme, currently available:
    * Original
    * Trading 212
+   * Light
 
 ## [2021-06-17]
 
