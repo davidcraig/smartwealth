@@ -1,5 +1,7 @@
 # SmartWealth Changelog
 
+## [Unreleased]
+
 ## [2021-06-17]
 
 ### Added
