@@ -15,7 +15,8 @@ function setThemePreference (theme, preferences, setPreferences) {
 function Settings ({ preferences, setPreferences }) {
   const themes = [
     { value: 'original', name: 'Original' },
-    { value: 'trading212', name: 'Trading 212' }
+    { value: 'trading212', name: 'Trading 212' },
+    { value: 'light', name: 'Light' }
   ]
 
   return (

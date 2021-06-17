@@ -6,5 +6,5 @@
 
 .table.is-narrow td, .table.is-narrow th { padding: 0.1em; }
 .table.is-striped tbody tr:not(.is-selected):nth-child(2n) {
-  background-color: var(--color-bg-alt) !important;
+  background-color: var(--color-table-alt, var(--color-bg-alt)) !important;
 }

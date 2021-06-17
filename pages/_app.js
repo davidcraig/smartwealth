@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from 'react'
 import GetStock from '../Functions/GetStock'
 import '../styles/app.scss'
+import trading212theme from '../Themes/trading212'
+import originalTheme from '../Themes/original'
+import lightTheme from '../Themes/light'
 
 function loadTheme (styles) {
   const root = document.querySelector(':root')
@@ -10,39 +13,19 @@ function loadTheme (styles) {
   })
 }
 
-function themeOriginal () {
-  const styles = [
-    { var: '--color-bg', val: '#383838' },
-    { var: '--color-bg-alt', val: '#292929' },
-    { var: '--color-text', val: '#ececec' },
-    { var: '--color-border', val: '#000000' },
-    { var: '--color-heading', val: '#157ebb' },
-    { var: '--color-button', val: '#157ebb' }
-  ]
-  loadTheme(styles)
-}
-
-function themeTrading212 () {
-  const styles = [
-    { var: '--color-bg', val: '#2e313b' },
-    { var: '--color-bg-alt', val: '#363945' },
-    { var: '--color-border', val: '#494e5c' },
-    { var: '--color-heading', val: '#e0e8ff' },
-    { var: '--color-button', val: '#00a7e1' }
-  ]
-  loadTheme(styles)
-}
-
 function handlePreferences (preferences) {
   if (Object.keys(preferences).length > 0) {
     if (preferences.theme) {
       switch (preferences.theme) {
         case 'trading212':
-          themeTrading212()
+          loadTheme(trading212theme)
+          break
+        case 'light':
+          loadTheme(lightTheme)
           break
         case 'original':
         default:
-          themeOriginal()
+          loadTheme(originalTheme)
           break
       }
     }
