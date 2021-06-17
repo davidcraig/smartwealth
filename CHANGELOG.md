@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Added
+
+ - Add ability to choose theme, currently 2 are available:
+   * Original
+   * Trading 212
+
 ## [2021-06-17]
 
 ### Added
