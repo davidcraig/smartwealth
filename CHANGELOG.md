@@ -10,6 +10,7 @@
    * Light
    * Dark Mode
    * Maroon
+ - Add beta import/export functionality.
 
 ## [2021-06-17]
 
