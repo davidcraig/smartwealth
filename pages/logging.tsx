@@ -72,12 +72,12 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
   const saveLog = (logState: LogState) => {
     switch (logState.type) {
       case 'dividends':
-        localStorage.setItem('dividends', JSON.stringify([...dividends, { month: logState.month, year: logState.year, amount: logState.amount }]))
+        localStorage.setItem('dividends', JSON.stringify([...dividends, { month: logState.month, year: logState.year, amount: parseFloat(logState.amount) }]))
         setDividends([...dividends, { month: logState.month, year: logState.year, amount: logState.amount }])
         resetForm()
         break
       case 'contributions':
-        localStorage.setItem('contributions', JSON.stringify([...contributions, { month: logState.month, year: logState.year, amount: logState.amount }]))
+        localStorage.setItem('contributions', JSON.stringify([...contributions, { month: logState.month, year: logState.year, amount: parseFloat(logState.amount) }]))
         setContributions([...contributions, { month: logState.month, year: logState.year, amount: logState.amount }])
         resetForm()
         break
