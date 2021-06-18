@@ -45,14 +45,14 @@ self.addEventListener(
           res.json().then(json => {
             const data = {}
             const headers = {}
-            const headerRow = event.headerRow
+            const headerRow = event.headerRow // int
             json.feed.entry.forEach(e => {
               const cell = e["gs$cell"] // eslint-disable-line dot-notation, quotes
               const row = cell.row
               const col = cell.col
               const content = e.content["$t"] // eslint-disable-line dot-notation, quotes
 
-              if (row === headerRow) {
+              if (row == headerRow) {
                 headers[col] = { name: content, key: slug(content) }
               }
               if (row > headerRow) {
