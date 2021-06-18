@@ -112,6 +112,23 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                                     <td>{getMonthName(month)} {year}</td>
                                     <td>{data.contributions}</td>
                                     <td>{data.dividends}</td>
+                                    <td><button data-month={month} data-year={year}
+                                      onClick={(e) => {
+                                        const month = parseInt(e.target.dataset.month)
+                                        const year = parseInt(e.target.dataset.year)
+                                        const newDividends = dividends.filter((item) => {
+                                          return !((item.month === month) && (item.year === year))
+                                        })
+                                        const newContributions = contributions.filter((item) => {
+                                          return !((item.month === month) && (item.year === year))
+                                        })
+
+                                        localStorage.setItem('dividends', JSON.stringify(newDividends))
+                                        localStorage.setItem('contributions', JSON.stringify(newContributions))
+                                        setDividends(newDividends)
+                                        setContributions(newContributions)
+                                      }}
+                                    >X</button></td>
                                   </tr>
                                 )
                               })
