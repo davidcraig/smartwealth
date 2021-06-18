@@ -1,8 +1,37 @@
 /* global localStorage */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import { Columns, Column, Card, TabbedContent } from '@davidcraig/react-bulma'
+import ThemeElementsPreview from '../Components/Settings/ThemeElementsPreview'
+import { hasProp } from '../Functions/Helpers'
+
+function buildExport ({ preferences, dividends, contributions, positionsHeld }) {
+  const output = {
+    preferences,
+    dividends,
+    contributions,
+    positionsHeld
+  }
+
+  return btoa(JSON.stringify(output))
+}
+
+function handleImportData (str, setPreferences, setDividends, setContributions, setPositionsHeld) {
+  const json = atob(str)
+  const imported = JSON.parse(json)
+  if (
+    hasProp(imported, 'dividends') &&
+    hasProp(imported, 'preferences') &&
+    hasProp(imported, 'contributions') &&
+    hasProp(imported, 'positionsHeld')
+  ) {
+    setPreferences(imported.preferences)
+    setContributions(imported.contributions)
+    setDividends(imported.dividends)
+    setPositionsHeld(imported.positionsHeld)
+  }
+}
 
 function setThemePreference (theme, preferences, setPreferences) {
   const newPrefs = { ...preferences }
@@ -12,7 +41,13 @@ function setThemePreference (theme, preferences, setPreferences) {
   setPreferences(newPrefs)
 }
 
-function Settings ({ preferences, setPreferences }) {
+function Settings ({ preferences, setPreferences, dividends, contributions, positionsHeld }) {
+  const [exportData, setExportData] = useState({})
+  const [importData, setImportData] = useState({})
+  useEffect(() => {
+    setExportData(buildExport({ preferences, dividends, contributions, positionsHeld }))
+  }, [preferences, dividends, contributions, positionsHeld])
+
   const themes = [
     { value: 'original', name: 'Original' },
     { value: 'trading212', name: 'Trading 212' },
@@ -58,72 +93,29 @@ function Settings ({ preferences, setPreferences }) {
                   </select>
                 </div>
               </Card>
-            </Column>
-            <Column class='is-one-thirds'>
-              <Card title='Theme Elements Preview'>
-                <p>Text</p>
-                <a>Link</a>
-                <label className='label'>
-                  Generic Input
-                </label>
-                <input type='textbox' />
-                <TabbedContent
-                  content={
-                    [
-                      { title: 'Test Tab 1', content: <p>Test content 1</p> },
-                      { title: 'Test Tab 2', content: <p>Test content 2</p> }
-                    ]
+              <Card title='Import / Export'>
+                <h4 className='h4'>Import</h4>
+                <textarea
+                  className='textarea'
+                  onChange={
+                    (e) => {handleImportData(e.target.value)}
                   }
                 />
+                <button className='button' onClick={() => {
+                  console.log(JSON.parse(atob(importData)))
+                }}>Import Data</button>
 
-                <p>Table</p>
-                <table className='table'>
-                  <thead>
-                    <tr>
-                      <th>Test</th>
-                      <th>Test</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Test</td>
-                      <td>Test</td>
-                    </tr>
-                    <tr className='monthly'>
-                      <td>Test</td>
-                      <td>Test</td>
-                    </tr>
-                    <tr className='quarterly'>
-                      <td>Test</td>
-                      <td>Test</td>
-                    </tr>
-                    <tr className='annualinterim'>
-                      <td>Test</td>
-                      <td>Test</td>
-                    </tr>
-                    <tr className='annual__interim'>
-                      <td>Test</td>
-                      <td>Test</td>
-                    </tr>
-                    <tr className='irregular'>
-                      <td>Test</td>
-                      <td>Test</td>
-                    </tr>
-                    <tr className='suspended'>
-                      <td>Test</td>
-                      <td>Test</td>
-                    </tr>
-                    <tr className='bi-annually'>
-                      <td>Test</td>
-                      <td>Test</td>
-                    </tr>
-                    <tr className='temporarily_suspended'>
-                      <td>Test</td>
-                      <td>Test</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <h4 className='h4'>Export</h4>
+                <p>This may be a large amount of text so make sure you copy it all, i'd recommend testing an import after copying using incognito/private mode.</p>
+                <textarea
+                  className='textarea'
+                  readOnly={true}
+                  value={exportData}
+                />
               </Card>
+            </Column>
+            <Column class='is-one-thirds'>
+              <ThemeElementsPreview />
             </Column>
           </Columns>
         </div>
