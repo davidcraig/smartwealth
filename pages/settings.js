@@ -104,7 +104,7 @@ function Settings ({ preferences, setPreferences, dividends, contributions, posi
                 <button
                   className='button'
                   onClick={() => {
-                    console.log(JSON.parse(atob(importData)))
+                    // TODO: Do something to actually import here.
                   }}
                 >
                   Import Data
