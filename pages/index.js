@@ -20,8 +20,6 @@ function ForecastContent (forecast, forecastLog) {
 
     return (
       <>
-        <h2 className='h2'>{time}</h2>
-
         <h4 className='h4'>Dividends Chart</h4>
         {DividendForecast(forecast)}
 
