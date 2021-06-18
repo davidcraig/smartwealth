@@ -4,12 +4,14 @@ import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
 import { getYear, hasProp, getMonthsOptionsArray, getMonthName } from '../Functions/Helpers'
+import DividendsByMonth from '../Components/Charts/Log/DividendsByMonth'
+import ContributionsByMonth from '../Components/Charts/Log/ContributionsByMonth'
 
 type LogState = {
   type: string,
   month: number,
   year: number,
-  amount: number | null
+  amount: number
 }
 
 type Dividend = {
@@ -70,15 +72,22 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
   }, [dividends, contributions])
 
   const saveLog = (logState: LogState) => {
+    let amount = logState.amount
+    if (typeof logState.amount === 'string') {
+      amount = parseFloat(logState.amount)
+    }
+
     switch (logState.type) {
       case 'dividends':
-        localStorage.setItem('dividends', JSON.stringify([...dividends, { month: logState.month, year: logState.year, amount: parseFloat(logState.amount) }]))
-        setDividends([...dividends, { month: logState.month, year: logState.year, amount: logState.amount }])
+        const newDividends = [...dividends, { month: logState.month, year: logState.year, amount: logState.amount }]
+        localStorage.setItem('dividends', JSON.stringify(newDividends))
+        setDividends(newDividends)
         resetForm()
         break
       case 'contributions':
-        localStorage.setItem('contributions', JSON.stringify([...contributions, { month: logState.month, year: logState.year, amount: parseFloat(logState.amount) }]))
-        setContributions([...contributions, { month: logState.month, year: logState.year, amount: logState.amount }])
+        const newContributions = [...contributions, { month: logState.month, year: logState.year, amount }]
+        localStorage.setItem('contributions', JSON.stringify(newContributions))
+        setContributions(newContributions)
         resetForm()
         break
       default:
@@ -156,6 +165,14 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                   </tbody>
                 </table>
               </Card>
+              {(dividends.length > 0 || contributions.length || 0) && <Card title='Charts'>
+                {dividends.length > 0 && (
+                  <DividendsByMonth dividends={dividends} />
+                )}
+                {contributions.length > 0 && (
+                  <ContributionsByMonth contributions={contributions} />
+                )}
+              </Card>}
             </Column>
             <Column class='is-one-third'>
               <Card title='Logging'>
@@ -183,7 +200,7 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                             {
                               months.map(m => {
                                 return (
-                                  <option key={`month-${m}-option`} value={m.val}>
+                                  <option key={`month-${m.name}-option`} value={m.val}>
                                     {m.name}
                                   </option>
                                 )
