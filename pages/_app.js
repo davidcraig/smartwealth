@@ -46,6 +46,8 @@ function MyApp ({ Component, pageProps }) {
   const [stocks, setStocks] = useState([])
   const [preferences, setPreferences] = useState([])
   const [positionsHeld, setPositionsHeld] = useState([])
+  const [contributions, setContributions] = useState([])
+  const [dividends, setDividends] = useState([])
 
   // Load user preferences if there are any.
   useEffect(() => {
@@ -84,12 +86,23 @@ function MyApp ({ Component, pageProps }) {
       }
     }
 
+    // Register the spreadsheet worker messages
     SpreadsheetWorker.onmessage = e => {
       if (e.data.type === 'parse-result') {
         store.setItem('stocks-updated', JSON.stringify(new Date()))
         store.setItem('stocks', JSON.stringify(e.data.data))
         setStocks(e.data.data)
       }
+    }
+
+    const dividends = JSON.parse(store.getItem('dividends'))
+    if (dividends) {
+      setDividends(dividends)
+    }
+
+    const contributions = JSON.parse(store.getItem('contributions'))
+    if (contributions) {
+      setContributions(contributions)
     }
   }, [])
 
@@ -125,6 +138,10 @@ function MyApp ({ Component, pageProps }) {
       setPositionsHeld={setPositionsHeld}
       preferences={preferences}
       setPreferences={setPreferences}
+      setContributions={setContributions}
+      setDividends={setDividends}
+      dividends={dividends}
+      contributions={contributions}
     />
   )
 }
