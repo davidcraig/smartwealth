@@ -10,7 +10,7 @@ Object Helpers
  *
  * @returns bool
  */
-export function hasProp (obj, prop) {
+export function hasProp (obj: object, prop: string) {
   return Object.prototype.hasOwnProperty.call(obj, prop)
 }
 
@@ -18,12 +18,12 @@ export function hasProp (obj, prop) {
 Date Helpers
 */
 
-export function getYear () {
+export function getYear (): number {
   const d = new Date()
   return d.getFullYear()
 }
 
-export function getMonthsOptionsArray () {
+export function getMonthsOptionsArray (): Array<any> {
   return [
     { val: 0, name: 'January' },
     { val: 1, name: 'February' },
@@ -40,7 +40,7 @@ export function getMonthsOptionsArray () {
   ]
 }
 
-export function getMonthName (monthIndex) {
+export function getMonthName (monthIndex: number): string {
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June', 'July',
     'August', 'September', 'October', 'November', 'December'

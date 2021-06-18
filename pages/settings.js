@@ -1,8 +1,8 @@
-/* global localStorage */
+/* global localStorage, btoa, atob */
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
-import { Columns, Column, Card, TabbedContent } from '@davidcraig/react-bulma'
+import { Columns, Column, Card } from '@davidcraig/react-bulma'
 import ThemeElementsPreview from '../Components/Settings/ThemeElementsPreview'
 import { hasProp } from '../Functions/Helpers'
 
@@ -43,7 +43,7 @@ function setThemePreference (theme, preferences, setPreferences) {
 
 function Settings ({ preferences, setPreferences, dividends, contributions, positionsHeld }) {
   const [exportData, setExportData] = useState({})
-  const [importData, setImportData] = useState({})
+  const [importData, _set] = useState({}) // eslint-disable-line no-unused-vars
   useEffect(() => {
     setExportData(buildExport({ preferences, dividends, contributions, positionsHeld }))
   }, [preferences, dividends, contributions, positionsHeld])
@@ -98,18 +98,23 @@ function Settings ({ preferences, setPreferences, dividends, contributions, posi
                 <textarea
                   className='textarea'
                   onChange={
-                    (e) => {handleImportData(e.target.value)}
+                    (e) => { handleImportData(e.target.value) }
                   }
                 />
-                <button className='button' onClick={() => {
-                  console.log(JSON.parse(atob(importData)))
-                }}>Import Data</button>
+                <button
+                  className='button'
+                  onClick={() => {
+                    console.log(JSON.parse(atob(importData)))
+                  }}
+                >
+                  Import Data
+                </button>
 
                 <h4 className='h4'>Export</h4>
                 <p>This may be a large amount of text so make sure you copy it all, i'd recommend testing an import after copying using incognito/private mode.</p>
                 <textarea
                   className='textarea'
-                  readOnly={true}
+                  readOnly
                   value={exportData}
                 />
               </Card>
