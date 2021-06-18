@@ -6,10 +6,6 @@ import { Columns, Column, Card } from '@davidcraig/react-bulma'
 import { getYear, hasProp, getMonthsOptionsArray, getMonthName } from '../Functions/Helpers'
 import { useEffect, useState } from 'react/cjs/react.development'
 
-function LogChart() {
-
-}
-
 function Logging ({ dividends, setDividends, contributions, setContributions }) {
   const [logEntries, setLogEntries] = useState({})
   const [logState, setLogState] = useState({
@@ -112,23 +108,29 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                                     <td>{getMonthName(month)} {year}</td>
                                     <td>{data.contributions}</td>
                                     <td>{data.dividends}</td>
-                                    <td><button data-month={month} data-year={year}
-                                      onClick={(e) => {
-                                        const month = parseInt(e.target.dataset.month)
-                                        const year = parseInt(e.target.dataset.year)
-                                        const newDividends = dividends.filter((item) => {
-                                          return !((item.month === month) && (item.year === year))
-                                        })
-                                        const newContributions = contributions.filter((item) => {
-                                          return !((item.month === month) && (item.year === year))
-                                        })
+                                    <td>
+                                      <button
+                                        data-month={month}
+                                        data-year={year}
+                                        onClick={(e) => {
+                                          const month = parseInt(e.target.dataset.month)
+                                          const year = parseInt(e.target.dataset.year)
+                                          const newDividends = dividends.filter((item) => {
+                                            return !((item.month === month) && (item.year === year))
+                                          })
+                                          const newContributions = contributions.filter((item) => {
+                                            return !((item.month === month) && (item.year === year))
+                                          })
 
-                                        localStorage.setItem('dividends', JSON.stringify(newDividends))
-                                        localStorage.setItem('contributions', JSON.stringify(newContributions))
-                                        setDividends(newDividends)
-                                        setContributions(newContributions)
-                                      }}
-                                    >X</button></td>
+                                          localStorage.setItem('dividends', JSON.stringify(newDividends))
+                                          localStorage.setItem('contributions', JSON.stringify(newContributions))
+                                          setDividends(newDividends)
+                                          setContributions(newContributions)
+                                        }}
+                                      >
+                                        X
+                                      </button>
+                                    </td>
                                   </tr>
                                 )
                               })
@@ -164,7 +166,7 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                             {
                               months.map(m => {
                                 return (
-                                  <option value={m.val}>
+                                  <option key={`month-${m}-option`} value={m.val}>
                                     {m.name}
                                   </option>
                                 )
