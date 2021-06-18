@@ -245,7 +245,7 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                     value={logState.amount}
                     onChange={({ target }) => {
                       setLogState((state: any) => {
-                        return { ...state, amount: parseFloat(target.value) }
+                        return { ...state, amount: target.value }
                       })
                     }}
                   />
