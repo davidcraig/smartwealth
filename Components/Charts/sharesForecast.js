@@ -17,7 +17,7 @@ const chartOptions = (shareData, months) => {
   let tickInterval = 100
   if (is30Year(months)) { tickInterval = 500 }
 
-  if (months.length === 360) {
+  if (is30Year(months)) {
     const totalData = {
       name: 'Total Shares',
       color: '#00758a',
@@ -43,11 +43,11 @@ const chartOptions = (shareData, months) => {
   }
 
   // Final chart data
-  return {
+  const chartOpts = {
     chart: {
       styledMode: false,
       type: 'column',
-      height: 350
+      height: 250
     },
     title: {
       text: 'Share Quantity Forecast',
@@ -94,6 +94,12 @@ const chartOptions = (shareData, months) => {
     },
     series
   }
+
+  if (is30Year(months)) {
+    chartOpts.chart.type = 'area'
+  }
+
+  return chartOpts
 }
 
 const sharesForecast = (forecast) => {
