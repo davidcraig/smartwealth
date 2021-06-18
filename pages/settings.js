@@ -93,7 +93,7 @@ function Settings ({ preferences, setPreferences, dividends, contributions, posi
                   </select>
                 </div>
               </Card>
-              <Card title='Import / Export'>
+              <Card title='Import / Export (Beta)'>
                 <h4 className='h4'>Import</h4>
                 <textarea
                   className='textarea'
