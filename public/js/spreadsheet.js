@@ -52,7 +52,7 @@ self.addEventListener(
               const col = cell.col
               const content = e.content["$t"] // eslint-disable-line dot-notation, quotes
 
-              if (row == headerRow) {
+              if (row == headerRow) { // eslint-disable-line
                 headers[col] = { name: content, key: slug(content) }
               }
               if (row > headerRow) {
