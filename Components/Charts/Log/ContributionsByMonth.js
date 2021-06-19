@@ -17,7 +17,7 @@ const chartOptions = (contributions) => {
     series[0].data.push(parseFloat(contribution.amount))
   })
 
-  const tickInterval = 100
+  const tickInterval = 500
 
   const chartOpts = {
     chart: {
