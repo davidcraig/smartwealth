@@ -1,3 +1,21 @@
 {
-  "standard.engine": "ts-standard"
+  "standard.engine": "ts-standard",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/node_modules/[^@]*": true,
+    "**/node_modules/?[^d]*": true,
+    "**/node_modules/??[^a]*": true,
+    "**/node_modules/???[^v]*": true,
+    "**/node_modules/????[^i]*": true,
+    "**/node_modules/?????[^d]*": true,
+    "**/node_modules/??????[^c]*": true,
+    "**/node_modules/???????[^r]*": true,
+    "**/node_modules/????????[^a]*": true,
+    "**/node_modules/?????????[^i]*": true,
+    "**/node_modules/??????????[^g]*": true
+  }
 }
