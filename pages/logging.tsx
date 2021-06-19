@@ -1,5 +1,6 @@
 /* global localStorage */
 import React, { useEffect, useState } from 'react'
+import { reduceSumByKey } from '@davidcraig/utils'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
@@ -276,6 +277,14 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                 >
                   Save
                 </button>
+              </Card>
+              <Card title='Stats'>
+                {dividends.length > 0 && (
+                  <p>Total dividends to date: {reduceSumByKey(dividends, 'amount')}</p>
+                )}
+                {contributions.length > 0 && (
+                  <p>Total contributions to date: {reduceSumByKey(contributions, 'amount')}</p>
+                )}
               </Card>
             </Column>
           </Columns>
