@@ -8,3 +8,19 @@
 .table.is-striped tbody tr:not(.is-selected):nth-child(2n) {
   background-color: var(--color-table-alt, var(--color-bg-alt)) !important;
 }
+
+
+.content {
+  table {
+    &.has-no-borders {
+      th {
+        border: none !important;
+      }
+    }
+    tbody {
+      th {
+        color: var(--color-heading) !important;
+      }
+    }
+  }
+}
