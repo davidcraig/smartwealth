@@ -11,6 +11,11 @@
    * Dark Mode
    * Maroon
  - Add beta import/export functionality.
+ - Add ability to record custom goals.
+
+### Changed
+
+ - Format decimals so that the non-whole part is smaller than the whole numbers.
 
 ## [2021-06-17]
 
