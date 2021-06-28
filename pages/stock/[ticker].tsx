@@ -13,13 +13,11 @@ import DividendCard from '../../Components/Stock/DividendCard'
 function StockView ({ stocks }) {
   const router = useRouter()
   let { ticker } = router.query
-  if (Array.isArray(ticker)) {
-    ticker = ticker[0]
-  }
+  let tickerSymbol = Array.isArray(ticker) ? ticker[0] : ticker
 
   let stock: (StockInterface | null) = null
-  if (!!ticker && !!stocks) {
-    const matched = stocks.filter((s: StockInterface) => s.ticker.toLowerCase() === ticker.toLowerCase())
+  if (typeof tickerSymbol === 'string' && Array.isArray(stocks)) {
+    const matched = stocks.filter((s: StockInterface) => s.ticker.toLowerCase() === tickerSymbol.toLowerCase())
     if (matched.length === 1) {
       stock = matched[0]
     }
