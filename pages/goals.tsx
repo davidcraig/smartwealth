@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import StockInterface from '../types/Stock'
+import PositionHeldInterface from '../types/PositionHeld'
 import { Column, Columns, Card } from '@davidcraig/react-bulma'
 import uuid from '../Functions/uuid'
 
@@ -161,21 +162,21 @@ function renderCustomGoalByType (customGoal, deleteCustomGoal, customGoals, setC
 
   switch (customGoal.type) {
     case 'stock_amount':
-      let stock = false
+      let position = null
       let progress = 0
       let qty = 0
 
       if (positionsHeld.length > 0) {
-        const filteredPos = positionsHeld.filter((pos) => {
+        const filteredPos = positionsHeld.filter((pos: PositionHeldInterface) => {
           return pos.stock.ticker === customGoal.ticker
         })
         if (filteredPos.length > 0) {
-          stock = filteredPos[0]
+          position = filteredPos[0]
         }
       }
 
-      if (!!stock) {
-        qty = parseFloat(stock.quantity)
+      if (typeof position === 'object') {
+        qty = parseFloat(position.quantity)
         progress = (qty / customGoal.target) * 100
         if (progress > 100) {
           progress = 100
