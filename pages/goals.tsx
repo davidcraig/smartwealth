@@ -234,6 +234,7 @@ function renderCustomGoals (
   goalName,
   goalTicker,
   goalTarget,
+  stocks,
   filteredStocks,
   setGoalType,
   setGoalName,
@@ -298,6 +299,17 @@ function renderCustomGoals (
                 ))}
               </select>
             </div>
+            <label className='label'>
+              Filter:
+              <input className='input' onChange={({target}) => {
+                if (target.value.length > 0) {
+                  const matcher = target.value.toLowerCase()
+                  setFilteredStocks(stocks.filter(s => s.ticker.toLowerCase().match(matcher) || s.name.toLowerCase().match(matcher)))
+                } else {
+                  setFilteredStocks(stocks)
+                }
+              }} />
+            </label>
 
             <label className='label'>
               Target
@@ -407,6 +419,7 @@ function Goals ({ stocks, positionsHeld }) {
                   goalName,
                   goalTicker,
                   goalTarget,
+                  stocks,
                   filteredStocks,
                   setGoalType,
                   setGoalName,
