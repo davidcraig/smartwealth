@@ -2,12 +2,13 @@
 import Head from 'next/head'
 import React, { useState } from 'react'
 import Navbar from '../Components/Navbar'
+import PositionHeldInterface from '../types/PositionHeld'
 import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
 
 function PieStats ({ positionsHeld }) {
   const pies = {}
-  positionsHeld.forEach(p => {
+  positionsHeld.forEach((p: PositionHeldInterface) => {
     const pieName = p.pie
     if (pieName !== '') {
       if (!Object.prototype.hasOwnProperty.call(pies, pieName)) {
@@ -52,11 +53,12 @@ function PieStats ({ positionsHeld }) {
                               let p = 0
                               if (typeof prev === 'object') {
                                 p = prev.pieWeight
-                              }
-                              if (typeof prev === 'number') {
+                              } else if (typeof prev === 'number') {
                                 p = prev
+                              } else {
+                                console.debug('prev is typeof', typeof prev)
                               }
-                              return parseInt(p) + parseInt(curr.pieWeight)
+                              return p + parseInt(curr.pieWeight)
                             })
                           : pie.positions[0].pieWeight
                       : ''
