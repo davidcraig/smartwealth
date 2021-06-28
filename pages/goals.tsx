@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import StockInterface from '../types/Stock'
+import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
 import PositionHeldInterface from '../types/PositionHeld'
 import { Column, Columns, Card } from '@davidcraig/react-bulma'
 import uuid from '../Functions/uuid'
@@ -187,7 +188,11 @@ function renderCustomGoalByType (customGoal, deleteCustomGoal, customGoals, setC
       return (
         <tr key={customGoal.id}>
           <td style={cellStyle}>{customGoal.name}</td>
-          <td style={cellStyle}>{progress === 100 ? customGoal.target : `${qty} / ${customGoal.target}`}</td>
+          <td style={cellStyle}>{progress === 100 ? customGoal.target : (
+            <>
+              {FormattedDecimal(qty)} / {FormattedDecimal(customGoal.target)}
+            </>
+          )}</td>
           <td style={cellStyle}>
             <a onClick={() => {
               const x = confirm('Are you sure')
@@ -339,6 +344,10 @@ function Goals ({ stocks, positionsHeld }) {
   const [goalTicker, setGoalTicker] = useState('')
   const [filteredStocks, setFilteredStocks] = useState('')
   const addCustomGoal = () => {
+    if (goalType === 'stock_amount' && goalTicker === '') {
+      console.warn('Cant save a stock amount goal without a ticker symbol')
+      return ''
+    }
     const newCustomGoals = [
       ...customGoals,
       {

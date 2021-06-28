@@ -5,6 +5,7 @@ import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
 import { getYear, hasProp, getMonthsOptionsArray, getMonthName } from '../Functions/Helpers'
+import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
 import DividendsByMonth from '../Components/Charts/Log/DividendsByMonth'
 import ContributionsByMonth from '../Components/Charts/Log/ContributionsByMonth'
 
@@ -133,8 +134,8 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                                 return (
                                   <tr key={`${year}-${month}`}>
                                     <td>{getMonthName(parseInt(month))} {year}</td>
-                                    <td>{data.contributions}</td>
-                                    <td>{data.dividends}</td>
+                                    <td>{FormattedDecimal(data.contributions)}</td>
+                                    <td>{FormattedDecimal(data.dividends)}</td>
                                     <td>
                                       <button
                                         data-month={month}

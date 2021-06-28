@@ -2,6 +2,7 @@
 import Head from 'next/head'
 import React, { useState } from 'react'
 import Navbar from '../Components/Navbar'
+import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
 
 function PieStats ({ positionsHeld }) {
@@ -225,7 +226,7 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                             <tr key={`${p.stock.ticker}${p.stock.name}`}>
                               <td>{p.stock.ticker}</td>
                               <td>{p.stock.name}</td>
-                              <td>{p.quantity}</td>
+                              <td>{FormattedDecimal(p.quantity)}</td>
                               <td>
                                 <input
                                   type='text'
