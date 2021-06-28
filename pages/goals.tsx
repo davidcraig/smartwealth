@@ -282,6 +282,7 @@ function renderCustomGoals (
         className='select'
       >
         <select
+          defaultValue={goalType}
           onChange={(e) => { setGoalType(e.target.value) }}
         >
           <option value='custom'>Custom</option>
