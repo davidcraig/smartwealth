@@ -13,20 +13,20 @@ import DividendCard from '../../../../Components/Stock/DividendCard'
 function StockComparison ({ stocks }) {
   const router = useRouter()
   let { ticker, tickerTwo } = router.query
-  if (Array.isArray(ticker)) { ticker = ticker[0] }
-  if (Array.isArray(tickerTwo)) { tickerTwo = tickerTwo[0] }
+  let tickerSymbol = Array.isArray(ticker) ? ticker[0] : ticker
+  let tickerTwoSymbol = Array.isArray(tickerTwo) ? tickerTwo[0] : tickerTwo
 
   let stock: (StockInterface | null) = null
-  if (!!ticker && !!stocks) {
-    const matched = stocks.filter((s: StockInterface) => s.ticker.toLowerCase() === ticker.toLowerCase())
+  if (typeof tickerSymbol === 'string' && Array.isArray(stocks)) {
+    const matched = stocks.filter((s: StockInterface) => s.ticker.toLowerCase() === tickerSymbol.toLowerCase())
     if (matched.length === 1) {
       stock = matched[0]
     }
   }
 
   let stockTwo: (StockInterface | null) = null
-  if (!!ticker && !!stocks) {
-    const matched = stocks.filter((s: StockInterface) => s.ticker.toLowerCase() === tickerTwo.toLowerCase())
+  if (typeof tickerTwoSymbol === 'string' && Array.isArray(stocks)) {
+    const matched = stocks.filter((s: StockInterface) => s.ticker.toLowerCase() === tickerTwoSymbol.toLowerCase())
     if (matched.length === 1) {
       stockTwo = matched[0]
     }
