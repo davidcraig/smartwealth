@@ -23,8 +23,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.config.js",
+    "./babel.config.json",
     "**/*.tsx",
-    "./pages/*.tsx"
+    "**/pages/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
