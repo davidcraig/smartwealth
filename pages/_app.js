@@ -54,9 +54,11 @@ function MyApp ({ Component, pageProps }) {
   const [contributions, setContributions] = useStorageState([], 'contributions')
   const [dividends, setDividends] = useStorageState([], 'dividends')
 
-  useLayoutEffect(() => {
-    handlePreferences(preferences)
-  }, [preferences])
+  if (typeof window !== 'undefined') {
+    useLayoutEffect(() => {
+      handlePreferences(preferences)
+    }, [preferences])
+  }
 
   // Load user preferences if there are any.
   // useEffect(() => {
