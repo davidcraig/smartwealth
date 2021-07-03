@@ -1,12 +1,6 @@
 /* global localStorage, Worker */
 import React, { useState, useEffect } from 'react'
-import GetStock from '../Functions/GetStock'
 import '../styles/app.scss'
-import trading212theme from '../Themes/trading212'
-import originalTheme from '../Themes/original'
-import lightTheme from '../Themes/light'
-import darkTheme from '../Themes/darkmode'
-import maroonTheme from '../Themes/maroon'
 
 function loadTheme (styles) {
   const root = document.querySelector(':root')
@@ -20,20 +14,30 @@ function handlePreferences (preferences) {
     if (preferences.theme) {
       switch (preferences.theme) {
         case 'trading212':
-          loadTheme(trading212theme)
+          import('../Themes/trading212').then(theme => {
+            loadTheme(theme.default)
+          })
           break
         case 'light':
-          loadTheme(lightTheme)
+          import('../Themes/light').then(theme => {
+            loadTheme(theme.default)
+          })
           break
         case 'darkmode':
-          loadTheme(darkTheme)
+          import('../Themes/darkmode').then(theme => {
+            loadTheme(theme.default)
+          })
           break
         case 'maroon':
-          loadTheme(maroonTheme)
+          import('../Themes/maroon').then(theme => {
+            loadTheme(theme.default)
+          })
           break
         case 'original':
         default:
-          loadTheme(originalTheme)
+          import('../Themes/original').then(theme => {
+            loadTheme(theme.default)
+          })
           break
       }
     }
@@ -120,10 +124,12 @@ function MyApp ({ Component, pageProps }) {
         setPositionsHeld(pos)
       } else {
         let pos = JSON.parse(positions)
-        pos = pos.map(p => {
-          const stock = GetStock(p.stock.ticker, stocks)
-          p.stock = stock
-          return p
+        import('../Functions/GetStock').then(f => {
+          pos = pos.map(p => {
+            const stock = f.GetStock(p.stock.ticker, stocks)
+            p.stock = stock
+            return p
+          })
         })
         setPositionsHeld(pos)
       }
