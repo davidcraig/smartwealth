@@ -1,4 +1,4 @@
-function GetStock (ticker, stocks) {
+export function GetStock (ticker, stocks) {
   if (!stocks) { return null }
   return stocks.filter((s) => {
     return s.ticker === ticker
