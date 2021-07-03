@@ -22,10 +22,11 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
+    "**/*.tsx",
     "**/*.config.js",
     "./babel.config.json",
-    "**/*.tsx",
-    "**/pages/**/*.tsx"
+    "./pages/*.tsx",
+    "./pages/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
