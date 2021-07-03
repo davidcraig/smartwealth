@@ -14,6 +14,12 @@ const visibleColumns = [
 ]
 
 function stockTable (stocks) {
+  if (stocks.length === 0) {
+    return (
+      <p>No stocks to view</p>
+    )
+  }
+
   return (
     <table className='table stock-table is-narrow'>
       <thead>

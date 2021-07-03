@@ -82,13 +82,11 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
     switch (logState.type) {
       case 'dividends':
         const newDividends = [...dividends, { month: logState.month, year: logState.year, amount: logState.amount }]
-        localStorage.setItem('dividends', JSON.stringify(newDividends))
         setDividends(newDividends)
         resetForm()
         break
       case 'contributions':
         const newContributions = [...contributions, { month: logState.month, year: logState.year, amount }]
-        localStorage.setItem('contributions', JSON.stringify(newContributions))
         setContributions(newContributions)
         resetForm()
         break
@@ -149,9 +147,6 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                                           const newContributions = contributions.filter((item) => {
                                             return !((item.month === month) && (item.year === year))
                                           })
-
-                                          localStorage.setItem('dividends', JSON.stringify(newDividends))
-                                          localStorage.setItem('contributions', JSON.stringify(newContributions))
                                           setDividends(newDividends)
                                           setContributions(newContributions)
                                         }}

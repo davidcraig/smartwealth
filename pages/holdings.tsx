@@ -106,7 +106,6 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
       pie: '',
       pieWeight: 0
     }]
-    localStorage.setItem('positions', JSON.stringify(positions))
     setPositionsHeld(positions)
   }
 
@@ -122,7 +121,6 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
       }
       return p
     }).filter(Boolean)
-    localStorage.setItem('positions', JSON.stringify(positions))
     setPositionsHeld(positions)
   }
 
@@ -135,7 +133,6 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
       }
       return p
     }).filter(Boolean)
-    localStorage.setItem('positions', JSON.stringify(positions))
     setPositionsHeld(positions)
   }
 
@@ -148,7 +145,6 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
       }
       return p
     }).filter(Boolean)
-    localStorage.setItem('positions', JSON.stringify(positions))
     setPositionsHeld(positions)
   }
 
@@ -160,7 +156,6 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
       return p
     }).filter(Boolean)
 
-    localStorage.setItem('positions', JSON.stringify(positions))
     setPositionsHeld(positions)
   }
 
@@ -169,7 +164,6 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
       return a.pie.localeCompare(b.pie || '')
     }).filter(Boolean)
 
-    localStorage.setItem('positions', JSON.stringify(positions))
     setPositionsHeld(positions)
   }
 
@@ -178,7 +172,6 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
       return a.stock.name.localeCompare(b.stock.name)
     }).filter(Boolean)
 
-    localStorage.setItem('positions', JSON.stringify(positions))
     setPositionsHeld(positions)
   }
 
@@ -191,7 +184,6 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
       }
       return p
     }).filter(Boolean)
-    localStorage.setItem('positions', JSON.stringify(positions))
     setPositionsHeld(positions)
   }
 

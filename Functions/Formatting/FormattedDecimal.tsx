@@ -13,6 +13,14 @@ export function FormattedDecimal (number: string | number, decimalPlaces: number
     number = number.toFixed(decimalPlaces)
   }
 
+  if (number === '') {
+    return (
+      <span className='decimal'>
+        0
+      </span>
+    )
+  }
+
   const parts = number.split('.')
   const whole = parseInt(parts[0])
 
@@ -24,7 +32,7 @@ export function FormattedDecimal (number: string | number, decimalPlaces: number
     )
   }
 
-  const decimal = parseInt(parts[1])
+  const decimal = parseInt(parts[1]) || 0
 
   if (decimal === 0) {
     return (

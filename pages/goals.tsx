@@ -6,6 +6,7 @@ import StockInterface from '../types/Stock'
 import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
 import PositionHeldInterface from '../types/PositionHeld'
 import { Column, Columns, Card } from '@davidcraig/react-bulma'
+import useStorageState from '../Functions/useStorageState'
 import uuid from '../Functions/uuid'
 
 interface IGoal {
@@ -71,16 +72,6 @@ const defaultGoals = {
   ]
 }
 
-function saveGoals (goals, setGoals) {
-  localStorage.setItem('goals', JSON.stringify(goals))
-  setGoals(goals)
-}
-
-function saveCustomGoals (customGoals: ICustomGoal[], setCustomGoals) {
-  localStorage.setItem('custom-goals', JSON.stringify(customGoals))
-  setCustomGoals(customGoals)
-}
-
 function toggleGoalComplete (goals, key: string, goal: IGoal, setGoals) {
   goals[key].map((g: IGoal) => {
     if (g.id === goal.id) {
@@ -91,7 +82,7 @@ function toggleGoalComplete (goals, key: string, goal: IGoal, setGoals) {
     return g
   })
 
-  saveGoals({ ...goals }, setGoals)
+  setGoals({ ...goals })
 }
 
 function toggleCustomGoalComplete (customGoals, goal: ICustomGoal, setCustomGoals) {
@@ -104,7 +95,7 @@ function toggleCustomGoalComplete (customGoals, goal: ICustomGoal, setCustomGoal
     return g
   })
 
-  saveCustomGoals([...newCustomGoals], setCustomGoals)
+  setCustomGoals([...newCustomGoals])
 }
 
 const completedGoalStyle = {
@@ -176,7 +167,7 @@ function renderCustomGoalByType (customGoal, deleteCustomGoal, customGoals, setC
         }
       }
 
-      if (typeof position === 'object') {
+      if (position !== null && typeof position === 'object') {
         qty = parseFloat(position.quantity)
         progress = (qty / customGoal.target) * 100
         if (progress > 100) {
@@ -337,8 +328,8 @@ function renderCustomGoals (
 }
 
 function Goals ({ stocks, positionsHeld }) {
-  const [goals, setGoals] = useState({})
-  const [customGoals, setCustomGoals] = useState([])
+  const [goals, setGoals] = useStorageState({}, 'goals')
+  const [customGoals, setCustomGoals] = useStorageState([], 'custom-goals')
   const [goalType, setGoalType] = useState('custom')
   const [goalName, setGoalName] = useState('')
   const [goalTarget, setGoalTarget] = useState(0)
@@ -349,7 +340,8 @@ function Goals ({ stocks, positionsHeld }) {
       console.warn('Cant save a stock amount goal without a ticker symbol')
       return ''
     }
-    const newCustomGoals = [
+
+    setCustomGoals([
       ...customGoals,
       {
         id: uuid(),
@@ -358,41 +350,19 @@ function Goals ({ stocks, positionsHeld }) {
         target: goalTarget,
         ticker: goalTicker,
       }
-    ]
-    saveCustomGoals (newCustomGoals, setCustomGoals)
+    ])
     setGoalName('')
     setGoalTarget(0)
     setGoalType('custom')
     setGoalTicker('')
   }
+
   const deleteCustomGoal = (id: string) => {
     const newCustomGoals = customGoals.filter((g: ICustomGoal) => {
       return g.id !== id
     })
-    saveCustomGoals (newCustomGoals, setCustomGoals)
+    setCustomGoals(newCustomGoals)
   }
-
-  useEffect(() => {
-    // Standard Goals
-    const storedGoals = localStorage.getItem('goals')
-
-    // Load goals from localStorage or defaults
-    if (storedGoals) {
-      setGoals(JSON.parse(storedGoals))
-    } else {
-      saveGoals(defaultGoals, setGoals)
-    }
-
-    // Custom Goals
-    const storedCustomGoals = localStorage.getItem('custom-goals')
-
-    // Load goals from localStorage or defaults
-    if (storedCustomGoals) {
-      setCustomGoals(JSON.parse(storedCustomGoals))
-    } else {
-      saveCustomGoals(customGoals, setCustomGoals)
-    }
-  }, [])
 
   useEffect(() => {
     setFilteredStocks(stocks)

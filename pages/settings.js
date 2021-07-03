@@ -1,4 +1,4 @@
-/* global localStorage, btoa, atob */
+/* global btoa, atob */
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
@@ -36,8 +36,6 @@ function handleImportData (str, setPreferences, setDividends, setContributions, 
 function setThemePreference (theme, preferences, setPreferences) {
   const newPrefs = { ...preferences }
   newPrefs.theme = theme
-
-  localStorage.setItem('preferences', JSON.stringify(newPrefs))
   setPreferences(newPrefs)
 }
 

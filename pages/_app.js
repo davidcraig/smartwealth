@@ -1,5 +1,6 @@
 /* global localStorage, Worker */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useLayoutEffect } from 'react'
+import useStorageState from '../Functions/useStorageState'
 import '../styles/app.scss'
 
 function loadTheme (styles) {
@@ -47,20 +48,20 @@ function handlePreferences (preferences) {
 }
 
 function MyApp ({ Component, pageProps }) {
-  const [stocks, setStocks] = useState([])
-  const [preferences, setPreferences] = useState([])
-  const [positionsHeld, setPositionsHeld] = useState([])
-  const [contributions, setContributions] = useState([])
-  const [dividends, setDividends] = useState([])
+  const [stocks, setStocks] = useStorageState([], 'stocks')
+  const [preferences, setPreferences] = useStorageState([], 'preferences')
+  const [positionsHeld, setPositionsHeld] = useStorageState([], 'positions')
+  const [contributions, setContributions] = useStorageState([], 'contributions')
+  const [dividends, setDividends] = useStorageState([], 'dividends')
+
+  useLayoutEffect(() => {
+    handlePreferences(preferences)
+  }, [preferences])
 
   // Load user preferences if there are any.
-  useEffect(() => {
-    const preferences = JSON.parse(localStorage.getItem('preferences'))
-    if (preferences) {
-      handlePreferences(preferences)
-      setPreferences(preferences)
-    }
-  }, [])
+  // useEffect(() => {
+  //   handlePreferences(preferences)
+  // }, [preferences])
 
   // Load Stocks from SmartWealth public spreadsheet
   useEffect(() => {
@@ -98,19 +99,7 @@ function MyApp ({ Component, pageProps }) {
         setStocks(e.data.data)
       }
     }
-
-    const dividends = JSON.parse(store.getItem('dividends'))
-    if (dividends) {
-      setDividends(dividends)
-    }
-
-    const contributions = JSON.parse(store.getItem('contributions'))
-    if (contributions) {
-      setContributions(contributions)
-    }
   }, [])
-
-  useEffect(() => { handlePreferences(preferences) }, [preferences])
 
   // Load any held positions from localStorage.
   useEffect(() => {
