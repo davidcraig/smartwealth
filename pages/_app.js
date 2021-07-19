@@ -62,10 +62,10 @@ function MyApp ({ Component, pageProps }) {
 
   // Load Stocks from SmartWealth public spreadsheet
   useEffect(() => {
-    // const spreadsheetUrl = 'https://spreadsheets.google.com/feeds/cells/1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0/1/public/values?alt=json'
+    const spreadSheetId = '1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0'
     const spreadsheetUrls = [
-      'https://spreadsheets.google.com/feeds/cells/1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0/2/public/values?alt=json',
-      'https://spreadsheets.google.com/feeds/cells/1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0/3/public/values?alt=json'
+      `https://spreadsheets.google.com/feeds/cells/${spreadSheetId}/2/public/values?alt=json`,
+      `https://spreadsheets.google.com/feeds/cells/${spreadSheetId}/3/public/values?alt=json`
     ]
     const SpreadsheetWorker = new Worker('/js/spreadsheet.js')
     const store = localStorage
