@@ -1,13 +1,9 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useState, ReactFragment } from 'react'
+import React from 'react'
 import Navbar from '../../../../Components/Navbar'
-import { Columns, Column, Card } from '@davidcraig/react-bulma'
+import { Columns, Column } from '@davidcraig/react-bulma'
 import StockInterface from '../../../../types/Stock'
-import GetDividendAsGBP from '../../../../Functions/Stock/GetDividendAsGBP'
-import GetSharePrice from '../../../../Functions/Stock/GetSharePrice'
-import GetAnnualDividendAsGBP from '../../../../Functions/Stock/GetAnnualDividendAsGBP'
-import BaseCurrency from '../../../../Functions/Formatting/BaseCurrency'
 import DividendCard from '../../../../Components/Stock/DividendCard'
 
 function StockComparison ({ stocks }) {
