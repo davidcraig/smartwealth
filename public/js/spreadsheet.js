@@ -35,17 +35,17 @@ function buildObjectArray (headers, data) {
   return output
 }
 
-self.addEventListener(
-  'message',
-  function (e) {
-    const event = e.data
-    if (event.type === 'parse') {
-      fetch(event.url)
+const parseSpreadsheetPromise = (url, headerRow) => {
+  return new Promise(function (resolve, reject) {
+    try {
+      console.log('fetching from: ', url)
+      console.log('headerRow: ', headerRow)
+      fetch(url)
         .then(res => {
           res.json().then(json => {
+            console.log('json', json)
             const data = {}
             const headers = {}
-            const headerRow = event.headerRow // int
             json.feed.entry.forEach(e => {
               const cell = e["gs$cell"] // eslint-disable-line dot-notation, quotes
               const row = cell.row
@@ -62,14 +62,71 @@ self.addEventListener(
             })
 
             const output = buildObjectArray(headers, data)
+            console.log(output)
+            resolve(output)
+          })
+        })
+    } catch (err) {
+      console.error(err)
+      reject(err)
+    }
+  })
+}
 
+self.addEventListener(
+  'message',
+  function (e) {
+    const event = e.data
+    const combinedOutput = []
+    const promises = []
+    switch (event.type) {
+      case 'parse':
+        fetch(event.url)
+          .then(res => {
+            res.json().then(json => {
+              const data = {}
+              const headers = {}
+              const headerRow = event.headerRow // int
+              json.feed.entry.forEach(e => {
+                const cell = e["gs$cell"] // eslint-disable-line dot-notation, quotes
+                const row = cell.row
+                const col = cell.col
+                const content = e.content["$t"] // eslint-disable-line dot-notation, quotes
+
+                if (row == headerRow) { // eslint-disable-line
+                  headers[col] = { name: content, key: slug(content) }
+                }
+                if (row > headerRow) {
+                  if (!data[row]) { data[row] = [] }
+                  data[row][col] = content
+                }
+              })
+
+              const output = buildObjectArray(headers, data)
+
+              // Send the data back to main thread (react).
+              self.postMessage({
+                type: 'parse-result',
+                data: output
+              })
+            })
+          })
+        break
+      case 'multi-parse':
+        event.urls.forEach(u => promises.push(parseSpreadsheetPromise(u, event.headerRow)))
+        Promise.all(promises)
+          .then((values) => {
+            values.forEach(result => result.forEach(item => combinedOutput.push(item)))
+          })
+          .finally(() => {
+            console.log('combined', combinedOutput)
             // Send the data back to main thread (react).
             self.postMessage({
               type: 'parse-result',
-              data: output
+              data: combinedOutput
             })
           })
-        })
+        break
     }
   },
   false

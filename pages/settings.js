@@ -39,7 +39,7 @@ function setThemePreference (theme, preferences, setPreferences) {
   setPreferences(newPrefs)
 }
 
-function Settings ({ preferences, setPreferences, dividends, contributions, positionsHeld }) {
+function Settings ({ preferences, setPreferences, dividends, contributions, positionsHeld, setContributions, setDividends, setPositionsHeld }) {
   const [exportData, setExportData] = useState({})
   const [importData, _set] = useState({}) // eslint-disable-line no-unused-vars
   useEffect(() => {
@@ -96,7 +96,7 @@ function Settings ({ preferences, setPreferences, dividends, contributions, posi
                 <textarea
                   className='textarea'
                   onChange={
-                    (e) => { handleImportData(e.target.value) }
+                    (e) => { handleImportData(e.target.value, setPreferences, setDividends, setContributions, setPositionsHeld) }
                   }
                 />
                 <button

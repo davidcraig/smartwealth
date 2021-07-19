@@ -60,18 +60,18 @@ function MyApp ({ Component, pageProps }) {
     }, [preferences])
   }
 
-  // Load user preferences if there are any.
-  // useEffect(() => {
-  //   handlePreferences(preferences)
-  // }, [preferences])
-
   // Load Stocks from SmartWealth public spreadsheet
   useEffect(() => {
-    const spreadsheetUrl = 'https://spreadsheets.google.com/feeds/cells/1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0/1/public/values?alt=json'
+    // const spreadsheetUrl = 'https://spreadsheets.google.com/feeds/cells/1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0/1/public/values?alt=json'
+    const spreadsheetUrls = [
+      'https://spreadsheets.google.com/feeds/cells/1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0/2/public/values?alt=json',
+      'https://spreadsheets.google.com/feeds/cells/1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0/3/public/values?alt=json'
+    ]
     const SpreadsheetWorker = new Worker('/js/spreadsheet.js')
     const store = localStorage
 
-    const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
+    // const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
+    const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'multi-parse', urls: spreadsheetUrls, headerRow: 3 })
 
     const stocks = JSON.parse(store.getItem('stocks'))
     const stocksLastUpdated = JSON.parse(store.getItem('stocks-updated'))
