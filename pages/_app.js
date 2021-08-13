@@ -67,16 +67,18 @@ function MyApp ({ Component, pageProps }) {
     const SpreadsheetWorker = new Worker('/js/spreadsheet.js')
     const store = localStorage
 
-    const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
-    // const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'multi-parse', urls: spreadsheetUrls, headerRow: 3 })
+    const requestStocksUpdate = () => {
+      SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
+      // SpreadsheetWorker.postMessage({ type: 'multi-parse', urls: spreadsheetUrls, headerRow: 3 })
+    }
 
-    const stocks = JSON.parse(store.getItem('stocks'))
+    const stocks = store.getItem('stocks')
     const stocksLastUpdated = JSON.parse(store.getItem('stocks-updated'))
 
     if (stocks == null) {
       requestStocksUpdate()
     } else {
-      setStocks(stocks)
+      setStocks(JSON.parse(stocks))
     }
 
     if (stocksLastUpdated === null) {
