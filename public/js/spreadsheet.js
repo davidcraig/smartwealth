@@ -38,8 +38,6 @@ function buildObjectArray (headers, data) {
 const parseSpreadsheetPromise = (url, headerRow) => {
   return new Promise(function (resolve, reject) {
     try {
-      console.log('fetching from: ', url)
-      console.log('headerRow: ', headerRow)
       fetch(url)
         .then(res => {
           res.json().then(json => {
