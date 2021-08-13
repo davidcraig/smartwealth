@@ -63,15 +63,12 @@ function MyApp ({ Component, pageProps }) {
   // Load Stocks from SmartWealth public spreadsheet
   useEffect(() => {
     const spreadSheetId = '1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0'
-    const spreadsheetUrls = [
-      `https://spreadsheets.google.com/feeds/cells/${spreadSheetId}/2/public/values?alt=json`,
-      `https://spreadsheets.google.com/feeds/cells/${spreadSheetId}/3/public/values?alt=json`
-    ]
+    const spreadsheetUrl = `https://spreadsheets.google.com/feeds/cells/${spreadSheetId}/4/public/values?alt=json`
     const SpreadsheetWorker = new Worker('/js/spreadsheet.js')
     const store = localStorage
 
-    // const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
-    const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'multi-parse', urls: spreadsheetUrls, headerRow: 3 })
+    const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
+    // const requestStocksUpdate = () => SpreadsheetWorker.postMessage({ type: 'multi-parse', urls: spreadsheetUrls, headerRow: 3 })
 
     const stocks = JSON.parse(store.getItem('stocks'))
     const stocksLastUpdated = JSON.parse(store.getItem('stocks-updated'))
