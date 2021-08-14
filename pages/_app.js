@@ -50,7 +50,7 @@ function handlePreferences (preferences) {
 function MyApp ({ Component, pageProps }) {
   const [stocks, setStocks] = useStorageState([], 'stocks')
   const [preferences, setPreferences] = useStorageState([], 'preferences')
-  const [positionsHeld, setPositionsHeld] = useState([])
+  const [positionsHeld, setPositionsHeld] = useStorageState([], 'positions')
   const [contributions, setContributions] = useStorageState([], 'contributions')
   const [dividends, setDividends] = useStorageState([], 'dividends')
 
@@ -116,8 +116,6 @@ function MyApp ({ Component, pageProps }) {
       //
     } else {
       if (stocks.length === 0) {
-        const pos = JSON.parse(positions)
-        setPositionsHeld(pos)
       } else {
         let pos = JSON.parse(positions)
         import('../Functions/GetStock').then(f => {
