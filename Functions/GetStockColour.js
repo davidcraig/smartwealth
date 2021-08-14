@@ -29,6 +29,7 @@ function GetStockColour (stock) {
     case 'Bank of Nova Scotia': return '#ed0722'
     case 'Becton Dickinson & Co': return '#004593'
     case 'BlackRock Capital Investment Corporation': return '#161616'
+    case 'Broadmark Realty Capital Inc.': return '#3c4d63'
     case 'Brookfield Property Partners L.P.':
     case 'Brookfield Renewable Partners L.P.':
       return '#0F3557'
@@ -44,6 +45,7 @@ function GetStockColour (stock) {
     case 'Coca-Cola': return '#F70000'
     case 'Colgate-Palmolive Company': return '#28a4c3'
     case 'Consolidated Edison, Inc': return '#0078cf'
+    case 'Cross Timbers Royalty Trust': return '#e60317'
     case 'Dynex Capital, Inc.': return '#031554'
     case 'Doric Nimrod Air One Limited':
     case 'Doric Nimrod Air Two Limited':
@@ -107,16 +109,20 @@ function GetStockColour (stock) {
     case 'Omega Healthcare Investors': return '#20368c'
     case 'OneMain Holdings': return '#004B75'
     case 'Oneok Inc': return '#007fc8'
+    case 'Orchid Island Capital': return '#7a8e4a'
     case 'Oxford Lane Capital Corp':
     case 'Oxford Square Capital Corp':
       return '#22282d'
     case "People's United Financial": return '#004B8D'
+    case 'Pembina Pipeline Corporation': return '#eb1c2c'
+    case 'PennantPark Floating Rate Capital Ltd': return '#224097'
     case 'PepsiCo': return '#30375b'
     case 'Pfizer': return '#0093D0'
     case 'Phillips 66 Partners LP': return '#DA2B1F'
     case 'PPG Industries, Inc.': return '#2a7ab0'
     case 'Primary Health Properties': return '#97d700'
     case 'Procter & Gamble': return '#003da7'
+    case 'Prospect Capital Corporation': return '#0075bb'
     case 'Realty Income': return '#faa635'
     case 'Reckitt Benckiser': return '#ff007f'
     case 'Roper Technologies, Inc': return '#009DDC'
@@ -125,12 +131,14 @@ function GetStockColour (stock) {
     case 'Shaw Communications (Class B)': return '#007cba'
     case 'Shell Midstream Partners, L.P.': return '#f7d117'
     case 'Sherwin-Williams Co': return '#4e739f'
+    case 'SLR Senior Investment Corp': return '#16274c'
     case 'SPDR S&P UK Dividend': return '#213f31'
     case 'STAG':
     case 'STAG Industrial':
       return '#204587'
     case 'Stanley Black & Decker': return '#ffdb0a'
     case 'Starbucks': return '#008248'
+    case 'Stellus Capital Investment Corporation': return '#152952'
     case 'Sysco Corporation': return '#008CD2'
     case 'T. Rowe Price Group Inc': return '#05c3de'
     case 'Target Corp': return 'rgb(204, 0, 0)'
@@ -148,6 +156,7 @@ function GetStockColour (stock) {
     case 'Walgreens Boots Alliance': return '#00686D'
     case 'Walmart': return '#0071dc'
     case 'West Pharmaceutical': return '#4080b0'
+    case 'Whitestone REIT': return '#002f87'
     case 'Xtrackers Russell 2000 UCITS ETF 1C': return '#009da2'
     default:
       return '#ececec'
