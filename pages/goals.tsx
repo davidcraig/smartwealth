@@ -25,6 +25,12 @@ interface ICustomGoal {
   complete: boolean;
 }
 
+const completedGoalStyle = {
+  color: '#18b518',
+  fontStyle: 'italic',
+  padding: '0 0.75em'
+}
+
 const defaultGoals = {
   invested: [
     { text: '£100 Invested', value: 100, id: 'inv100', complete: false },
@@ -73,7 +79,7 @@ const defaultGoals = {
 }
 
 function toggleGoalComplete (goals, key: string, goal: IGoal, setGoals) {
-  goals[key].map((g: IGoal) => {
+  const newGoals = goals[key].map((g: IGoal) => {
     if (g.id === goal.id) {
       g.complete = !goal.complete
       return g
@@ -82,7 +88,8 @@ function toggleGoalComplete (goals, key: string, goal: IGoal, setGoals) {
     return g
   })
 
-  setGoals({ ...goals })
+  goals[key] = newGoals
+  setGoals({...goals})
 }
 
 function toggleCustomGoalComplete (customGoals, goal: ICustomGoal, setCustomGoals) {
@@ -98,54 +105,38 @@ function toggleCustomGoalComplete (customGoals, goal: ICustomGoal, setCustomGoal
   setCustomGoals([...newCustomGoals])
 }
 
-const completedGoalStyle = {
-  color: '#18b518',
-  fontStyle: 'italic',
-  padding: '0 0.75em'
-}
-
-function renderGoals (goals, key, title, setGoals) {
-  if (!goals || !goals[key] || goals[key].length < 1) { return null }
+function RenderGoals ({ goals, keyName, title, setGoals }) {
+  if (
+    !goals ||
+    !goals[keyName] ||
+    goals[keyName].length < 1
+  ) { return null }
 
   return (
-    <>
-      <Card title={title}>
-        <table className='is-narrow goals'>
-          <tbody>
-            {goals[key].map(goal => {
-              return (
-                <tr key={goal.id}>
-                  <td
-                    style={
-                      goal.complete
-                        ? completedGoalStyle
-                        : null
-                    }
-                  >
-                    {goal.text}
-                  </td>
-                  <td
-                    style={
-                      goal.complete
-                        ? completedGoalStyle
-                        : {}
-                    }
-                  >
-                    <input
-                      type='checkbox'
-                      defaultChecked={goal.complete}
-                      onChange={(e) => {
-                        toggleGoalComplete(goals, key, goal, setGoals)
-                      }}
-                    />
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </Card>
-    </>
+    <Card title={title}>
+      <table className='is-narrow goals'>
+        <tbody>
+          {goals[keyName].map((goal: IGoal) => {
+            const rowStyle = goal.complete ? completedGoalStyle : null
+
+            return (
+              <tr key={`goal-${goal.id}`}>
+                <td style={rowStyle}>{goal.text}</td>
+                <td>
+                  <input
+                    type='checkbox'
+                    defaultChecked={goal.complete}
+                    onClick={() => {
+                      toggleGoalComplete(goals, keyName, goal, setGoals)
+                    }}
+                  />
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </Card>
   )
 }
 
@@ -374,21 +365,19 @@ function Goals ({ stocks, positionsHeld }) {
         <title>SmartWealth</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-
       <Navbar />
-
       <div className='container is-fluid'>
         <div className='content'>
           <h1>FIRE Goals</h1>
           <Columns>
             <Column class='is-one-quarter'>
-              {renderGoals(goals, 'invested', 'Amount Invested', setGoals)}
+              <RenderGoals goals={goals} keyName='invested' title='Amount Invested' setGoals={setGoals} />
             </Column>
             <Column class='is-one-quarter'>
-              {renderGoals(goals, 'monthlyDividends', 'Monthly Dividends', setGoals)}
+              <RenderGoals goals={goals} keyName='monthlyDividends' title='Monthly Dividends' setGoals={setGoals} />
             </Column>
             <Column class='is-one-quarter'>
-              {renderGoals(goals, 'emergencyFund', 'Emergency Fund', setGoals)}
+              <RenderGoals goals={goals} keyName='emergencyFund' title='Emergency Fund' setGoals={setGoals} />
             </Column>
             <Column class='is-one-quarter'>
               {

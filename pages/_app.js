@@ -50,7 +50,7 @@ function handlePreferences (preferences) {
 function MyApp ({ Component, pageProps }) {
   const [stocks, setStocks] = useStorageState([], 'stocks')
   const [preferences, setPreferences] = useStorageState([], 'preferences')
-  const [positionsHeld, setPositionsHeld] = useStorageState([], 'positions')
+  const [positionsHeld, setPositionsHeld] = useState([])
   const [contributions, setContributions] = useStorageState([], 'contributions')
   const [dividends, setDividends] = useStorageState([], 'dividends')
 
@@ -63,13 +63,13 @@ function MyApp ({ Component, pageProps }) {
   // Load Stocks from SmartWealth public spreadsheet
   useEffect(() => {
     const spreadSheetId = '1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0'
-    const spreadsheetUrl = `https://spreadsheets.google.com/feeds/cells/${spreadSheetId}/4/public/values?alt=json`
+    const spreadSheetTabId = 4 // indexed from 1
+    const spreadsheetUrl = `https://spreadsheets.google.com/feeds/cells/${spreadSheetId}/${spreadSheetTabId}/public/values?alt=json`
     const SpreadsheetWorker = new Worker('/js/spreadsheet.js')
     const store = localStorage
 
     const requestStocksUpdate = () => {
       SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
-      // SpreadsheetWorker.postMessage({ type: 'multi-parse', urls: spreadsheetUrls, headerRow: 3 })
     }
 
     const stocks = store.getItem('stocks')
@@ -78,7 +78,12 @@ function MyApp ({ Component, pageProps }) {
     if (stocks == null) {
       requestStocksUpdate()
     } else {
-      setStocks(JSON.parse(stocks))
+      const parsedStocks = JSON.parse(stocks)
+      if (parsedStocks.length === 0) {
+        requestStocksUpdate()
+      } else {
+        setStocks(JSON.parse(stocks))
+      }
     }
 
     if (stocksLastUpdated === null) {
@@ -95,9 +100,10 @@ function MyApp ({ Component, pageProps }) {
     // Register the spreadsheet worker messages
     SpreadsheetWorker.onmessage = e => {
       if (e.data.type === 'parse-result') {
-        store.setItem('stocks-updated', JSON.stringify(new Date()))
-        store.setItem('stocks', JSON.stringify(e.data.data))
-        setStocks(e.data.data)
+        if (e.data.data.length > 0) {
+          store.setItem('stocks-updated', JSON.stringify(new Date()))
+          setStocks(e.data.data)
+        }
       }
     }
   }, [])
