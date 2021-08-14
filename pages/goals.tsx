@@ -122,7 +122,7 @@ function RenderGoals ({ goals, keyName, title, setGoals }) {
             return (
               <tr key={`goal-${goal.id}`}>
                 <td style={rowStyle}>{goal.text}</td>
-                <td>
+                <td style={rowStyle}>
                   <input
                     type='checkbox'
                     defaultChecked={goal.complete}
