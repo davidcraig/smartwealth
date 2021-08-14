@@ -328,7 +328,7 @@ function renderCustomGoals (
 }
 
 function Goals ({ stocks, positionsHeld }) {
-  const [goals, setGoals] = useStorageState({}, 'goals')
+  const [goals, setGoals] = useStorageState(defaultGoals, 'goals')
   const [customGoals, setCustomGoals] = useStorageState([], 'custom-goals')
   const [goalType, setGoalType] = useState('custom')
   const [goalName, setGoalName] = useState('')
