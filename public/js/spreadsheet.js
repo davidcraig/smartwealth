@@ -24,51 +24,14 @@ function buildObjectArray (headers, data) {
   Object.keys(data).forEach(itemIndex => {
     const object = {}
 
-    Object.keys(headers).forEach(index => {
-      const header = headers[index]
-      object[header.key] = data[itemIndex][index]
+    headers.forEach((header, index) => {
+      object[header] = data[itemIndex][index]
     })
 
     output.push(object)
   })
 
   return output
-}
-
-const parseSpreadsheetPromise = (url, headerRow) => {
-  return new Promise(function (resolve, reject) {
-    try {
-      fetch(url)
-        .then(res => {
-          res.json().then(json => {
-            console.log('json', json)
-            const data = {}
-            const headers = {}
-            json.feed.entry.forEach(e => {
-              const cell = e["gs$cell"] // eslint-disable-line dot-notation, quotes
-              const row = cell.row
-              const col = cell.col
-              const content = e.content["$t"] // eslint-disable-line dot-notation, quotes
-
-              if (row == headerRow) { // eslint-disable-line
-                headers[col] = { name: content, key: slug(content) }
-              }
-              if (row > headerRow) {
-                if (!data[row]) { data[row] = [] }
-                data[row][col] = content
-              }
-            })
-
-            const output = buildObjectArray(headers, data)
-            console.log(output)
-            resolve(output)
-          })
-        })
-    } catch (err) {
-      console.error(err)
-      reject(err)
-    }
-  })
 }
 
 self.addEventListener(
@@ -79,51 +42,51 @@ self.addEventListener(
     const promises = []
     switch (event.type) {
       case 'parse':
-        fetch(event.url)
-          .then(res => {
-            res.json().then(json => {
-              const data = {}
-              const headers = {}
-              const headerRow = event.headerRow // int
-              json.feed.entry.forEach(e => {
-                const cell = e["gs$cell"] // eslint-disable-line dot-notation, quotes
-                const row = cell.row
-                const col = cell.col
-                const content = e.content["$t"] // eslint-disable-line dot-notation, quotes
+        try {
+          fetch(event.url)
+            .then(res => {
+              res.json()
+                .then(json => {
+                  const headerRow = event.headerRow // int
+                  const data = json.values // 
+                  const headersAndValues = data.splice(headerRow - 1)
+                  const headers = headersAndValues[0]
 
-                if (row == headerRow) { // eslint-disable-line
-                  headers[col] = { name: content, key: slug(content) }
-                }
-                if (row > headerRow) {
-                  if (!data[row]) { data[row] = [] }
-                  data[row][col] = content
-                }
-              })
+                  const output = buildObjectArray(headers, headersAndValues.splice(1))
+                  console.log('output', output)
 
-              const output = buildObjectArray(headers, data)
-
-              // Send the data back to main thread (react).
-              self.postMessage({
-                type: 'parse-result',
-                data: output
-              })
+                  // Send the data back to main thread (react).
+                  self.postMessage({
+                    type: 'parse-result',
+                    data: output
+                  })
+                })
+                .catch(err => {
+                  console.log('error in json from parse: ', err)
+                })
             })
-          })
+        } catch (err) {
+          console.log('Parse error: ', err)
+        }
         break
       case 'multi-parse':
-        event.urls.forEach(u => promises.push(parseSpreadsheetPromise(u, event.headerRow)))
-        Promise.all(promises)
-          .then((values) => {
-            values.forEach(result => result.forEach(item => combinedOutput.push(item)))
-          })
-          .finally(() => {
-            console.log('combined', combinedOutput)
-            // Send the data back to main thread (react).
-            self.postMessage({
-              type: 'parse-result',
-              data: combinedOutput
-            })
-          })
+        // try {
+        //   event.urls.forEach(u => promises.push(parseSpreadsheetPromise(u, event.headerRow)))
+        //   Promise.all(promises)
+        //     .then((values) => {
+        //       values.forEach(result => result.forEach(item => combinedOutput.push(item)))
+        //     })
+        //     .finally(() => {
+        //       console.log('combined', combinedOutput)
+        //       // Send the data back to main thread (react).
+        //       self.postMessage({
+        //         type: 'parse-result',
+        //         data: combinedOutput
+        //       })
+        //     })
+        // } catch (err) {
+        //   console.log('Multiparse error: ', err)
+        // }
         break
     }
   },

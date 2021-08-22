@@ -1,7 +1,11 @@
 /* global localStorage, Worker */
-import React, { useState, useEffect, useLayoutEffect } from 'react'
+import React, { useEffect, useLayoutEffect } from 'react'
 import useStorageState from '../Functions/useStorageState'
 import '../styles/app.scss'
+import { store } from '../src/store'
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistStore } from 'redux-persist'
 
 function loadTheme (styles) {
   const root = document.querySelector(':root')
@@ -47,6 +51,8 @@ function handlePreferences (preferences) {
   }
 }
 
+const persistor = persistStore(store)
+
 function MyApp ({ Component, pageProps }) {
   const [stocks, setStocks] = useStorageState([], 'stocks')
   const [preferences, setPreferences] = useStorageState([], 'preferences')
@@ -63,17 +69,17 @@ function MyApp ({ Component, pageProps }) {
   // Load Stocks from SmartWealth public spreadsheet
   useEffect(() => {
     const spreadSheetId = '1sSOTCWajfq_t0SEMFhfR0JedhgGXNeIH0ULMA2310c0'
-    const spreadSheetTabId = 4 // indexed from 1
-    const spreadsheetUrl = `https://spreadsheets.google.com/feeds/cells/${spreadSheetId}/${spreadSheetTabId}/public/values?alt=json`
+    const spreadSheetTabName = 'Combined' // indexed from 1
+    const apiKey = 'AIzaSyBpINZ6BpCyq57X0EUIHBqy8DsisZ59ZUA'
+    const spreadsheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadSheetId}/values/${spreadSheetTabName}?alt=json&key=${apiKey}`
     const SpreadsheetWorker = new Worker('/js/spreadsheet.js')
-    const store = localStorage
 
     const requestStocksUpdate = () => {
       SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
     }
 
-    const stocks = store.getItem('stocks')
-    const stocksLastUpdated = JSON.parse(store.getItem('stocks-updated'))
+    const stocks = localStorage.getItem('stocks')
+    const stocksLastUpdated = JSON.parse(localStorage.getItem('stocks-updated'))
 
     if (stocks == null) {
       requestStocksUpdate()
@@ -101,8 +107,8 @@ function MyApp ({ Component, pageProps }) {
     SpreadsheetWorker.onmessage = e => {
       if (e.data.type === 'parse-result') {
         if (e.data.data.length > 0) {
-          store.setItem('stocks-updated', JSON.stringify(new Date()))
-          setStocks(e.data.data)
+          localStorage.setItem('stocks-updated', JSON.stringify(new Date()))
+          store.dispatch({ type: 'stocks/setStocks', payload: [e.data.data] })
         }
       }
     }
@@ -118,31 +124,38 @@ function MyApp ({ Component, pageProps }) {
       if (stocks.length === 0) {
       } else {
         let pos = JSON.parse(positions)
-        import('../Functions/GetStock').then(f => {
-          pos = pos.map(p => {
-            const stock = f.GetStock(p.stock.ticker, stocks)
-            p.stock = stock
-            return p
+        if (pos) {
+          import('../Functions/GetStock').then(f => {
+            console.log(pos)
+            pos = pos.map(p => {
+              const stock = f.GetStock(p.stock.ticker, stocks)
+              p.stock = stock
+              return p
+            })
           })
-        })
-        setPositionsHeld(pos)
+          setPositionsHeld(pos)
+        }
       }
     }
   }, [stocks])
 
   return (
-    <Component
-      {...pageProps}
-      stocks={stocks}
-      positionsHeld={positionsHeld}
-      setPositionsHeld={setPositionsHeld}
-      preferences={preferences}
-      setPreferences={setPreferences}
-      setContributions={setContributions}
-      setDividends={setDividends}
-      dividends={dividends}
-      contributions={contributions}
-    />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <Component
+          {...pageProps}
+          stocks={stocks}
+          positionsHeld={positionsHeld}
+          setPositionsHeld={setPositionsHeld}
+          preferences={preferences}
+          setPreferences={setPreferences}
+          setContributions={setContributions}
+          setDividends={setDividends}
+          dividends={dividends}
+          contributions={contributions}
+        />
+      </PersistGate>
+    </Provider>
   )
 }
 
