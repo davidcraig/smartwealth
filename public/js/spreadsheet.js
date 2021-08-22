@@ -53,7 +53,6 @@ self.addEventListener(
                   const headers = headersAndValues[0]
 
                   const output = buildObjectArray(headers, headersAndValues.splice(1))
-                  console.log('output', output)
 
                   // Send the data back to main thread (react).
                   self.postMessage({
