@@ -13,8 +13,8 @@ const visibleColumns = [
   { name: 'Dividend Frequency', view: stock => stock.dividend_frequency }
 ]
 
-function stockTable (stocks) {
-  if (stocks.length === 0) {
+function StockTable ({ stocks }) {
+  if (!stocks || stocks === null || stocks.length === 0) {
     return (
       <p>No stocks to view</p>
     )
@@ -62,7 +62,7 @@ function stockTable (stocks) {
                         {CROWN}
                         {CROWN}
                       </>
-                      )
+                    )
                     : ''
                 }
               </td>
@@ -77,4 +77,4 @@ function stockTable (stocks) {
   )
 }
 
-export default stockTable
+export default StockTable

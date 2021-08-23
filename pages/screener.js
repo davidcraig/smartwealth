@@ -3,8 +3,9 @@ import { Column, Columns } from '@davidcraig/react-bulma'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import StockTable from '../Components/StockTable'
+import { connect } from 'react-redux'
 
-export default function SmartWealth ({ ...props }) {
+export function Screener ({ ...props }) {
   const [filteredStocks, setFilteredStocks] = useState(props.stocks)
   const [dividendStatusFilter, setDividendStatusFilter] = useState('any')
   const [textFilter, setTextFilter] = useState('')
@@ -22,21 +23,22 @@ export default function SmartWealth ({ ...props }) {
   )
 
   const filterStocks = () => {
-    const stocks = props.stocks
-    let filtered = stocks
+    let filtered = props.stocks
 
     /* filter first by status */
     switch (dividendStatusFilter) {
-      case 'any': break
       case 'king':
-        filtered = stocks.filter(s => {
+        filtered = props.stocks.filter(s => {
           return s.dividend_king === 'Yes'
         })
         break
       case 'aristocrat':
-        filtered = stocks.filter(s => {
+        filtered = props.stocks.filter(s => {
           return s.dividend_aristocrat === 'Yes'
         })
+        break
+      case 'any':
+      default:
         break
     }
 
@@ -156,9 +158,15 @@ export default function SmartWealth ({ ...props }) {
             </Column>
           </Columns>
 
-          {StockTable(filteredStocks)}
+          <StockTable stocks={filteredStocks} />
         </div>
       </div>
     </div>
   )
 }
+
+const mapStateToProps = state => ({
+  stocks: state.stocks.data
+})
+
+export default connect(mapStateToProps)(Screener)

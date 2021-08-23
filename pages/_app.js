@@ -3,7 +3,7 @@ import React, { useEffect, useLayoutEffect } from 'react'
 import useStorageState from '../Functions/useStorageState'
 import '../styles/app.scss'
 import { store } from '../src/store'
-import { Provider } from 'react-redux'
+import { Provider, connect } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 
@@ -53,8 +53,7 @@ function handlePreferences (preferences) {
 
 const persistor = persistStore(store)
 
-function MyApp ({ Component, pageProps }) {
-  const [stocks, setStocks] = useStorageState([], 'stocks')
+function MyApp ({ Component, pageProps, stocks }) {
   const [preferences, setPreferences] = useStorageState([], 'preferences')
   const [positionsHeld, setPositionsHeld] = useStorageState([], 'positions')
   const [contributions, setContributions] = useStorageState([], 'contributions')
@@ -78,19 +77,7 @@ function MyApp ({ Component, pageProps }) {
       SpreadsheetWorker.postMessage({ type: 'parse', url: spreadsheetUrl, headerRow: 3 })
     }
 
-    const stocks = localStorage.getItem('stocks')
     const stocksLastUpdated = JSON.parse(localStorage.getItem('stocks-updated'))
-
-    if (stocks == null) {
-      requestStocksUpdate()
-    } else {
-      const parsedStocks = JSON.parse(stocks)
-      if (parsedStocks.length === 0) {
-        requestStocksUpdate()
-      } else {
-        setStocks(JSON.parse(stocks))
-      }
-    }
 
     if (stocksLastUpdated === null) {
       requestStocksUpdate()
@@ -108,43 +95,42 @@ function MyApp ({ Component, pageProps }) {
       if (e.data.type === 'parse-result') {
         if (e.data.data.length > 0) {
           localStorage.setItem('stocks-updated', JSON.stringify(new Date()))
-          store.dispatch({ type: 'stocks/setStocks', payload: [e.data.data] })
+          store.dispatch({ type: 'stocks/setStocks', payload: e.data.data })
         }
       }
     }
   }, [])
 
   // Load any held positions from localStorage.
-  useEffect(() => {
-    const positions = localStorage.getItem('positions')
+  // useEffect(() => {
+  //   const positions = localStorage.getItem('positions')
 
-    if (positions == null) {
-      //
-    } else {
-      if (stocks.length === 0) {
-      } else {
-        let pos = JSON.parse(positions)
-        if (pos) {
-          import('../Functions/GetStock').then(f => {
-            console.log(pos)
-            pos = pos.map(p => {
-              const stock = f.GetStock(p.stock.ticker, stocks)
-              p.stock = stock
-              return p
-            })
-          })
-          setPositionsHeld(pos)
-        }
-      }
-    }
-  }, [stocks])
+  //   if (positions == null) {
+  //     //
+  //   } else {
+  //     if (stocks.length === 0) {
+  //     } else {
+  //       let pos = JSON.parse(positions)
+  //       if (pos) {
+  //         import('../Functions/GetStock').then(f => {
+  //           console.log(pos)
+  //           pos = pos.map(p => {
+  //             const stock = f.GetStock(p.stock.ticker, stocks)
+  //             p.stock = stock
+  //             return p
+  //           })
+  //         })
+  //         setPositionsHeld(pos)
+  //       }
+  //     }
+  //   }
+  // }, [stocks])
 
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <Component
           {...pageProps}
-          stocks={stocks}
           positionsHeld={positionsHeld}
           setPositionsHeld={setPositionsHeld}
           preferences={preferences}

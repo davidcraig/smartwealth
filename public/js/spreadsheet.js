@@ -25,7 +25,7 @@ function buildObjectArray (headers, data) {
     const object = {}
 
     headers.forEach((header, index) => {
-      object[header] = data[itemIndex][index]
+      object[slug(header)] = data[itemIndex][index]
     })
 
     output.push(object)
@@ -38,8 +38,6 @@ self.addEventListener(
   'message',
   function (e) {
     const event = e.data
-    const combinedOutput = []
-    const promises = []
     switch (event.type) {
       case 'parse':
         try {
@@ -48,7 +46,7 @@ self.addEventListener(
               res.json()
                 .then(json => {
                   const headerRow = event.headerRow // int
-                  const data = json.values // 
+                  const data = json.values
                   const headersAndValues = data.splice(headerRow - 1)
                   const headers = headersAndValues[0]
 

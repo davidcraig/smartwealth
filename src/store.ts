@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { stocksSlice } from './features/stocks/stockSlice'
 import { combineReducers } from 'redux'
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
 import {
   persistReducer,
@@ -15,7 +16,8 @@ import storage from 'redux-persist/lib/storage'
 
 const persistConfig = {
   key: 'smartwealth',
-  storage
+  storage: storage,
+  stateReconciler: autoMergeLevel2 // see "Merge Process" section for details.
 };
 
 const rootReducer = combineReducers({
