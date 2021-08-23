@@ -8,6 +8,7 @@ import PositionHeldInterface from '../types/PositionHeld'
 import { Column, Columns, Card } from '@davidcraig/react-bulma'
 import useStorageState from '../Functions/useStorageState'
 import uuid from '../Functions/uuid'
+import { connect } from 'react-redux'
 
 interface IGoal {
   text: string;
@@ -273,7 +274,7 @@ function renderCustomGoals (
       </div>
 
       {
-        goalType === 'stock_amount' && (
+        goalType === 'stock_amount' && filteredStocks && (
           <>
             <label className='label'>
               Stock?
@@ -318,14 +319,14 @@ function renderCustomGoals (
   )
 }
 
-function Goals ({ stocks, positionsHeld }) {
+export function Goals ({ stocks, positionsHeld }) {
   const [goals, setGoals] = useStorageState(defaultGoals, 'goals')
   const [customGoals, setCustomGoals] = useStorageState([], 'custom-goals')
   const [goalType, setGoalType] = useState('custom')
   const [goalName, setGoalName] = useState('')
   const [goalTarget, setGoalTarget] = useState(0)
   const [goalTicker, setGoalTicker] = useState('')
-  const [filteredStocks, setFilteredStocks] = useState('')
+  const [filteredStocks, setFilteredStocks] = useState([])
   const addCustomGoal = () => {
     if (goalType === 'stock_amount' && goalTicker === '') {
       console.warn('Cant save a stock amount goal without a ticker symbol')
@@ -356,6 +357,7 @@ function Goals ({ stocks, positionsHeld }) {
   }
 
   useEffect(() => {
+    console.log('stocks', stocks)
     setFilteredStocks(stocks)
   }, [stocks])
 
@@ -408,4 +410,8 @@ function Goals ({ stocks, positionsHeld }) {
   )
 }
 
-export default Goals
+const mapStateToProps = state => ({
+  stocks: state.stocks.data
+})
+
+export default connect(mapStateToProps)(Goals)
