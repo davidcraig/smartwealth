@@ -3,7 +3,7 @@ import React, { useEffect, useLayoutEffect } from 'react'
 import useStorageState from '../Functions/useStorageState'
 import '../styles/app.scss'
 import { store } from '../src/store'
-import { Provider, connect } from 'react-redux'
+import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 

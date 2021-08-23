@@ -5,6 +5,7 @@ import Navbar from '../Components/Navbar'
 import PositionHeldInterface from '../types/PositionHeld'
 import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
+import { connect } from 'react-redux'
 
 function PieStats ({ positionsHeld }) {
   const pies = {}
@@ -73,7 +74,7 @@ function PieStats ({ positionsHeld }) {
   )
 }
 
-export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
+export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
   const [searchFilteredStocks, setSearchFilteredStocks] = useState([])
 
   const hasPositions = positionsHeld && positionsHeld.length > 0
@@ -318,3 +319,9 @@ export default function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
     </>
   )
 }
+
+const mapStateToProps = state => ({
+  stocks: state.stocks.data
+})
+
+export default connect(mapStateToProps)(Holdings)
