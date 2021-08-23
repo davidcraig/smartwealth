@@ -1,6 +1,7 @@
 /* global Worker */
 import React, { useState, useEffect, Fragment } from 'react'
 import Head from 'next/head'
+import { connect } from 'react-redux'
 import Navbar from '../Components/Navbar'
 import GetStock from '../Functions/GetStock'
 import GetPositionValue from '../Functions/GetPositionValue'
@@ -138,7 +139,7 @@ function nextTwelveMonthsDividends (forecast) {
   return total
 }
 
-export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
+export function SmartWealth ({ positionsHeld, stocks, ...props }) {
   const [forecast, setForecast] = useState([])
   const [pies, setPies] = useState([])
   const [pieContributions, setPieContributions] = useState([]) // eslint-disable-line no-unused-vars
@@ -315,3 +316,9 @@ export default function SmartWealth ({ positionsHeld, stocks, ...props }) {
     </div>
   )
 }
+
+const mapStateToProps = state => ({
+  stocks: state.stocks.data
+})
+
+export default connect(mapStateToProps)(SmartWealth)
