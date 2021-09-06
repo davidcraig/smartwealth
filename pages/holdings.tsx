@@ -213,7 +213,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                           <th colSpan={2}>Quantity</th>
                           <th onClick={sortByPieName}>Pie</th>
                           <th>Pie Weight</th>
-                          <th>Div. Yield</th>
+                          <th colSpan={2}>Div. Yield</th>
                         </tr>
                       </thead>
                       <tbody>
