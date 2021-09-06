@@ -208,18 +208,19 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                     <table className='table is-striped is-narrow holdings-table'>
                       <thead>
                         <tr>
-                          <th>Ticker</th>
+                          <th className='header-ticker'>Ticker</th>
                           <th onClick={sortByStockName}>Stock</th>
                           <th colSpan={2}>Quantity</th>
                           <th onClick={sortByPieName}>Pie</th>
-                          <th colSpan={2}>Pie Weight</th>
+                          <th>Pie Weight</th>
+                          <th>Div. Yield</th>
                         </tr>
                       </thead>
                       <tbody>
                         {positionsHeld && positionsHeld.length > 0 && positionsHeld.map((p, idx) => {
                           return p && (
                             <tr key={`${p.stock.ticker}${p.stock.name}`}>
-                              <td>{p.stock.ticker}</td>
+                              <td className='ticker'>{p.stock.ticker}</td>
                               <td>{p.stock.name}</td>
                               <td>{FormattedDecimal(p.quantity)}</td>
                               <td>
@@ -253,6 +254,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                                   style={{ maxWidth: '3em' }}
                                 />
                               </td>
+                              <td>{p.stock.dividend_yield}</td>
                               <td>
                                 <a onClick={() => {
                                   const x = confirm('Are you sure')
