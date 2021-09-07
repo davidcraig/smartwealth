@@ -43,5 +43,17 @@
   },
   "ts-standard": {
     "project": "./tsconfig.json"
-  }
+  },
+  "browserslist": [
+    "last 1 version",
+    "not samsung 14",
+    "not IE 11",
+    "not op_mini all",
+    "not op_mob 64",
+    "not ie_mob 11",
+    "not and_qq 10",
+    "not baidu 7",
+    "not kaios 2",
+    "not bb 10"
+  ]
 }
