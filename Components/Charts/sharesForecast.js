@@ -8,16 +8,21 @@ const themeColour2 = '#494e5c'
 // const wowEpicColour = '#c56fff'
 
 const is30Year = (months) => {
-  return months.length === 360
+  console.log(months.length)
+  return months.length === 359 || months.length === 360
+}
+
+const is40Year = (months) => {
+  return months.length === 479 || months.length === 480
 }
 
 const chartOptions = (shareData, months) => {
   // We need to create dividendData
   const series = []
   let tickInterval = 100
-  if (is30Year(months)) { tickInterval = 500 }
+  if (is30Year(months) || is40Year(months)) { tickInterval = 500 }
 
-  if (is30Year(months)) {
+  if (is30Year(months) || is40Year(months)) {
     const totalData = {
       name: 'Total Shares',
       color: '#00758a',
@@ -25,7 +30,7 @@ const chartOptions = (shareData, months) => {
     }
 
     Object.keys(shareData).forEach(company => {
-      for (let i = 0; i < 360; i++) {
+      for (let i = 0; i < months.length; i++) {
         totalData.data[i] = (totalData.data[i] || 0) + shareData[company][i]
       }
     })
@@ -95,7 +100,7 @@ const chartOptions = (shareData, months) => {
     series
   }
 
-  if (is30Year(months)) {
+  if (is30Year(months) || is40Year(months)) {
     chartOpts.chart.type = 'area'
   }
 

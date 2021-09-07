@@ -9,12 +9,7 @@ const cache = {
 }
 
 const config = {
-  years: 40,
-  charts: {
-    thirtyYears: {
-      totalOnly: true
-    }
-  }
+  years: 40
 }
 
 function uuidv4 () {
@@ -212,17 +207,17 @@ function recordDividend (amount, stock, currentPeriod, year, forecastChartData) 
 
 function recordShareBuy (amount, position, currentPeriod, year, forecastChartData) {
   if (amount < 0) { console.error('amount is negative') }
-  if (forecastChartData.thirtyYears.shareData[position.stock.name][currentPeriod] > 0) {
+  if (forecastChartData.fortyYears.shareData[position.stock.name][currentPeriod] > 0) {
     console.warn('period already recorded'); return forecastChartData
   }
 
   const newQuantity = parseFloat((getPositionQuantity(position) + amount).toFixed(6))
 
-  if (year < 2) { forecastChartData.oneYear.shareData[position.stock.name][currentPeriod] = newQuantity }
-  if (year < 6) { forecastChartData.fiveYears.shareData[position.stock.name][currentPeriod] = newQuantity }
-  if (year < 11) { forecastChartData.tenYears.shareData[position.stock.name][currentPeriod] = newQuantity }
-  if (year < 31) { forecastChartData.thirtyYears.shareData[position.stock.name][currentPeriod] = newQuantity }
   forecastChartData.fortyYears.shareData[position.stock.name][currentPeriod] = newQuantity
+  if (year < 31) { forecastChartData.thirtyYears.shareData[position.stock.name][currentPeriod] = newQuantity }
+  if (year < 11) { forecastChartData.tenYears.shareData[position.stock.name][currentPeriod] = newQuantity }
+  if (year < 6) { forecastChartData.fiveYears.shareData[position.stock.name][currentPeriod] = newQuantity }
+  if (year < 2) { forecastChartData.oneYear.shareData[position.stock.name][currentPeriod] = newQuantity }
 
   return forecastChartData
 }
@@ -244,10 +239,11 @@ function performMonthForecast (jsMonth, currentPeriod, year, positions, forecast
   const categoryName = `(${year}) ${MONTHS[jsMonth]}`
 
   // Create all the months
-  if (year < 2) { forecastChartData.oneYear.months.push(categoryName) }
-  if (year < 6) { forecastChartData.fiveYears.months.push(categoryName) }
+  forecastChartData.fortyYears.months.push(categoryName)
+  if (year < 31) { forecastChartData.thirtyYears.months.push(categoryName) }
   if (year < 11) { forecastChartData.tenYears.months.push(categoryName) }
-  forecastChartData.thirtyYears.months.push(categoryName)
+  if (year < 6) { forecastChartData.fiveYears.months.push(categoryName) }
+  if (year < 2) { forecastChartData.oneYear.months.push(categoryName) }
 
   // Perform the forecasting
   positions = positions.map(p => {
@@ -544,11 +540,11 @@ function handlePerformForecast (event) {
     // Perform the forecast
     [positions, pies, forecastChartData, logEntries] = performMonthForecast(thisMonth, currPeriod, year, positions, forecastChartData, logEntries, pies, pieContributions)
     switch (currPeriod) {
-      // case 11:
-      // case 59:
-      // case 119:
-      case 479: // 40 Years
+      // case 11: // 1 Year
+      // case 59: // 5 Years
+      // case 119: // 10 Years
       // case 359: // 30 Years
+      case 479: // 40 Years
         console.log('sending data for period', currPeriod)
         self.postMessage({
           type: 'forecast-log',

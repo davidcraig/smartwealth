@@ -6,32 +6,12 @@ import GetFrequencyByStockName from '../../Functions/Stock/GetFrequencyByStockNa
 const themeColour2 = '#494e5c'
 
 const is30Year = (months) => {
-  return months.length === 360
+  console.log(months.length)
+  return months.length === 359 || months.length === 360
 }
 
-/**
- * Builds a chart with a single series.
- * @param {*} dividendData Dividend data.
- * @returns Series array.
- */
-function buildDataAsSingleSeries (dividendData) {
-  const series = []
-  const totalData = {
-    name: 'Dividends',
-    color: '#127905',
-    data: []
-  }
-
-  Object.keys(dividendData).forEach(company => {
-    for (let i = 0; i < 360; i++) {
-      const total = totalData.data[i] || 0
-      const coValue = dividendData[company][i] || 0
-      if (coValue > 0) { totalData.data[i] = total + coValue }
-    }
-  })
-
-  series.push(totalData)
-  return series
+const is40Year = (months) => {
+  return months.length === 479 || months.length === 480
 }
 
 /**
@@ -56,10 +36,10 @@ function buildDataAsCompanyGrouped (dividendData) {
  * @param {*} dividendData Dividend data.
  * @returns Series array.
  */
-function buildDataAsFrequencyGrouped (dividendData) {
+function buildDataAsFrequencyGrouped (dividendData, months) {
   const buildZeroValArray = () => {
     const array = []
-    for (let i = 0; i < 360; i++) {
+    for (let i = 0; i < months.length; i++) {
       array[i] = 0
     }
     return array
@@ -81,7 +61,7 @@ function buildDataAsFrequencyGrouped (dividendData) {
     ]
     const freq = GetFrequencyByStockName(company)
     if (validFrequencies.includes(freq)) {
-      for (let i = 0; i < 360; i++) {
+      for (let i = 0; i < months.length; i++) {
         const freqTotal = freqSeries[freq][i]
         const coValue = dividendData[company][i] || 0
         if (coValue > 0) { freqSeries[freq][i] = freqTotal + coValue }
@@ -105,50 +85,76 @@ function buildDataAsFrequencyGrouped (dividendData) {
     }
   })
 
-  return [
-    {
+  const returnData = []
+
+  // Monthly
+  if (freqSeries.monthly.some(v => v > 0)) {
+    returnData.push({
       name: 'Monthly',
       color: '#127905',
       data: freqSeries.monthly,
       type: 'line'
-    },
-    {
+    })
+  }
+
+  // Quarterly
+  if (freqSeries.quarterly.some(v => v > 0)) {
+    returnData.push({
       name: 'Quarterly',
       color: '#00478a',
       data: freqSeries.quarterly,
       type: 'scatter'
-    },
-    {
+    })
+  }
+
+  // Annual
+  if (freqSeries.annual.some(v => v > 0)) {
+    returnData.push({
       name: 'Annual',
       color: '#8a7100',
       data: freqSeries.annual,
       type: 'spline'
-    },
-    {
+    })
+  }
+
+  // Bi-Annual
+  if (freqSeries.biannual.some(v => v > 0)) {
+    returnData.push({
       name: 'Bi-Annual',
       color: '#00758a',
       data: freqSeries.biannual,
       type: 'line'
-    },
-    {
+    })
+  }
+
+  // Annual + Interim
+  if (freqSeries.annualinterim.some(v => v > 0)) {
+    returnData.push({
       name: 'Annual + Interim',
       color: '#8a7100',
       data: freqSeries.annualinterim,
       type: 'spline'
-    },
-    {
+    })
+  }
+
+  console.log(returnData.length)
+
+  if (returnData.length > 1) {
+    returnData.push({
       name: 'Total',
       color: '#8a7100',
       data: freqSeries.total,
       type: 'scatter'
-    },
-    {
+    })
+    returnData.push({
       name: 'Six Month Average',
       color: '#ee611c',
       data: freqSeries.sixMonthAverage,
       type: 'line'
-    }
-  ]
+    })
+  }
+
+  return returnData
 }
 
 const chartOptions = (dividendData, months) => {
@@ -156,9 +162,9 @@ const chartOptions = (dividendData, months) => {
   // We need to create dividendData
   const tickInterval = 100
 
-  if (is30Year(months)) {
+  if (is30Year(months) || is40Year(months)) {
     // series = buildDataAsSingleSeries(dividendData)
-    series = buildDataAsFrequencyGrouped(dividendData)
+    series = buildDataAsFrequencyGrouped(dividendData, months)
   } else {
     series = buildDataAsCompanyGrouped(dividendData)
   }
@@ -236,7 +242,7 @@ const chartOptions = (dividendData, months) => {
     series
   }
 
-  if (is30Year(months)) {
+  if (is30Year(months) || is40Year(months)) {
     chartOpts.yAxis.tickInterval = 500
     chartOpts.chart.type = 'spline'
     chartOpts.legend.enabled = true
