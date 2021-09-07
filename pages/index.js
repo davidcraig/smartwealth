@@ -14,16 +14,16 @@ import StockValueBySector from '../Components/Charts/StockValueBySector'
 import BaseCurrency from '../Functions/Formatting/BaseCurrency'
 import { hasProp } from '../Functions/Helpers'
 
-function ForecastContent (forecast, forecastLog) {
+function ForecastContent (forecast, forecastLog, stocks) {
   if (typeof forecast === 'undefined') { return }
 
-  function forTimeframe (time, forecast, filteredLog) {
+  function forTimeframe (time, forecast, filteredLog, stocks) {
     const showLog = false
 
     return (
       <>
         <h4 className='h4'>Dividends Chart</h4>
-        {DividendForecast(forecast)}
+        {DividendForecast(stocks, forecast)}
 
         <h4 className='h4'>Shares Chart</h4>
         {SharesForecast(forecast)}
@@ -56,23 +56,23 @@ function ForecastContent (forecast, forecastLog) {
   const forecastTabs = [
     {
       title: '1 Year',
-      content: forTimeframe('1 Year', forecast.oneYear, forecastLog.filter(f => f.year === 1))
+      content: forTimeframe('1 Year', forecast.oneYear, forecastLog.filter(f => f.year === 1), stocks)
     },
     {
       title: '5 Years',
-      content: forTimeframe('5 Years', forecast.fiveYears, forecastLog.filter(f => f.year < 6))
+      content: forTimeframe('5 Years', forecast.fiveYears, forecastLog.filter(f => f.year < 6), stocks)
     },
     {
       title: '10 Years',
-      content: forTimeframe('10 Years', forecast.tenYears, forecastLog.filter(f => f.year < 11))
+      content: forTimeframe('10 Years', forecast.tenYears, forecastLog.filter(f => f.year < 11), stocks)
     },
     {
       title: '30 Years',
-      content: forTimeframe('30 Years', forecast.thirtyYears, forecastLog.filter(f => f.year < 31))
+      content: forTimeframe('30 Years', forecast.thirtyYears, forecastLog.filter(f => f.year < 31), stocks)
     },
     {
       title: '40 Years',
-      content: forTimeframe('40 Years', forecast.fortyYears, forecastLog)
+      content: forTimeframe('40 Years', forecast.fortyYears, forecastLog, stocks)
     }
   ]
 
@@ -245,7 +245,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
     /* Trigger the forecast */
   }, [positionsHeld, pieContributions])
 
-  const forecastOutput = ForecastContent(forecast, forecastLog)
+  const forecastOutput = ForecastContent(forecast, forecastLog, stocks)
 
   function updatePieMonthlyContributions () {
     const pieContributions = []

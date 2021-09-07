@@ -1,5 +1,18 @@
-function GetFrequencyByName (stock) {
-  switch (stock) {
+import GetStockByName from './GetStockByName'
+
+function GetFrequencyByStockName (stocks, stockName) {
+  if (stocks && stocks.length > 0) {
+    const stock = GetStockByName(stocks, stockName)
+    if (stock) {
+      switch (stock.dividend_frequency) {
+        case 'Monthly': return 'monthly'
+        case 'Quarterly': return 'quarterly'
+        default: return stock.dividend_frequency
+      }
+    }
+  }
+
+  switch (stockName) {
     // MONTHLY STOCKS
     case 'AGNC Investment Corp':
     case 'American Capital Agency Corp':
@@ -168,4 +181,4 @@ function GetFrequencyByName (stock) {
   }
 }
 
-export default GetFrequencyByName
+export default GetFrequencyByStockName

@@ -35,7 +35,7 @@ function buildDataAsCompanyGrouped (dividendData) {
  * @param {*} dividendData Dividend data.
  * @returns Series array.
  */
-function buildDataAsFrequencyGrouped (dividendData, months) {
+function buildDataAsFrequencyGrouped (dividendData, months, stocks) {
   const buildZeroValArray = (months) => {
     const array = []
     for (let i = 0; i < months.length; i++) {
@@ -46,6 +46,7 @@ function buildDataAsFrequencyGrouped (dividendData, months) {
 
   const freqSeries = {
     monthly: buildZeroValArray(months),
+    unknown: buildZeroValArray(months),
     quarterly: buildZeroValArray(months),
     annual: buildZeroValArray(months),
     biannual: buildZeroValArray(months),
@@ -54,10 +55,10 @@ function buildDataAsFrequencyGrouped (dividendData, months) {
     sixMonthAverage: buildZeroValArray(months)
   }
 
-  const validFrequencies = ['monthly', 'quarterly', 'annual', 'annualinterim']
+  const validFrequencies = ['monthly', 'quarterly', 'annual', 'annualinterim', 'unknown']
 
   Object.keys(dividendData).forEach(company => {
-    const freq = GetFrequencyByStockName(company)
+    const freq = GetFrequencyByStockName(stocks, company)
     if (validFrequencies.includes(freq)) {
       for (let i = 0; i < months.length; i++) {
         const freqTotal = freqSeries[freq][i]
@@ -91,6 +92,16 @@ function buildDataAsFrequencyGrouped (dividendData, months) {
       name: 'Monthly',
       color: '#127905',
       data: freqSeries.monthly,
+      type: 'line'
+    })
+  }
+
+  // Unknown Frequency
+  if (freqSeries.unknown.some(v => v > 0)) {
+    returnData.push({
+      name: 'Unknown',
+      color: '#127905',
+      data: freqSeries.unknown,
       type: 'line'
     })
   }
@@ -153,14 +164,14 @@ function buildDataAsFrequencyGrouped (dividendData, months) {
   return returnData
 }
 
-const chartOptions = (dividendData, months) => {
+const chartOptions = (dividendData, months, stocks) => {
   let series = []
   // We need to create dividendData
   const tickInterval = 100
 
   if (is30Year(months) || is40Year(months)) {
     // series = buildDataAsSingleSeries(dividendData)
-    series = buildDataAsFrequencyGrouped(dividendData, months)
+    series = buildDataAsFrequencyGrouped(dividendData, months, stocks)
   } else {
     series = buildDataAsCompanyGrouped(dividendData)
   }
@@ -251,9 +262,9 @@ const chartOptions = (dividendData, months) => {
   return chartOpts
 }
 
-const dividendForecast = (forecast) => {
-  if (forecast) {
-    const options = chartOptions(forecast.dividendData, forecast.months)
+const dividendForecast = (stocks, forecast) => {
+  if (forecast && stocks) {
+    const options = chartOptions(forecast.dividendData, forecast.months, stocks)
 
     return (
       <NextHighchart
