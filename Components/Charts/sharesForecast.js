@@ -8,7 +8,6 @@ const themeColour2 = '#494e5c'
 // const wowEpicColour = '#c56fff'
 
 const is30Year = (months) => {
-  console.log(months.length)
   return months.length === 359 || months.length === 360
 }
 

@@ -207,8 +207,14 @@ function recordDividend (amount, stock, currentPeriod, year, forecastChartData) 
 
 function recordShareBuy (amount, position, currentPeriod, year, forecastChartData) {
   if (amount < 0) { console.error('amount is negative') }
-  if (forecastChartData.fortyYears.shareData[position.stock.name][currentPeriod] > 0) {
-    console.warn('period already recorded'); return forecastChartData
+
+  if (
+    !Object.prototype.hasOwnProperty.call(
+      forecastChartData.fortyYears.shareData[position.stock.name],
+      'currentPeriod'
+    ) || forecastChartData.fortyYears.shareData[position.stock.name][currentPeriod] > 0
+  ) {
+    return forecastChartData
   }
 
   const newQuantity = parseFloat((getPositionQuantity(position) + amount).toFixed(6))

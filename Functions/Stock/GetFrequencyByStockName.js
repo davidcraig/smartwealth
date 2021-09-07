@@ -4,20 +4,29 @@ function GetFrequencyByName (stock) {
     case 'AGNC Investment Corp':
     case 'American Capital Agency Corp':
     case 'ARMOUR Residential REIT, Inc':
-    case 'Realty Income':
-    case 'Oxford Lane Capital Corp':
-    case 'Oxford Square Capital Corp':
+    case 'Broadmark Realty Capital Inc.':
+    case 'Cross Timbers Royalty Trust':
     case 'Dynex Capital, Inc.':
+    case 'Ediston Property Investment Company':
     case 'Gladstone Capital':
     case 'Gladstone Commercial':
     case 'Gladstone Investment':
     case 'Gladstone Land':
+    case 'Horizon Technology Finance Corporation':
     case 'LTC REIT':
     case 'Main Street Capital Corp':
+    case 'Orchid Island Capital':
+    case 'Oxford Lane Capital Corp':
+    case 'Oxford Square Capital Corp':
+    case 'Pembina Pipeline Corporation':
+    case 'PennantPark Floating Rate Capital Ltd':
+    case 'Prospect Capital Corporation':
+    case 'Realty Income':
     case 'Shaw Communications (Class B)':
-    case 'STAG':
+    case 'SLR Senior Investment Corp':
     case 'STAG Industrial':
-    case 'Tesco':
+    case 'STAG':
+    case 'Stellus Capital Investment Corporation':
     case 'Vanguard USD Treasury Bond':
       return 'monthly'
 
@@ -152,6 +161,10 @@ function GetFrequencyByName (stock) {
     case 'Reckitt Benckiser':
     case 'Sage Group Plc':
       return 'annualinterim'
+
+    default:
+      console.log('GetFrequencyByStockName.js - stock: "', stock, '" frequency not set')
+      return 'unknown'
   }
 }
 

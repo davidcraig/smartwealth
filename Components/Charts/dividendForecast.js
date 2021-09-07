@@ -6,7 +6,6 @@ import GetFrequencyByStockName from '../../Functions/Stock/GetFrequencyByStockNa
 const themeColour2 = '#494e5c'
 
 const is30Year = (months) => {
-  console.log(months.length)
   return months.length === 359 || months.length === 360
 }
 
@@ -37,7 +36,7 @@ function buildDataAsCompanyGrouped (dividendData) {
  * @returns Series array.
  */
 function buildDataAsFrequencyGrouped (dividendData, months) {
-  const buildZeroValArray = () => {
+  const buildZeroValArray = (months) => {
     const array = []
     for (let i = 0; i < months.length; i++) {
       array[i] = 0
@@ -46,13 +45,13 @@ function buildDataAsFrequencyGrouped (dividendData, months) {
   }
 
   const freqSeries = {
-    monthly: buildZeroValArray(),
-    quarterly: buildZeroValArray(),
-    annual: buildZeroValArray(),
-    biannual: buildZeroValArray(),
-    annualinterim: buildZeroValArray(),
-    total: buildZeroValArray(),
-    sixMonthAverage: buildZeroValArray()
+    monthly: buildZeroValArray(months),
+    quarterly: buildZeroValArray(months),
+    annual: buildZeroValArray(months),
+    biannual: buildZeroValArray(months),
+    annualinterim: buildZeroValArray(months),
+    total: buildZeroValArray(months),
+    sixMonthAverage: buildZeroValArray(months)
   }
 
   const validFrequencies = ['monthly', 'quarterly', 'annual', 'annualinterim']
@@ -135,8 +134,6 @@ function buildDataAsFrequencyGrouped (dividendData, months) {
       type: 'spline'
     })
   }
-
-  console.log(returnData.length)
 
   if (returnData.length > 1) {
     returnData.push({
