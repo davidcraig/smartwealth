@@ -165,11 +165,13 @@ const nextTwelveMonthsDividends = (forecast) => dividendSumForForecastKey(foreca
 const nextFiveYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'fiveYears')
 const nextTenYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'tenYears')
 const nextThirtyYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'thirtyYears')
+const nextFortyYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'fortyYears')
 
 const nextTwelveMonthsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'oneYear', stocks)
 const nextFiveYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'fiveYears', stocks)
 const nextTenYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'tenYears', stocks)
 const nextThirtyYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'thirtyYears', stocks)
+const nextFortyYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'fortyYears', stocks)
 
 export function SmartWealth ({ positionsHeld, stocks, ...props }) {
   const [forecast, setForecast] = useState([])
@@ -337,6 +339,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
                         <tr><td>5 Years</td><td>{BaseCurrency(nextFiveYearsDividends(forecast))}</td></tr>
                         <tr><td>10 Years</td><td>{BaseCurrency(nextTenYearsDividends(forecast))}</td></tr>
                         <tr><td>30 Years</td><td>{BaseCurrency(nextThirtyYearsDividends(forecast))}</td></tr>
+                        <tr><td>40 Years</td><td>{BaseCurrency(nextFortyYearsDividends(forecast))}</td></tr>
                       </tbody>
                     </table>
                     <p>Net Worth</p>
@@ -346,6 +349,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
                         <tr><td>5 Years</td><td>{BaseCurrency(nextFiveYearsNetWorth(forecast, stocks))}</td></tr>
                         <tr><td>10 Years</td><td>{BaseCurrency(nextTenYearsNetWorth(forecast, stocks))}</td></tr>
                         <tr><td>30 Years</td><td>{BaseCurrency(nextThirtyYearsNetWorth(forecast, stocks))}</td></tr>
+                        <tr><td>40 Years</td><td>{BaseCurrency(nextFortyYearsNetWorth(forecast, stocks))}</td></tr>
                       </tbody>
                     </table>
                   </Card>
