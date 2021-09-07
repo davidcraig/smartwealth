@@ -18,6 +18,7 @@ function GetPositionValue (pos, stock, options = { currency: 'GBP' }) {
       exchangeRate = exchangeRates.EURO.GBP; break // Inverse: 1.16201
     case 'GBX p': exchangeRate = 0.01; break // Inverse: 100
   }
+
   const numShares = parseFloat(pos.quantity)
   const price = parseFloat(stockObject.share_price)
   return (price * numShares) * exchangeRate

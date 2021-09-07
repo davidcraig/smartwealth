@@ -357,7 +357,6 @@ export function Goals ({ stocks, positionsHeld }) {
   }
 
   useEffect(() => {
-    console.log('stocks', stocks)
     setFilteredStocks(stocks)
   }, [stocks])
 

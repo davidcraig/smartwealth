@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { connect } from 'react-redux'
 import Navbar from '../Components/Navbar'
 import GetStock from '../Functions/GetStock'
+import GetStockByName from '../Functions/Stock/GetStockByName'
 import GetPositionValue from '../Functions/GetPositionValue'
 import { Column, Columns, Card, TabbedContent } from '@davidcraig/react-bulma'
 import DividendForecast from '../Components/Charts/dividendForecast'
@@ -128,20 +129,47 @@ function PortfolioValue ({ positionsHeld, stocks }) {
   }))
 }
 
-function nextTwelveMonthsDividends (forecast) {
-  if (!forecast || !hasProp(forecast, 'oneYear')) {
+function dividendSumForForecastKey (forecast, forecastKey) {
+  if (!forecast || !hasProp(forecast, forecastKey)) {
     return 0
   }
 
   let total = 0
-  Object.keys(forecast.oneYear.dividendData).forEach(key => {
-    const dividendArr = forecast.oneYear.dividendData[key]
+  Object.keys(forecast[forecastKey].dividendData).forEach(key => {
+    const dividendArr = forecast[forecastKey].dividendData[key]
     dividendArr.forEach(dividend => {
       total = total + dividend
     })
   })
   return total
 }
+
+function netWorthForForecastKey (forecast, forecastKey, stocks) {
+  if (!forecast || !hasProp(forecast, forecastKey)) {
+    return 0
+  }
+
+  let total = 0
+  Object.keys(forecast[forecastKey].shareData).forEach(key => {
+    const shareArr = forecast[forecastKey].shareData[key]
+    const company = key
+    const stock = GetStockByName(stocks, company)
+    const shares = shareArr[shareArr.length - 1]
+    total += (GetPositionValue({ quantity: shares }, stock) || 0)
+    // total += (shares * price)
+  })
+  return total
+}
+
+const nextTwelveMonthsDividends = (forecast) => dividendSumForForecastKey(forecast, 'oneYear')
+const nextFiveYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'fiveYears')
+const nextTenYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'tenYears')
+const nextThirtyYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'thirtyYears')
+
+const nextTwelveMonthsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'oneYear', stocks)
+const nextFiveYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'fiveYears', stocks)
+const nextTenYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'tenYears', stocks)
+const nextThirtyYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'thirtyYears', stocks)
 
 export function SmartWealth ({ positionsHeld, stocks, ...props }) {
   const [forecast, setForecast] = useState([])
@@ -302,7 +330,24 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
                   <Card title='Stats'>
                     <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
                     <p>Portfolio Value: <PortfolioValue positionsHeld={positionsHeld} /></p>
-                    <p>Dividends forecast over next 12 months: {BaseCurrency(nextTwelveMonthsDividends(forecast))}</p>
+                    <p>Dividends</p>
+                    <table className='table is-narrow'>
+                      <tbody>
+                        <tr><td>12 Months</td><td>{BaseCurrency(nextTwelveMonthsDividends(forecast))}</td></tr>
+                        <tr><td>5 Years</td><td>{BaseCurrency(nextFiveYearsDividends(forecast))}</td></tr>
+                        <tr><td>10 Years</td><td>{BaseCurrency(nextTenYearsDividends(forecast))}</td></tr>
+                        <tr><td>30 Years</td><td>{BaseCurrency(nextThirtyYearsDividends(forecast))}</td></tr>
+                      </tbody>
+                    </table>
+                    <p>Net Worth</p>
+                    <table className='table is-narrow'>
+                      <tbody>
+                        <tr><td>12 Months</td><td>{BaseCurrency(nextTwelveMonthsNetWorth(forecast, stocks))}</td></tr>
+                        <tr><td>5 Years</td><td>{BaseCurrency(nextFiveYearsNetWorth(forecast, stocks))}</td></tr>
+                        <tr><td>10 Years</td><td>{BaseCurrency(nextTenYearsNetWorth(forecast, stocks))}</td></tr>
+                        <tr><td>30 Years</td><td>{BaseCurrency(nextThirtyYearsNetWorth(forecast, stocks))}</td></tr>
+                      </tbody>
+                    </table>
                   </Card>
                   <Card title='Diversification'>
                     <h4 className='h4'>Stocks by Sector</h4>
