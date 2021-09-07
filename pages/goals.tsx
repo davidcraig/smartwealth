@@ -126,7 +126,7 @@ function RenderGoals ({ goals, keyName, title, setGoals }) {
                 <td style={rowStyle}>
                   <input
                     type='checkbox'
-                    defaultChecked={goal.complete}
+                    checked={goal.complete}
                     onClick={() => {
                       toggleGoalComplete(goals, keyName, goal, setGoals)
                     }}

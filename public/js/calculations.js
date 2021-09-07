@@ -8,6 +8,15 @@ const cache = {
   dividendInterimMonths: {}
 }
 
+const config = {
+  years: 40,
+  charts: {
+    thirtyYears: {
+      totalOnly: true
+    }
+  }
+}
+
 function uuidv4 () {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     /* eslint-disable */
@@ -192,7 +201,8 @@ function getDividendInterimMonths (stock) {
 function recordDividend (amount, stock, currentPeriod, year, forecastChartData) {
   if (amount < 0) { console.error('amount is negative') }
 
-  forecastChartData.thirtyYears.dividendData[stock.name][currentPeriod] = amount
+  forecastChartData.fortyYears.dividendData[stock.name][currentPeriod] = amount
+  if (year < 31) { forecastChartData.thirtyYears.dividendData[stock.name][currentPeriod] = amount }
   if (year < 11) { forecastChartData.tenYears.dividendData[stock.name][currentPeriod] = amount }
   if (year < 6) { forecastChartData.fiveYears.dividendData[stock.name][currentPeriod] = amount }
   if (year < 2) { forecastChartData.oneYear.dividendData[stock.name][currentPeriod] = amount }
@@ -211,7 +221,8 @@ function recordShareBuy (amount, position, currentPeriod, year, forecastChartDat
   if (year < 2) { forecastChartData.oneYear.shareData[position.stock.name][currentPeriod] = newQuantity }
   if (year < 6) { forecastChartData.fiveYears.shareData[position.stock.name][currentPeriod] = newQuantity }
   if (year < 11) { forecastChartData.tenYears.shareData[position.stock.name][currentPeriod] = newQuantity }
-  forecastChartData.thirtyYears.shareData[position.stock.name][currentPeriod] = newQuantity
+  if (year < 31) { forecastChartData.thirtyYears.shareData[position.stock.name][currentPeriod] = newQuantity }
+  forecastChartData.fortyYears.shareData[position.stock.name][currentPeriod] = newQuantity
 
   return forecastChartData
 }
@@ -231,6 +242,7 @@ function performMonthForecast (jsMonth, currentPeriod, year, positions, forecast
   }
   const calendarMonth = jsMonth + 1
   const categoryName = `(${year}) ${MONTHS[jsMonth]}`
+
   // Create all the months
   if (year < 2) { forecastChartData.oneYear.months.push(categoryName) }
   if (year < 6) { forecastChartData.fiveYears.months.push(categoryName) }
@@ -486,6 +498,11 @@ function handlePerformForecast (event) {
       months: [],
       dividendData: {},
       shareData: {}
+    },
+    fortyYears: {
+      months: [],
+      dividendData: {},
+      shareData: {}
     }
   }
   if (positions.length === 0) {
@@ -511,7 +528,7 @@ function handlePerformForecast (event) {
   let logEntries = []
   const date = new Date()
   let thisMonth = date.getMonth() // april = 3
-  const years = 30
+  const years = config.years
   const timeToForecast = years * 12 // (30 years * 12 months)
   let year = 0
   // Perform the forecasting
@@ -530,7 +547,8 @@ function handlePerformForecast (event) {
       // case 11:
       // case 59:
       // case 119:
-      case 359:
+      case 479: // 40 Years
+      // case 359: // 30 Years
         console.log('sending data for period', currPeriod)
         self.postMessage({
           type: 'forecast-log',

@@ -67,7 +67,11 @@ function ForecastContent (forecast, forecastLog) {
     },
     {
       title: '30 Years',
-      content: forTimeframe('30 Years', forecast.thirtyYears, forecastLog)
+      content: forTimeframe('30 Years', forecast.thirtyYears, forecastLog.filter(f => f.year < 31))
+    },
+    {
+      title: '40 Years',
+      content: forTimeframe('40 Years', forecast.fortyYears, forecastLog)
     }
   ]
 
