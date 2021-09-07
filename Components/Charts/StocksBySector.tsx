@@ -9,7 +9,7 @@ export function AsTable ({ positionsHeld, stocks }) {
   }
   const sectors = StocksBySector({ positionsHeld, stocks })
 
-  const sectorStocksTotal = sectors.map(sector => {
+  const sectorStocksTotal = sectors.map((sector: any) => {
     return sector.count
   }).reduce((prev, curr) => (prev || 0) + (curr || 0))
 
@@ -109,12 +109,12 @@ export function AsPie ({ positionsHeld, stocks }) {
   )
 }
 
-function StocksBySector ({ positionsHeld, stocks }): object {
+function StocksBySector ({ positionsHeld, stocks }): any[] {
   if (!positionsHeld || positionsHeld.length === 0) {
     return null
   }
 
-  const sectors = {}
+  const sectors: any = {}
   const arr = []
 
   positionsHeld.forEach(pos => {

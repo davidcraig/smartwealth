@@ -16,13 +16,15 @@ const is40Year = (months) => {
   return months.length === 479 || months.length === 480
 }
 
+const isLongChart = (months) => { return is30Year(months) || is40Year(months) }
+
 const chartOptions = (shareData, months) => {
   // We need to create dividendData
   const series = []
   let tickInterval = 100
-  if (is30Year(months) || is40Year(months)) { tickInterval = 500 }
+  if (isLongChart(months)) { tickInterval = 500 }
 
-  if (is30Year(months) || is40Year(months)) {
+  if (isLongChart(months)) {
     const totalData = {
       name: 'Total Shares',
       color: '#00758a',
@@ -100,7 +102,7 @@ const chartOptions = (shareData, months) => {
     series
   }
 
-  if (is30Year(months) || is40Year(months)) {
+  if (isLongChart(months)) {
     chartOpts.chart.type = 'area'
   }
 
