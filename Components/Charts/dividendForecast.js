@@ -55,10 +55,9 @@ function buildDataAsFrequencyGrouped (dividendData, months) {
     sixMonthAverage: buildZeroValArray()
   }
 
+  const validFrequencies = ['monthly', 'quarterly', 'annual', 'annualinterim']
+
   Object.keys(dividendData).forEach(company => {
-    const validFrequencies = [
-      'monthly', 'quarterly', 'annual', 'annualinterim'
-    ]
     const freq = GetFrequencyByStockName(company)
     if (validFrequencies.includes(freq)) {
       for (let i = 0; i < months.length; i++) {
