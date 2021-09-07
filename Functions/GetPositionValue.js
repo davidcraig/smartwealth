@@ -1,4 +1,4 @@
-import exchangeRates from "../data/exchangeRates";
+import exchangeRates from '../data/exchangeRates'
 
 function GetPositionValue (pos, stock, options = { currency: 'GBP' }) {
   let exchangeRate = 1.00
