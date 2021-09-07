@@ -1,0 +1,15 @@
+.page-goals {
+  input[type="checkbox"] {
+    accent-color: hsl(127deg 100% 23%);
+    border: 1px solid hsl(127deg 100% 22%);
+    border-radius: 0;
+  }
+
+  .card-content {
+    padding: 1rem;
+  }
+
+  .goal-checkbox-cell {
+    text-align: right;
+  }
+}

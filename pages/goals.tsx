@@ -123,7 +123,7 @@ function RenderGoals ({ goals, keyName, title, setGoals }) {
             return (
               <tr key={`goal-${goal.id}`}>
                 <td style={rowStyle}>{goal.text}</td>
-                <td style={rowStyle}>
+                <td className='goal-checkbox-cell' style={rowStyle}>
                   <input
                     type='checkbox'
                     checked={goal.complete}
@@ -368,7 +368,7 @@ export function Goals ({ stocks, positionsHeld }) {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Navbar />
-      <div className='container is-fluid'>
+      <div className='container is-fluid page-goals'>
         <div className='content'>
           <h1>FIRE Goals</h1>
           <Columns>

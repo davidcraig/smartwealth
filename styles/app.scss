@@ -110,6 +110,7 @@ input { background-color: var(--color-bg-alt); }
 @import './component/navbar.scss';
 @import './highcharts.scss';
 @import './pages/holdings.scss';
+@import './pages/goals.scss';
 
 .tabs {
   ul {
@@ -131,4 +132,14 @@ input { background-color: var(--color-bg-alt); }
 
 .label {
   color: var(--color-text);
+}
+
+.button.is-primary {
+  margin-top: 0.25rem;
+  border-radius: 0;
+  background: hsl(127deg 100% 23%);
+
+  &:hover {
+    background: hsl(127deg 100% 36%);
+  }
 }
