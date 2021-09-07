@@ -1,5 +1,6 @@
 import GetSectorColour from '../../Functions/GetSectorColour'
 import GetStock from '../../Functions/GetStock'
+import GetPositionValue from '../../Functions/GetPositionValue'
 import AsPercentage from '../../Functions/Formatting/AsPercentage'
 import NextHighchart from '../NextHighchart'
 
@@ -7,29 +8,29 @@ export function AsTable ({ positionsHeld, stocks }) {
   if (!positionsHeld || positionsHeld.length === 0) {
     return ''
   }
-  const sectors = StocksBySector({ positionsHeld, stocks })
+  const sectors = StockValueBySector({ positionsHeld, stocks })
 
-  const sectorStocksTotal = sectors.map(sector => {
-    return sector.count
-  }).reduce((prev, curr) => (prev || 0) + (curr || 0))
+  const sectorStocksTotal = sectors.map(s => {
+    return s.value
+  }).reduce((prev, curr) => prev + curr)
 
   return (
     <table className='table is-narrow'>
       <thead>
         <tr>
           <th>Sector</th>
-          <th># Stocks</th>
+          <th>£ of Stocks</th>
           <th>%</th>
         </tr>
       </thead>
       <tbody>
         {
-          sectors.map(sector => {
+          sectors.map(s => {
             return (
-              <tr key={sector.name}>
-                <td>{sector.name}</td>
-                <td>{sector.count}</td>
-                <td>{AsPercentage((sector.count / sectorStocksTotal) * 100)}</td>
+              <tr key={s.name}>
+                <td>{s.name}</td>
+                <td>{s.value}</td>
+                <td>{AsPercentage((s.value / sectorStocksTotal) * 100)}</td>
               </tr>
             )
           })
@@ -43,7 +44,7 @@ export function AsPie ({ positionsHeld, stocks }) {
   if (!positionsHeld || positionsHeld.length === 0) {
     return ''
   }
-  const sectors = StocksBySector({ positionsHeld, stocks })
+  const sectors = StockValueBySector({ positionsHeld, stocks })
 
   const chartOptions = (sectors) => {
     // We need to create dividendData
@@ -59,7 +60,7 @@ export function AsPie ({ positionsHeld, stocks }) {
 
       series[0].data.push({
         name: sector.name,
-        y: sector.count,
+        y: sector.value,
         color: colour
       })
     })
@@ -109,7 +110,7 @@ export function AsPie ({ positionsHeld, stocks }) {
   )
 }
 
-function StocksBySector ({ positionsHeld, stocks }) {
+function StockValueBySector ({ positionsHeld, stocks }) {
   if (!positionsHeld || positionsHeld.length === 0) {
     return null
   }
@@ -122,7 +123,6 @@ function StocksBySector ({ positionsHeld, stocks }) {
     if (!pos.stock) { return null }
     if (!stock) { return null }
     if (!stock.gics_sector) {
-      sectors.unknown = sectors.unknown + 1
       return null
     }
     if (!Object.prototype.hasOwnProperty.call(sectors, stock.gics_sector)) {
@@ -131,16 +131,16 @@ function StocksBySector ({ positionsHeld, stocks }) {
     }
 
     const sector = stock.gics_sector
-    sectors[sector] = sectors[sector] + 1
+    sectors[sector] = sectors[sector] + GetPositionValue(pos, stock)
   })
 
   Object.keys(sectors).forEach(key => {
     const sector = sectors[key]
-    arr.push({ name: key, count: sector })
+    arr.push({ name: key, value: sector })
   })
 
-  return arr.sort((sA, sB) => {
-    return sA.count < sB.count
+  return arr.sort((a, b) => {
+    return b.value - a.value
   })
 }
 
