@@ -200,12 +200,12 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
       <main className='container is-fluid'>
         <div className='content'>
           <h1 className='h1'>My Holdings</h1>
-          <Columns>
-            <Column class='is-three-quarters'>
+          <div className='columns is-desktop'>
+            <Column class='is-three-quarters-widescreen'>
               {
                 hasPositions && (
                   <Card title='Positions' className='positions-table-card'>
-                    <table className='table is-striped is-narrow holdings-table'>
+                    <table className='table is-hidden-mobile is-striped is-narrow holdings-table'>
                       <thead>
                         <tr>
                           <th className='header-ticker'>Ticker</th>
@@ -271,6 +271,79 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                         })}
                       </tbody>
                     </table>
+                    <table className='table is-hidden-tablet holdings-table'>
+                      <tbody>
+                        {positionsHeld && positionsHeld.length > 0 && positionsHeld.map((p, idx) => {
+                          return p && (
+                            <>
+                            <tr>
+                              <td>&nbsp;</td>
+                              <td>&nbsp;</td>
+                            </tr>
+                            <tr key={`${p.stock.ticker}${p.stock.name}`}>
+                              <td className='ticker'>{p.stock.ticker}</td>
+                              <td>{p.stock.name}</td>
+                            </tr>
+                            <tr>
+                              <td>
+                                Quantity {FormattedDecimal(p.quantity)}</td>
+                              <td>
+                                <input
+                                  type='text'
+                                  placeholder='Quantity owned'
+                                  value={p.quantity}
+                                  onChange={updatePositionQuantity.bind(p)}
+                                  pattern='[0-9.]+'
+                                  data-ticker={p.stock.ticker}
+                                  style={{ maxWidth: '9em' }}
+                                />
+                                </td>
+                              </tr>
+                              <tr>
+                              <td>
+                                Pie <input
+                                  type='text'
+                                  placeholder='Pie Name? or blank if individual'
+                                  value={p.pie}
+                                  onChange={updatePositionPieName.bind(p)}
+                                  data-ticker={p.stock.ticker}
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type='text'
+                                  placeholder='Pie Weight (%)'
+                                  value={p.pieWeight}
+                                  onChange={updatePositionPieWeight.bind(p)}
+                                  pattern='[0-9.]+'
+                                  data-ticker={p.stock.ticker}
+                                  style={{ maxWidth: '3em' }}
+                                />
+                              </td>
+                              </tr>
+                              <tr>
+                              <td>Yield: {p.stock.dividend_yield}</td>
+                              <td>
+                                <a onClick={() => {
+                                  const x = confirm('Are you sure')
+                                  if (x) {
+                                    deletePositionByIndex(idx)
+                                  }
+                                }}
+                                >
+                                  x
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>&nbsp;</td>
+                              <td>&nbsp;</td>
+                            </tr>
+                            </>
+                          )
+                        })}
+                      </tbody>
+                    </table>
                   </Card>
                 )
               }
@@ -286,7 +359,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                 )
               }
             </Column>
-            <Column class='is-one-quarter'>
+            <Column class='is-one-quarter-widescreen'>
               <Card title='Stock Search'>
                 <input type='text' className='input' onChange={searchStocks} />
                 <p>Results</p>
@@ -315,7 +388,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                 )
               }
             </Column>
-          </Columns>
+          </div>
         </div>
       </main>
     </>
