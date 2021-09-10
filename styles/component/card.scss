@@ -40,4 +40,5 @@
   background-color: var(--color-bg-card-header, var(--color-bg-alt));
   box-shadow: unset;
   border-bottom: 1px solid var(--color-border);
+  user-select: none;
 }

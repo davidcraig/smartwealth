@@ -143,3 +143,10 @@ input { background-color: var(--color-bg-alt); }
     background: hsl(127deg 100% 36%);
   }
 }
+
+@media screen and (max-width: 768px) {
+  .container.is-fluid {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}

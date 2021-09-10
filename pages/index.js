@@ -86,11 +86,11 @@ const noPositions = (
 const calculatePieYields = (pie) => {
   const parsePercent = (v) => v.replace('%', '')
   const getPositionDividendYield = (pos) => {
-    if (hasProp(pos.stock, 'dividend_yield')) {
+    if ('dividend_yield' in pos.stock) {
       return parseFloat(parsePercent(pos.stock.dividend_yield))
     }
 
-    if (hasProp(pos.stock, 'dividendYield')) {
+    if ('dividendYield' in pos.stock) {
       return parseFloat(parsePercent(pos.stock.dividendYield))
     }
 
@@ -116,8 +116,6 @@ const calculatePieYields = (pie) => {
 }
 
 function PortfolioValue ({ positionsHeld, stocks }) {
-  // return 100
-
   return BaseCurrency(positionsHeld.reduce((prev, pos) => {
     const stock = GetStock(pos.stock.ticker, stocks)
 
@@ -131,6 +129,7 @@ function PortfolioValue ({ positionsHeld, stocks }) {
 
 function dividendSumForForecastKey (forecast, forecastKey) {
   if (!forecast || !hasProp(forecast, forecastKey)) {
+    console.log(forecast, forecastKey)
     return 0
   }
 
@@ -145,7 +144,7 @@ function dividendSumForForecastKey (forecast, forecastKey) {
 }
 
 function netWorthForForecastKey (forecast, forecastKey, stocks) {
-  if (!forecast || !hasProp(forecast, forecastKey)) {
+  if (!forecast || !(forecastKey in forecast)) {
     return 0
   }
 
@@ -153,10 +152,9 @@ function netWorthForForecastKey (forecast, forecastKey, stocks) {
   Object.keys(forecast[forecastKey].shareData).forEach(key => {
     const shareArr = forecast[forecastKey].shareData[key]
     const company = key
-    const stock = GetStockByName(stocks, company)
+    const stock = GetStockByName(stocks, company) // Works
     const shares = shareArr[shareArr.length - 1]
     total += (GetPositionValue({ quantity: shares }, stock) || 0)
-    // total += (shares * price)
   })
   return total
 }

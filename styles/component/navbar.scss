@@ -4,4 +4,7 @@
   font-size: 1.4em;
 }
 
-.navbar a { color: var(--color-link) !important; }
+.navbar a {
+  color: var(--color-link) !important;
+  user-select: none;
+}

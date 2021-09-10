@@ -209,10 +209,8 @@ function recordShareBuy (amount, position, currentPeriod, year, forecastChartDat
   if (amount < 0) { console.error('amount is negative') }
 
   if (
-    !Object.prototype.hasOwnProperty.call(
-      forecastChartData.fortyYears.shareData[position.stock.name],
-      'currentPeriod'
-    ) || forecastChartData.fortyYears.shareData[position.stock.name][currentPeriod] > 0
+    (currentPeriod in forecastChartData.fortyYears.shareData[position.stock.name]) &&
+    forecastChartData.fortyYears.shareData[position.stock.name][currentPeriod] > 0
   ) {
     return forecastChartData
   }
