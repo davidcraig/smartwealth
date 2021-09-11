@@ -228,25 +228,25 @@ const chartOptions = (dividendData, months, stocks) => {
           color: '#308030', // Color value
           dashStyle: 'longdashdot',
           value: 2000, // Value of where the line will appear
-          width: 2 // Width of the line
+          width: 3 // Width of the line
         },
         {
           color: '#308030', // Color value
           dashStyle: 'longdashdot',
           value: 1500, // Value of where the line will appear
-          width: 1 // Width of the line
+          width: 3 // Width of the line
         },
         {
           color: '#308030', // Color value
           dashStyle: 'longdashdot',
           value: 1000, // Value of where the line will appear
-          width: 1 // Width of the line
+          width: 3 // Width of the line
         },
         {
           color: '#308030', // Color value
           dashStyle: 'longdashdot',
           value: 500, // Value of where the line will appear
-          width: 1 // Width of the line
+          width: 3 // Width of the line
         }
       ]
     },
