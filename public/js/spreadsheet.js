@@ -59,11 +59,11 @@ self.addEventListener(
                   })
                 })
                 .catch(err => {
-                  console.log('error in json from parse: ', err)
+                  console.error('error in json from parse: ', err)
                 })
             })
         } catch (err) {
-          console.log('Parse error: ', err)
+          console.error('Parse error: ', err)
         }
         break
       case 'multi-parse':

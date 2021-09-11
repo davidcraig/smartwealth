@@ -14,7 +14,7 @@ function GetFrequencyByStockName (stocks, stockName) {
 
   switch (stockName) {
     default:
-      console.log(`GetFrequencyByStockName.js - stock: "${stockName}" frequency not set`)
+      console.warn(`GetFrequencyByStockName.js - stock: "${stockName}" frequency not set`)
       return 'unknown'
   }
 }

@@ -549,7 +549,7 @@ function handlePerformForecast (event) {
       // case 119: // 10 Years
       // case 359: // 30 Years
       case 479: // 40 Years
-        console.log('sending data for period', currPeriod)
+        console.debug('sending data for period', currPeriod)
         self.postMessage({
           type: 'forecast-log',
           data: logEntries

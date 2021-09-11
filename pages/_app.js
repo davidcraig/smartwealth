@@ -113,7 +113,6 @@ function MyApp ({ Component, pageProps, stocks }) {
   //       let pos = JSON.parse(positions)
   //       if (pos) {
   //         import('../Functions/GetStock').then(f => {
-  //           console.log(pos)
   //           pos = pos.map(p => {
   //             const stock = f.GetStock(p.stock.ticker, stocks)
   //             p.stock = stock

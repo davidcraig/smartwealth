@@ -129,7 +129,6 @@ function PortfolioValue ({ positionsHeld, stocks }) {
 
 function dividendSumForForecastKey (forecast, forecastKey) {
   if (!forecast || !hasProp(forecast, forecastKey)) {
-    console.log(forecast, forecastKey)
     return 0
   }
 
