@@ -3,3 +3,24 @@
     .ticker { color: hsla(0, 100%, 100%, .4) }
   }
 }
+
+@media screen and (max-width: 768px) {
+  .content {
+    .positions-table-card {
+      table {
+        td {
+          padding: 0.1em !important;
+        }
+      }
+      input {
+        width: 100%;
+        max-width: 100%;
+      }
+      .pie-name {
+        width: calc(100% - 3.5em);
+        margin-right: 0.4em;
+      }
+    }
+  }
+  
+}

@@ -7,7 +7,7 @@ import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
 import { connect } from 'react-redux'
 
-function PieStats ({ positionsHeld }) {
+function PieStats({ positionsHeld }) {
   const pies = {}
   positionsHeld.forEach((p: PositionHeldInterface) => {
     const pieName = p.pie
@@ -50,18 +50,18 @@ function PieStats ({ positionsHeld }) {
                   {
                     pie.positions.length > 0
                       ? pie.positions.length > 1
-                          ? pie.positions.reduce((prev, curr) => {
-                              let p = 0
-                              if (typeof prev === 'object') {
-                                p = prev.pieWeight
-                              } else if (typeof prev === 'number') {
-                                p = prev
-                              } else {
-                                console.debug('prev is typeof', typeof prev)
-                              }
-                              return p + parseInt(curr.pieWeight)
-                            })
-                          : pie.positions[0].pieWeight
+                        ? pie.positions.reduce((prev, curr) => {
+                          let p = 0
+                          if (typeof prev === 'object') {
+                            p = prev.pieWeight
+                          } else if (typeof prev === 'number') {
+                            p = prev
+                          } else {
+                            console.debug('prev is typeof', typeof prev)
+                          }
+                          return p + parseInt(curr.pieWeight)
+                        })
+                        : pie.positions[0].pieWeight
                       : ''
                   }
                 </td>
@@ -74,7 +74,7 @@ function PieStats ({ positionsHeld }) {
   )
 }
 
-export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
+export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
   const [searchFilteredStocks, setSearchFilteredStocks] = useState([])
 
   const hasPositions = positionsHeld && positionsHeld.length > 0
@@ -84,7 +84,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
    * @param {*} e Search input event
    * @returns
    */
-  function searchStocks (e) {
+  function searchStocks(e) {
     const term = e.target.value.toLowerCase()
     if (term === '') {
       return setSearchFilteredStocks([])
@@ -95,7 +95,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
     setSearchFilteredStocks(filteredStocks)
   }
 
-  function addStock () {
+  function addStock() {
     const stock = this
     if (positionsHeld.find(p => p.name === stock.name)) {
       return
@@ -110,7 +110,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
     setPositionsHeld(positions)
   }
 
-  function updatePositionQuantity (e) {
+  function updatePositionQuantity(e) {
     if (e.target.validity.patternMismatch) {
       return
     }
@@ -125,7 +125,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
     setPositionsHeld(positions)
   }
 
-  function updatePositionPieName (e) {
+  function updatePositionPieName(e) {
     const name = e.target.value
     const positions = positionsHeld.map(p => {
       if (!p) { return null }
@@ -137,7 +137,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
     setPositionsHeld(positions)
   }
 
-  function updatePositionPieWeight (e) {
+  function updatePositionPieWeight(e) {
     const weight = e.target.value
     const positions = positionsHeld.map(p => {
       if (!p) { return null }
@@ -149,7 +149,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
     setPositionsHeld(positions)
   }
 
-  function deletePositionByIndex (idx) {
+  function deletePositionByIndex(idx) {
     const positions = positionsHeld.map((p, index) => {
       if (index === idx) {
         return null
@@ -160,7 +160,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
     setPositionsHeld(positions)
   }
 
-  function sortByPieName () {
+  function sortByPieName() {
     const positions = positionsHeld.sort((a, b) => {
       return a.pie.localeCompare(b.pie || '')
     }).filter(Boolean)
@@ -168,7 +168,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
     setPositionsHeld(positions)
   }
 
-  function sortByStockName () {
+  function sortByStockName() {
     const positions = positionsHeld.sort((a, b) => {
       return a.stock.name.localeCompare(b.stock.name)
     }).filter(Boolean)
@@ -176,7 +176,7 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
     setPositionsHeld(positions)
   }
 
-  function resetPies () {
+  function resetPies() {
     const positions = positionsHeld.map(p => {
       if (!p) { return null }
       if (p.stock.ticker) {
@@ -276,69 +276,66 @@ export function Holdings ({ stocks, positionsHeld, setPositionsHeld }) {
                         {positionsHeld && positionsHeld.length > 0 && positionsHeld.map((p, idx) => {
                           return p && (
                             <>
-                            <tr>
-                              <td>&nbsp;</td>
-                              <td>&nbsp;</td>
-                            </tr>
-                            <tr key={`${p.stock.ticker}${p.stock.name}`}>
-                              <td className='ticker'>{p.stock.ticker}</td>
-                              <td>{p.stock.name}</td>
-                            </tr>
-                            <tr>
-                              <td>
-                                Quantity {FormattedDecimal(p.quantity)}</td>
-                              <td>
-                                <input
-                                  type='text'
-                                  placeholder='Quantity owned'
-                                  value={p.quantity}
-                                  onChange={updatePositionQuantity.bind(p)}
-                                  pattern='[0-9.]+'
-                                  data-ticker={p.stock.ticker}
-                                  style={{ maxWidth: '9em' }}
-                                />
+                              <tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                              </tr>
+                              <tr key={`${p.stock.ticker}${p.stock.name}`}>
+                                <td className='ticker'>{p.stock.ticker}</td>
+                                <td>{p.stock.name}</td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Quantity {FormattedDecimal(p.quantity)}</td>
+                                <td>
+                                  <input
+                                    type='text'
+                                    placeholder='Quantity owned'
+                                    value={p.quantity}
+                                    onChange={updatePositionQuantity.bind(p)}
+                                    pattern='[0-9.]+'
+                                    data-ticker={p.stock.ticker}
+                                  />
                                 </td>
                               </tr>
                               <tr>
-                              <td>
-                                Pie <input
-                                  type='text'
-                                  placeholder='Pie Name? or blank if individual'
-                                  value={p.pie}
-                                  onChange={updatePositionPieName.bind(p)}
-                                  data-ticker={p.stock.ticker}
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type='text'
-                                  placeholder='Pie Weight (%)'
-                                  value={p.pieWeight}
-                                  onChange={updatePositionPieWeight.bind(p)}
-                                  pattern='[0-9.]+'
-                                  data-ticker={p.stock.ticker}
-                                  style={{ maxWidth: '3em' }}
-                                />
-                              </td>
+                                <td>
+                                  Pie
+                                </td>
+                                <td>
+                                  <input
+                                    type='text'
+                                    className='pie-name'
+                                    placeholder='Pie Name? or blank if individual'
+                                    value={p.pie}
+                                    onChange={updatePositionPieName.bind(p)}
+                                    data-ticker={p.stock.ticker}
+                                  />
+                                  <input
+                                    type='text'
+                                    placeholder='Pie Weight (%)'
+                                    value={p.pieWeight}
+                                    onChange={updatePositionPieWeight.bind(p)}
+                                    pattern='[0-9.]+'
+                                    data-ticker={p.stock.ticker}
+                                    style={{ maxWidth: '3em' }}
+                                  />
+                                </td>
                               </tr>
                               <tr>
-                              <td>Yield: {p.stock.dividend_yield}</td>
-                              <td>
-                                <a onClick={() => {
-                                  const x = confirm('Are you sure')
-                                  if (x) {
-                                    deletePositionByIndex(idx)
-                                  }
-                                }}
-                                >
-                                  x
-                                </a>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>&nbsp;</td>
-                              <td>&nbsp;</td>
-                            </tr>
+                                <td>Yield: {p.stock.dividend_yield}</td>
+                                <td>
+                                  <a onClick={() => {
+                                    const x = confirm('Are you sure')
+                                    if (x) {
+                                      deletePositionByIndex(idx)
+                                    }
+                                  }}
+                                  >
+                                    x
+                                  </a>
+                                </td>
+                              </tr>
                             </>
                           )
                         })}
