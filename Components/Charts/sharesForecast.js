@@ -24,13 +24,11 @@ const is30Year = (months) => months.length === 359 || months.length === 360
 const is40Year = (months) => months.length === 479 || months.length === 480
 
 const shouldBeGrouped = (months) => {
-  if (is5Year(months)) { return config.chart.grouped }
+  if (is5Year(months)) { return config.chart.grouped.year5 }
   if (is10Year(months)) { return config.chart.grouped.year10 }
   if (is30Year(months)) { return config.chart.grouped.year30 }
   if (is40Year(months)) { return config.chart.grouped.year40 }
 }
-
-const isLongChart = (months) => { return is30Year(months) || is40Year(months) }
 
 const chartOptions = (shareData, months) => {
   // We need to create dividendData
