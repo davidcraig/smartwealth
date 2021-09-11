@@ -2,17 +2,32 @@ import React from 'react'
 import NextHighchart from '../NextHighchart'
 import GetStockColour from '../../Functions/GetStockColour'
 
-// const themeColour1 = '#2e313b'
-const themeColour2 = '#494e5c'
-// const wowOkColour = '#3292f1'
-// const wowEpicColour = '#c56fff'
-
-const is30Year = (months) => {
-  return months.length === 359 || months.length === 360
+const config = {
+  themeColour2: '#494e5c',
+  chart: {
+    defaults: {
+      type: 'column'
+    },
+    grouped: {
+      year1: false,
+      year5: true,
+      year10: true,
+      year30: true,
+      year40: true
+    }
+  }
 }
 
-const is40Year = (months) => {
-  return months.length === 479 || months.length === 480
+const is5Year = (months) => months.length === 59 || months.length === 60
+const is10Year = (months) => months.length === 119 || months.length === 120
+const is30Year = (months) => months.length === 359 || months.length === 360
+const is40Year = (months) => months.length === 479 || months.length === 480
+
+const shouldBeGrouped = (months) => {
+  if (is5Year(months)) { return config.chart.grouped }
+  if (is10Year(months)) { return config.chart.grouped.year10 }
+  if (is30Year(months)) { return config.chart.grouped.year30 }
+  if (is40Year(months)) { return config.chart.grouped.year40 }
 }
 
 const isLongChart = (months) => { return is30Year(months) || is40Year(months) }
@@ -21,9 +36,9 @@ const chartOptions = (shareData, months) => {
   // We need to create dividendData
   const series = []
   let tickInterval = 100
-  if (isLongChart(months)) { tickInterval = 500 }
+  if (shouldBeGrouped(months)) { tickInterval = 500 }
 
-  if (isLongChart(months)) {
+  if (shouldBeGrouped(months)) {
     const totalData = {
       name: 'Total Shares',
       color: '#00758a',
@@ -52,7 +67,7 @@ const chartOptions = (shareData, months) => {
   const chartOpts = {
     chart: {
       styledMode: false,
-      type: 'column',
+      type: config.chart.defaults.type,
       height: 250
     },
     title: {
@@ -80,7 +95,7 @@ const chartOptions = (shareData, months) => {
       stackLabels: {
         enabled: false
       },
-      gridLineColor: themeColour2,
+      gridLineColor: config.themeColour2,
       minorGridLineColor: '#2a2d35',
       tickInterval: tickInterval,
       minorTicks: false
@@ -101,7 +116,7 @@ const chartOptions = (shareData, months) => {
     series
   }
 
-  if (isLongChart(months)) {
+  if (shouldBeGrouped(months)) {
     chartOpts.chart.type = 'area'
   }
 

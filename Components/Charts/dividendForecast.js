@@ -3,14 +3,33 @@ import NextHighchart from '../NextHighchart'
 import GetStockColour from '../../Functions/GetStockColour'
 import GetFrequencyByStockName from '../../Functions/Stock/GetFrequencyByStockName'
 
-const themeColour2 = '#494e5c'
-
-const is30Year = (months) => {
-  return months.length === 359 || months.length === 360
+const config = {
+  themeColour2: '#494e5c',
+  chart: {
+    defaults: {
+      type: 'column'
+    },
+    groupedBy: {
+      year1: 'company',
+      year5: 'frequency',
+      year10: 'frequency',
+      year30: 'frequency',
+      year40: 'frequency'
+    }
+  }
 }
 
-const is40Year = (months) => {
-  return months.length === 479 || months.length === 480
+const is1Year = (months) => months.length === 11 || months.length === 12
+const is5Year = (months) => months.length === 59 || months.length === 60
+const is10Year = (months) => months.length === 119 || months.length === 120
+const is30Year = (months) => months.length === 359 || months.length === 360
+const is40Year = (months) => months.length === 479 || months.length === 480
+
+const shouldBeGroupedByFrequency = (months) => {
+  if (is5Year(months)) { return config.chart.groupedBy.year5 === 'frequency' }
+  if (is10Year(months)) { return config.chart.groupedBy.year10 === 'frequency' }
+  if (is30Year(months)) { return config.chart.groupedBy.year30 === 'frequency' }
+  if (is40Year(months)) { return config.chart.groupedBy.year40 === 'frequency' }
 }
 
 /**
@@ -169,8 +188,7 @@ const chartOptions = (dividendData, months, stocks) => {
   // We need to create dividendData
   const tickInterval = 100
 
-  if (is30Year(months) || is40Year(months)) {
-    // series = buildDataAsSingleSeries(dividendData)
+  if (shouldBeGroupedByFrequency(months)) {
     series = buildDataAsFrequencyGrouped(dividendData, months, stocks)
   } else {
     series = buildDataAsCompanyGrouped(dividendData)
@@ -178,7 +196,7 @@ const chartOptions = (dividendData, months, stocks) => {
 
   const chartOpts = {
     chart: {
-      type: 'column',
+      type: config.chart.defaults.type,
       height: ((window.innerHeight / 100) * 60)
     },
     title: {
@@ -198,10 +216,10 @@ const chartOptions = (dividendData, months, stocks) => {
       stackLabels: {
         enabled: false
       },
-      gridLineColor: themeColour2,
+      gridLineColor: config.themeColour2,
       minorGridLineColor: '#2a2d35',
       tickInterval: tickInterval,
-      minorTicks: true,
+      minorTicks: is1Year(months),
       title: {
         text: 'Dividends'
       },
