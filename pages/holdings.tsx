@@ -79,8 +79,6 @@ function SearchResults({ searchFilteredStocks, addStock }) {
     return null
   }
 
-  console.log(searchFilteredStocks)
-
   return (
     <>
       <p>Results</p>
@@ -108,7 +106,6 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
    * @returns
    */
   function searchStocks(e) {
-    console.log(e.target.value.length, 'len')
     if (e.target.value.length === 0) {
       return setSearchFilteredStocks([])
     }
@@ -125,8 +122,6 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
         }
         return false
       })
-
-      console.log(filteredStocks)
 
       if (filteredStocks.length === 0) {
         setSearchFilteredStocks([])
