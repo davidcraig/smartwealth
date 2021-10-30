@@ -74,6 +74,29 @@ function PieStats({ positionsHeld }) {
   )
 }
 
+function SearchResults({ searchFilteredStocks, addStock }) {
+  if (!searchFilteredStocks || searchFilteredStocks.length === 0) {
+    return null
+  }
+
+  console.log(searchFilteredStocks)
+
+  return (
+    <>
+      <p>Results</p>
+      <ul>
+        {searchFilteredStocks.map((stock, index) => {
+          return (
+            <li key={`${stock.ticker}${stock.name}${index}`}>
+              {stock.ticker} {stock.name} <button onClick={addStock.bind(stock)}>+</button>
+            </li>
+          )
+        })}
+      </ul>
+    </>
+  )
+}
+
 export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
   const [searchFilteredStocks, setSearchFilteredStocks] = useState([])
 
@@ -85,14 +108,31 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
    * @returns
    */
   function searchStocks(e) {
+    console.log(e.target.value.length, 'len')
+    if (e.target.value.length === 0) {
+      return setSearchFilteredStocks([])
+    }
     const term = e.target.value.toLowerCase()
     if (term === '') {
       setSearchFilteredStocks([])
     } else {
       const filteredStocks = stocks.filter(s => {
-        return s.name.toLowerCase().match(term) || s.ticker.toLowerCase().match(term)
+        if (s.name.toLowerCase().match(term)) {
+          return true
+        }
+        if (s.ticker.toLowerCase().match(term)) {
+          return true
+        }
+        return false
       })
-      setSearchFilteredStocks(filteredStocks)
+
+      console.log(filteredStocks)
+
+      if (filteredStocks.length === 0) {
+        setSearchFilteredStocks([])
+      } else {
+        setSearchFilteredStocks(filteredStocks)
+      }
     }
   }
 
@@ -360,16 +400,7 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
             <Column class='is-one-quarter-widescreen'>
               <Card title='Stock Search'>
                 <input type='text' className='input' onKeyUp={searchStocks} />
-                <p>Results</p>
-                <ul>
-                  {searchFilteredStocks.map(stock => {
-                    return (
-                      <li key={`${stock.ticker}${stock.name}`}>
-                        {stock.ticker} {stock.name} <button onClick={addStock.bind(stock)}>+</button>
-                      </li>
-                    )
-                  })}
-                </ul>
+                <SearchResults searchFilteredStocks={searchFilteredStocks} addStock={addStock} />
               </Card>
 
               {
