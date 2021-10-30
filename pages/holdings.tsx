@@ -87,12 +87,13 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
   function searchStocks(e) {
     const term = e.target.value.toLowerCase()
     if (term === '') {
-      return setSearchFilteredStocks([])
+      setSearchFilteredStocks([])
+    } else {
+      const filteredStocks = stocks.filter(s => {
+        return s.name.toLowerCase().match(term) || s.ticker.toLowerCase().match(term)
+      })
+      setSearchFilteredStocks(filteredStocks)
     }
-    const filteredStocks = stocks.filter(s => {
-      return s.name.toLowerCase().match(term) || s.ticker.toLowerCase().match(term)
-    })
-    setSearchFilteredStocks(filteredStocks)
   }
 
   function addStock() {
@@ -358,7 +359,7 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
             </Column>
             <Column class='is-one-quarter-widescreen'>
               <Card title='Stock Search'>
-                <input type='text' className='input' onChange={searchStocks} />
+                <input type='text' className='input' onKeyUp={searchStocks} />
                 <p>Results</p>
                 <ul>
                   {searchFilteredStocks.map(stock => {
