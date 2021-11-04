@@ -264,6 +264,10 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
 
   const hasPositions = positionsHeld && positionsHeld.length > 0
 
+  pies.sort((a, b) => {
+    return a.name.localeCompare(b.name)
+  })
+
   return (
     <div>
       <Head>
@@ -296,6 +300,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
                         </tr>
                       </thead>
                       <tbody>
+                        {console.log(pies)}
                         {
                           pies && pies.length > 0 && pies.map(pie => {
                             const [pieAvg, pieYield] = calculatePieYields(pie)
