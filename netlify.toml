@@ -6,6 +6,6 @@
 
 [[redirects]]
   from = "/stock/*"
-  to = "/stock/[id].html"
+  to = "/stock/[ticker].html"
   status = 200
   force = true
