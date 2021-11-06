@@ -122,7 +122,6 @@ function StockView ({ stocks }) {
               </tbody>
             </table>
           </Card>
-          
         </div>
       </main>
     </React.Fragment>
