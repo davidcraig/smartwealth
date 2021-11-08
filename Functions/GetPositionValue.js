@@ -9,18 +9,30 @@ function GetPositionValue (pos, stock, options = { currency: 'GBP' }) {
     stockObject = pos.stock
   }
 
+  if (!'currency' in stockObject) {
+    return 0
+  }
+
+  if (!'share_price' in stockObject) {
+    return 0
+  }
+
   // Last Updated 2021-06-07
-  switch (stockObject.currency) {
+  switch (stockObject?.currency) {
     // USD -> GBP
     case 'USD': exchangeRate = exchangeRates.USD.GBP; break // Inverse: 1.41734
     case 'EUR':
     case 'EURO':
       exchangeRate = exchangeRates.EURO.GBP; break // Inverse: 1.16201
     case 'GBX p': exchangeRate = 0.01; break // Inverse: 100
+    default:
+      break
   }
 
+  console.log(stockObject)
+
   const numShares = parseFloat(pos.quantity)
-  const price = parseFloat(stockObject.share_price)
+  const price = parseFloat(stockObject?.share_price)
   return (price * numShares) * exchangeRate
 }
 
