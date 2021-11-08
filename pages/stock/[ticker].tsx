@@ -5,7 +5,7 @@ import React, { useState, ReactFragment } from 'react'
 import Navbar from '../../Components/Navbar'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
 import StockInterface from '../../types/Stock'
-import GetSharePrice from '../../Functions/Stock/GetSharePrice'
+import { GetSharePriceAsGBP, GetSharePriceFormatted } from '../../Functions/Stock/GetSharePrice'
 import GetAnnualDividendAsGBP from '../../Functions/Stock/GetAnnualDividendAsGBP'
 import DividendCard from '../../Components/Stock/DividendCard'
 
@@ -48,9 +48,10 @@ function StockView ({ stocks }) {
     )
   }
 
+  const sharePrice = GetSharePriceAsGBP(stock)
   const sharesFor10PerMonth = 120 / GetAnnualDividendAsGBP(stock)
   const sharesFor100PerMonth = 1200 / GetAnnualDividendAsGBP(stock)
-  const amountFor100PerMonth = sharesFor100PerMonth * GetSharePrice(stock)
+  const amountFor100PerMonth = sharesFor100PerMonth * sharePrice
   const amountFor1000PerMonth = amountFor100PerMonth * 10
 
   return (
@@ -64,7 +65,7 @@ function StockView ({ stocks }) {
 
       <main className='container is-fluid'>
         <div className='content'>
-          <h1 className='h1'>[{stock.ticker}] {stock.name} - {stock.currency === 'USD' ? "$" : "£"}{stock.share_price}</h1>
+          <h1 className='h1'>[{stock.ticker}] {stock.name} - {GetSharePriceFormatted(stock)}</h1>
           <Columns>
             <Column class='is-two-thirds'>
               <DividendCard stock={stock} />
@@ -79,12 +80,14 @@ function StockView ({ stocks }) {
           <Card title='Time to reach income goals'>
             <table className='table'>
               <thead>
-                <th></th>
-                <th>@1000/Mo</th>
-                <th>@1200/Mo</th>
-                <th>@1300/Mo</th>
-                <th>@1500/Mo</th>
-                <th>@2000/Mo</th>
+                <tr>
+                  <th></th>
+                  <th>@1000/Mo</th>
+                  <th>@1200/Mo</th>
+                  <th>@1300/Mo</th>
+                  <th>@1500/Mo</th>
+                  <th>@2000/Mo</th>
+                </tr>
               </thead>
               <tbody>
                 <tr>
