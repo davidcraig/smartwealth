@@ -5,15 +5,19 @@ function GetPositionValue (pos, stock, options = { currency: 'GBP' }) {
   let stockObject = stock
 
   // Use stock on pos if stock comes through as null
-  if (stock == null) {
+  if (!stock || stock === null) {
     stockObject = pos.stock
+
+    if (!pos.stock) {
+      return 0
+    }
   }
 
-  if (!'currency' in stockObject) {
+  if (!('currency' in stockObject)) {
     return 0
   }
 
-  if (!'share_price' in stockObject) {
+  if (!('share_price' in stockObject)) {
     return 0
   }
 
@@ -28,8 +32,6 @@ function GetPositionValue (pos, stock, options = { currency: 'GBP' }) {
     default:
       break
   }
-
-  console.log(stockObject)
 
   const numShares = parseFloat(pos.quantity)
   const price = parseFloat(stockObject?.share_price)
