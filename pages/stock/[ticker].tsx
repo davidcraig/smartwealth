@@ -49,6 +49,7 @@ function StockView ({ stocks }) {
   }
 
   const sharePrice = GetSharePriceAsGBP(stock)
+  console.log(sharePrice)
   const sharesFor10PerMonth = 120 / GetAnnualDividendAsGBP(stock)
   const sharesFor100PerMonth = 1200 / GetAnnualDividendAsGBP(stock)
   const amountFor100PerMonth = sharesFor100PerMonth * sharePrice

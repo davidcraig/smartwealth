@@ -4,6 +4,9 @@ import React, { useState } from 'react'
 import Navbar from '../Components/Navbar'
 import PositionHeldInterface from '../types/PositionHeld'
 import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
+import GetFiveYearAverageReturn from '../Functions/Stock/GetFiveYearAverageReturn'
+import GetFiveYearTotalReturn from '../Functions/Stock/GetFiveYearTotalReturn'
+import GetStock from '../Functions/GetStock'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
 import { connect } from 'react-redux'
 
@@ -249,15 +252,18 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
                           <th colSpan={2}>Quantity</th>
                           <th onClick={sortByPieName}>Pie</th>
                           <th>Pie Weight</th>
-                          <th colSpan={2}>Div. Yield</th>
+                          <th>Div. Yield</th>
+                          <th>5 Yr Avg Return</th>
+                          <th colSpan={2}>5 Yr Total Return</th>
                         </tr>
                       </thead>
                       <tbody>
                         {positionsHeld && positionsHeld.length > 0 && positionsHeld.map((p, idx) => {
+                          const stockObj = GetStock(p.stock.ticker, stocks) ?? p.stock
                           return p && (
                             <tr key={`${p.stock.ticker}${p.stock.name}`}>
-                              <td className='ticker'>{p.stock.ticker}</td>
-                              <td>{p.stock.name}</td>
+                              <td className='ticker'>{stockObj.ticker}</td>
+                              <td>{stockObj.name}</td>
                               <td>{FormattedDecimal(p.quantity)}</td>
                               <td>
                                 <input
@@ -266,7 +272,7 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
                                   value={p.quantity}
                                   onChange={updatePositionQuantity.bind(p)}
                                   pattern='[0-9.]+'
-                                  data-ticker={p.stock.ticker}
+                                  data-ticker={stockObj.ticker}
                                   style={{ maxWidth: '9em' }}
                                 />
                               </td>
@@ -290,7 +296,9 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
                                   style={{ maxWidth: '3em' }}
                                 />
                               </td>
-                              <td>{p.stock.dividend_yield}</td>
+                              <td>{stockObj.dividend_yield}</td>
+                              <td>{GetFiveYearAverageReturn(stockObj)}</td>
+                              <td>{GetFiveYearTotalReturn(stockObj)}</td>
                               <td>
                                 <a onClick={() => {
                                   const x = confirm('Are you sure')

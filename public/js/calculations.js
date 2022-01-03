@@ -100,7 +100,7 @@ function calculateRealDividend (stock, dividendAmount, quantity) {
   if (quantity === 0 || dividendAmount === 0) {
     return 0
   }
-  const currency = stock.currency
+  const currency = stock.currency || 'usd' // fallback to usd
   if (isNaN(dividendAmount)) {
     console.warn('dividendAmount is NaN', stock)
     return 0
