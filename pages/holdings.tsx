@@ -300,12 +300,13 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
                               <td>{GetFiveYearAverageReturn(stockObj)}</td>
                               <td>{GetFiveYearTotalReturn(stockObj)}</td>
                               <td>
-                                <a onClick={() => {
-                                  const x = confirm('Are you sure')
-                                  if (x) {
-                                    deletePositionByIndex(idx)
-                                  }
-                                }}
+                                <a
+                                  onClick={() => {
+                                    const x = confirm('Are you sure')
+                                    if (x) {
+                                      deletePositionByIndex(idx)
+                                    }
+                                  }}
                                 >
                                   x
                                 </a>
