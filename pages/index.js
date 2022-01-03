@@ -188,7 +188,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
     ) {
       CalculationWorker.postMessage({
         type: 'perform-forecast',
-        positions: positionsHeld,
+        positions: updatePositions(positionsHeld),
         pieContributions: pieContributions
       })
       setIsForecasting(true)
@@ -244,6 +244,16 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
 
   const forecastOutput = ForecastContent(forecast, forecastLog, stocks)
 
+  function updatePositions (positions) {
+    return positions.map(position => {
+      const liveStock = GetStock(position.stock.ticker, stocks)
+      if (liveStock) {
+        position.stock = liveStock
+      }
+      return position
+    })
+  }
+
   function updatePieMonthlyContributions () {
     const pieContributions = []
     setForecast([])
@@ -257,7 +267,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
 
     window.CalculationWorker.postMessage({
       type: 'perform-forecast',
-      positions: positionsHeld,
+      positions: updatePositions(positionsHeld),
       pieContributions: pieContributions
     })
   }
@@ -300,7 +310,6 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {console.log(pies)}
                         {
                           pies && pies.length > 0 && pies.map(pie => {
                             const [pieAvg, pieYield] = calculatePieYields(pie)
