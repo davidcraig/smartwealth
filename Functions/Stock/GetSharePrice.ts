@@ -2,7 +2,11 @@ import StockInterface from '../../types/Stock'
 import rates from '../../data/exchangeRates'
 
 export function GetSharePrice (stock: StockInterface): number {
-  return parseFloat(stock.share_price)
+  return parseFloat(
+    stock.share_price
+      .replace(',', '')
+      .replace('p', '')
+  )
 }
 
 export function GetSharePriceFormatted (stock: StockInterface): string {
@@ -23,13 +27,15 @@ export function GetSharePriceFormatted (stock: StockInterface): string {
 }
 
 export function GetSharePriceAsGBP (stock: StockInterface): number {
+  const price = GetSharePrice(stock)
+
   switch (stock.currency) {
     case 'GBP':
-      return parseFloat(stock.share_price)
+      return price
     case 'USD':
-      return parseFloat(stock.share_price) * rates.USD.GBP
+      return price * rates.USD.GBP
     case 'GBX p':
-      return parseFloat(stock.share_price) * rates.GBX.GBP
+      return price * rates.GBX.GBP
   }
 }
 
