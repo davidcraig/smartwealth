@@ -27,9 +27,9 @@ export function GetSharePriceAsGBP (stock: StockInterface): number {
     case 'GBP':
       return parseFloat(stock.share_price)
     case 'USD':
-      return parseFloat(stock.share_price * rates.USD.GBP)
+      return parseFloat(stock.share_price) * rates.USD.GBP
     case 'GBX p':
-      return parseFloat(stock.share_price * rates.GBX.GBP)
+      return parseFloat(stock.share_price) * rates.GBX.GBP
   }
 }
 
