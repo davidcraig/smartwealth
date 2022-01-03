@@ -18,6 +18,11 @@ function handlePreferences (preferences) {
   if (Object.keys(preferences).length > 0) {
     if (preferences.theme) {
       switch (preferences.theme) {
+        case 'darkdiamond':
+          import('../Themes/darkdiamond').then(theme => {
+            loadTheme(theme.default)
+          })
+          break
         case 'trading212':
           import('../Themes/trading212').then(theme => {
             loadTheme(theme.default)

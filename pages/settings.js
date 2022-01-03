@@ -49,6 +49,7 @@ function Settings ({ preferences, setPreferences, dividends, contributions, posi
   const themes = [
     { value: 'original', name: 'Original' },
     { value: 'trading212', name: 'Trading 212' },
+    { value: 'darkdiamond', name: 'Dark Diamond' },
     { value: 'light', name: 'Light' },
     { value: 'darkmode', name: 'Dark Mode' },
     { value: 'maroon', name: 'Maroon' }
