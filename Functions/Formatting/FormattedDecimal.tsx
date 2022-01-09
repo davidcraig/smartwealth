@@ -32,7 +32,7 @@ export function FormattedDecimal (number: string | number, decimalPlaces: number
     )
   }
 
-  const decimal = parseInt(parts[1]) || 0
+  const decimal = parts[1] || 0
 
   if (decimal === 0) {
     return (

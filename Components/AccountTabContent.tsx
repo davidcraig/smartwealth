@@ -60,7 +60,7 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
   }
   const addPieStock = (stock) => {
     const updatedPie = {...pie}
-    if (pie.positions.some(p => p.ticker === stock.ticker)) {
+    if (pie.positions && pie.positions.some(p => p.ticker === stock.ticker)) {
       console.error('Stock is already in the pie')
       return
     }
@@ -105,6 +105,18 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
     }))
   }
 
+  const getPieTotalWeight = () => {
+    if (!pie.positions) {
+      return 0
+    }
+    return pie.positions.reduce((previous, current) => {
+      return previous + current.weight
+    }, 0)
+  }
+
+  const pieTotalWeight = getPieTotalWeight()
+  const pieIsComplete = pieTotalWeight === 100.0
+
   if (expanded) {
     return (
       <Card key={pie.id} title={pie.name} style={{position: 'relative'}}>
@@ -113,6 +125,11 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
             <>
             <div className="columns">
               <Column class='is-three-quarters'>
+                {
+                  pie.positions && !pieIsComplete && (
+                    <p className="error">Pie is not 100% weighted</p>
+                  )
+                }
                 {
                   pie.positions && pie.positions.length > 0 && (
                     <>
