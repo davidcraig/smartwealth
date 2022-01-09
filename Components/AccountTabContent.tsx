@@ -5,8 +5,6 @@ import { addPie, updatePie } from "../src/features/accounts/accountsSlice"
 import uuid from "../Functions/uuid"
 import GetStock from "../Functions/GetStock"
 import FormattedDecimal from "../Functions/Formatting/FormattedDecimal"
-import GetFiveYearAverageReturn from "../Functions/Stock/GetFiveYearAverageReturn"
-import GetFiveYearTotalReturn from "../Functions/Stock/GetFiveYearTotalReturn"
 
 function SearchResults({ searchFilteredStocks, addStock }) {
   if (!searchFilteredStocks || searchFilteredStocks.length === 0) {
@@ -81,9 +79,21 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
       pie: updatedPie
     }))
   }
-  const updatePiePosition = () => {
-    const updatedPie = {...pie}
-    console.log(updatedPie)
+  const updatePiePosition = ({ pie, position, weight = 0, quantity = 0 }) => {
+    const updatedPie = JSON.parse(JSON.stringify(pie))
+    updatedPie.positions = updatedPie.positions.map(p => {
+      if (p.ticker === position.ticker) {
+        // Update the things
+        p.weight = weight || 0
+        p.quantity = quantity || 0
+      }
+      return p
+    })
+    dispatch(updatePie({
+      pieId: pie.id,
+      accountId: account.id,
+      pie: updatedPie
+    }))
   }
   const deletePiePosition = (ticker) => {
     const updatedPie = {...pie}
@@ -112,27 +122,24 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
                             <th className='header-ticker'>Ticker</th>
                             <th>Stock</th>
                             <th colSpan={2}>Quantity</th>
-                            <th>Pie</th>
                             <th>Pie Weight</th>
                             <th>Div. Yield</th>
-                            <th>5 Yr Avg Return</th>
-                            <th colSpan={2}>5 Yr Total Return</th>
                           </tr>
                         </thead>
                         <tbody>
                           {pie.positions.map((p, idx) => {
                             const stockObj = GetStock(p.ticker, stocks) ?? p.stock
                             return p && (
-                              <tr key={`${p.ticker}${stockObj.name}`}>
+                              <tr key={p.ticker}>
                                 <td className='ticker'>{p.ticker}</td>
                                 <td>{stockObj.name}</td>
                                 <td>{FormattedDecimal(p.quantity)}</td>
                                 <td>
                                   <input
                                     type='text'
+                                    data-prop='quantity'
                                     placeholder='Quantity owned'
-                                    value={p.quantity}
-                                    // onChange={updatePositionQuantity.bind(p)}
+                                    defaultValue={p.quantity}
                                     pattern='[0-9.]+'
                                     data-ticker={stockObj.ticker}
                                     style={{ maxWidth: '9em' }}
@@ -141,27 +148,39 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
                                 <td>
                                   <input
                                     type='text'
-                                    placeholder='Pie Name? or blank if individual'
-                                    value={p.pie}
-                                    // onChange={updatePositionPieName.bind(p)}
-                                    data-ticker={p.ticker}
-                                  />
-                                </td>
-                                <td>
-                                  <input
-                                    type='text'
                                     placeholder='Pie Weight (%)'
-                                    value={p.pieWeight}
-                                    // onChange={updatePositionPieWeight.bind(p)}
+                                    data-prop='weight'
+                                    defaultValue={p.weight}
                                     pattern='[0-9.]+'
                                     data-ticker={p.ticker}
                                     style={{ maxWidth: '3em' }}
                                   />
                                 </td>
                                 <td>{stockObj.dividend_yield}</td>
-                                <td>{GetFiveYearAverageReturn(stockObj)}</td>
-                                <td>{GetFiveYearTotalReturn(stockObj)}</td>
                                 <td>
+                                  <a
+                                    onClick={() => {
+                                      const weight = parseFloat(
+                                        document.querySelector(`input[data-ticker='${p.ticker}'][data-prop='weight']`).value || 0
+                                      )
+                                      const quantity = parseFloat(
+                                        document.querySelector(`input[data-ticker='${p.ticker}'][data-prop='quantity']`).value || 0
+                                      )
+
+                                      if (p.weight !== weight || p.quantity !== quantity) {
+                                        updatePiePosition({
+                                          pie: pie,
+                                          position: p,
+                                          weight,
+                                          quantity
+                                        })
+                                      } else {
+                                        console.debug('No change')
+                                      }
+                                    }}
+                                  >
+                                    ✔️
+                                  </a>
                                   <a
                                     onClick={() => {
                                       const x = confirm('Are you sure')
