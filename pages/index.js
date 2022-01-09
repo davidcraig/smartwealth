@@ -384,7 +384,8 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  stocks: state.stocks.data
+  stocks: state.stocks.data,
+  accounts: state.accounts.data
 })
 
 export default connect(mapStateToProps)(SmartWealth)
