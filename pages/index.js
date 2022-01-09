@@ -80,7 +80,7 @@ function ForecastContent (forecast, forecastLog, stocks) {
 }
 
 const noPositions = (
-  <p>To add stocks go to the <a href='/holdings'>My Holdings</a> page!</p>
+  <p>To add stocks go to the <a href='/portfolio'>My Portfolio</a> page!</p>
 )
 
 const calculatePieYields = (pie) => {
@@ -170,12 +170,13 @@ const nextTenYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(foreca
 const nextThirtyYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'thirtyYears', stocks)
 const nextFortyYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'fortyYears', stocks)
 
-export function SmartWealth ({ positionsHeld, stocks, ...props }) {
+export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
   const [forecast, setForecast] = useState([])
   const [pies, setPies] = useState([])
   const [pieContributions, setPieContributions] = useState([]) // eslint-disable-line no-unused-vars
   const [forecastLog, setForecastLog] = useState([])
   const [isForecasting, setIsForecasting] = useState(false)
+  const canForecast = false
 
   /* Send the message to perform forecast on position load */
   useEffect(() => {
@@ -184,7 +185,8 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
     if (
       !isForecasting &&
       positionsHeld &&
-      positionsHeld.length > 0
+      positionsHeld.length > 0 &&
+      canForecast
     ) {
       CalculationWorker.postMessage({
         type: 'perform-forecast',
@@ -300,7 +302,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
               </Card>
             </Column>
             {
-              hasPositions && (
+              (hasPositions) && (
                 <Column class='is-one-quarter'>
                   <Card className='is-compact' title='Forecasting'>
                     <table className='table is-compact pie-forecast-controls'>
@@ -382,7 +384,8 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  stocks: state.stocks.data
+  stocks: state.stocks.data,
+  accounts: state.accounts.data
 })
 
 export default connect(mapStateToProps)(SmartWealth)
