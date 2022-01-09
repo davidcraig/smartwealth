@@ -20,7 +20,7 @@ function SearchResults({ searchFilteredStocks, addStock }) {
         {searchFilteredStocks.map((stock, index) => {
           return (
             <li key={`${stock.ticker}${stock.name}${index}`}>
-              {stock.ticker} {stock.name} <button onClick={addStock.bind(stock)}>+</button>
+              {stock.ticker} {stock.name} <button onClick={() => {addStock(stock)}}>+</button>
             </li>
           )
         })}
@@ -29,12 +29,10 @@ function SearchResults({ searchFilteredStocks, addStock }) {
   )
 }
 
-const PieWidget = ({ pie, stocks }) => {
+const PieWidget = ({ account, pie, stocks, dispatch }) => {
   const [expanded, setExpanded] = useState(false)
   const [searchFilteredStocks, setSearchFilteredStocks] = useState([])
-  console.log('stocks pieWidget outer', stocks)
   const searchStocks = ({ target }) => {
-    console.log(stocks)
     if (!stocks) {
       return setSearchFilteredStocks([])
     }
@@ -62,13 +60,39 @@ const PieWidget = ({ pie, stocks }) => {
       }
     }
   }
-  const addPieStock = () => {
+  const addPieStock = (stock) => {
     const updatedPie = {...pie}
-    console.log(updatedPie)
+    if (pie.positions.some(p => p.ticker === stock.ticker)) {
+      console.error('Stock is already in the pie')
+      return
+    }
+    const position = {
+      ticker: stock.ticker,
+      weight: 0
+    }
+    if (!updatedPie.positions || updatedPie.positions.length === 0) {
+      updatedPie.positions = [position]
+    } else {
+      updatedPie.positions = [...updatedPie.positions, position]
+    }
+    dispatch(updatePie({
+      pieId: pie.id,
+      accountId: account.id,
+      pie: updatedPie
+    }))
   }
   const updatePiePosition = () => {
     const updatedPie = {...pie}
     console.log(updatedPie)
+  }
+  const deletePiePosition = (ticker) => {
+    const updatedPie = {...pie}
+    updatedPie.positions = updatedPie.positions.filter(p => p.ticker !== ticker)
+    dispatch(updatePie({
+      pieId: pie.id,
+      accountId: account.id,
+      pie: updatedPie
+    }))
   }
 
   if (expanded) {
@@ -99,8 +123,8 @@ const PieWidget = ({ pie, stocks }) => {
                           {pie.positions.map((p, idx) => {
                             const stockObj = GetStock(p.ticker, stocks) ?? p.stock
                             return p && (
-                              <tr key={`${p.stock.ticker}${p.stock.name}`}>
-                                <td className='ticker'>{stockObj.ticker}</td>
+                              <tr key={`${p.ticker}${stockObj.name}`}>
+                                <td className='ticker'>{p.ticker}</td>
                                 <td>{stockObj.name}</td>
                                 <td>{FormattedDecimal(p.quantity)}</td>
                                 <td>
@@ -120,7 +144,7 @@ const PieWidget = ({ pie, stocks }) => {
                                     placeholder='Pie Name? or blank if individual'
                                     value={p.pie}
                                     // onChange={updatePositionPieName.bind(p)}
-                                    data-ticker={p.stock.ticker}
+                                    data-ticker={p.ticker}
                                   />
                                 </td>
                                 <td>
@@ -130,7 +154,7 @@ const PieWidget = ({ pie, stocks }) => {
                                     value={p.pieWeight}
                                     // onChange={updatePositionPieWeight.bind(p)}
                                     pattern='[0-9.]+'
-                                    data-ticker={p.stock.ticker}
+                                    data-ticker={p.ticker}
                                     style={{ maxWidth: '3em' }}
                                   />
                                 </td>
@@ -142,7 +166,7 @@ const PieWidget = ({ pie, stocks }) => {
                                     onClick={() => {
                                       const x = confirm('Are you sure')
                                       if (x) {
-                                        // deletePositionByIndex(idx)
+                                        deletePiePosition(stockObj.ticker)
                                       }
                                     }}
                                   >
@@ -164,7 +188,6 @@ const PieWidget = ({ pie, stocks }) => {
                 <SearchResults searchFilteredStocks={searchFilteredStocks} addStock={addPieStock} />
               </Column>
             </div>
-            <button onClick={() => {addPieStock()}}>Add Stock</button>
             <button
               style={{position: 'absolute', top: '0.8rem', right: '0.8rem'}}
               onClick={() => { setExpanded(false) }}
@@ -237,7 +260,12 @@ const AccountTabContent = ({ stocks, account, dispatch }) => {
               <h3>Pies</h3>
               {
                 account.pies.map(pie => {
-                  return <PieWidget stocks={stocks} pie={pie} />
+                  return <PieWidget
+                    account={account}
+                    stocks={stocks}
+                    pie={pie}
+                    dispatch={dispatch}
+                  />
                 })
               }
             </div>
