@@ -176,6 +176,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
   const [pieContributions, setPieContributions] = useState([]) // eslint-disable-line no-unused-vars
   const [forecastLog, setForecastLog] = useState([])
   const [isForecasting, setIsForecasting] = useState(false)
+  let canForecast = false
 
   /* Send the message to perform forecast on position load */
   useEffect(() => {
@@ -184,7 +185,8 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
     if (
       !isForecasting &&
       positionsHeld &&
-      positionsHeld.length > 0
+      positionsHeld.length > 0 &&
+      canForecast
     ) {
       CalculationWorker.postMessage({
         type: 'perform-forecast',
