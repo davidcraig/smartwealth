@@ -238,7 +238,7 @@ export function Holdings({ stocks, positionsHeld, setPositionsHeld }) {
 
       <main className='container is-fluid'>
         <div className='content'>
-          <h1 className='h1'>My Holdings</h1>
+          <h1 className='h1'>Individual Stocks</h1>
           <div className='columns is-desktop'>
             <Column class='is-three-quarters-widescreen'>
               {
