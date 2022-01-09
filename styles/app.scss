@@ -58,6 +58,10 @@ a.navbar-item:hover {
   background: var(--color-bg-alt);
 }
 
+.note.red {
+  color: red;
+}
+
 .content table thead th { color: var(--color-text); }
 .content table tbody td { border: none; }
 
@@ -150,6 +154,11 @@ input { background-color: var(--color-bg-alt); }
   &:hover {
     background: hsl(127deg 100% 36%);
   }
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
 }
 
 @media screen and (max-width: 768px) {
