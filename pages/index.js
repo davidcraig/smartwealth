@@ -80,7 +80,7 @@ function ForecastContent (forecast, forecastLog, stocks) {
 }
 
 const noPositions = (
-  <p>To add stocks go to the <a href='/holdings'>My Holdings</a> page!</p>
+  <p>To add stocks go to the <a href='/portfolio'>My Portfolio</a> page!</p>
 )
 
 const calculatePieYields = (pie) => {
@@ -176,7 +176,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
   const [pieContributions, setPieContributions] = useState([]) // eslint-disable-line no-unused-vars
   const [forecastLog, setForecastLog] = useState([])
   const [isForecasting, setIsForecasting] = useState(false)
-  let canForecast = false
+  const canForecast = false
 
   /* Send the message to perform forecast on position load */
   useEffect(() => {

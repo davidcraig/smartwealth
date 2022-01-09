@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { stocksSlice } from './features/stocks/stockSlice'
+import { accountsSlice } from './features/accounts/accountsSlice'
 import { combineReducers } from 'redux'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
@@ -21,7 +22,8 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  stocks: stocksSlice.reducer
+  stocks: stocksSlice.reducer,
+  accounts: accountsSlice.reducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
