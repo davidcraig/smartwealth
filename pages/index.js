@@ -216,7 +216,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
             return {
               name: key,
               holdings: pie.holdings,
-              positions: pie.positions
+              positions: updatePositions(pie.positions)
             }
           })
           setPies(pies)
