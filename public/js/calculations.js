@@ -40,17 +40,6 @@ const rates = {
   }
 }
 
-function getLastDividend (position) {
-  const stock = position.stock
-  if (typeof stock['last_dividend amount'] !== 'undefined') {
-    return stock['last_dividend amount']
-  }
-  if (typeof stock.last_dividend_amount !== 'undefined') {
-    return stock.last_dividend_amount
-  }
-  return 0
-}
-
 function getPositionQuantity (position) {
   switch (typeof position.quantity) {
     case 'number':
