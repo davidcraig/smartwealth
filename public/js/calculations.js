@@ -1,5 +1,6 @@
 /* global self */
 'use strict'
+
 // Handles: { type: 'perform-forecast', positions }
 // Messages out: forecast-log-entry, forecast-results
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -50,21 +51,9 @@ function getLastDividend (position) {
   return 0
 }
 
-function getLastInterimDividend (position) {
-  const stock = position.stock
-  if (typeof stock['latest_interim amount'] !== 'undefined') {
-    return stock['latest_interim amount']
-  }
-  if (typeof stock.latest_interim_amount !== 'undefined') {
-    return stock.latest_interim_amount
-  }
-  return 0
-}
-
 function getPositionQuantity (position) {
   switch (typeof position.quantity) {
     case 'number':
-      return parseFloat(position.quantity)
     case 'string':
       return parseFloat(position.quantity)
     case undefined:
@@ -86,6 +75,7 @@ function parseCurrency (value) {
     case 'string':
       return parseFloat(value
         .replace('$', '')
+        .replace(',', '')
         .replace('p', '')
         .replace('£', '')
       )
@@ -100,12 +90,12 @@ function calculateRealDividend (stock, dividendAmount, quantity) {
   if (quantity === 0 || dividendAmount === 0) {
     return 0
   }
-  const currency = stock.currency || 'usd' // fallback to usd
   if (isNaN(dividendAmount)) {
     console.warn('dividendAmount is NaN', stock)
     return 0
   }
 
+  const currency = stock.currency
   const dividend = dividendAmount * quantity
 
   switch (currency) {
@@ -129,13 +119,13 @@ function calculateRealDividend (stock, dividendAmount, quantity) {
 function getDividendMonths (stock) {
   function cacheResult (stock, result) {
     // @ts-ignore
-    cache.dividendMonths[stock.name] = result
+    cache.dividendMonths[stock.ticker] = result
     return result
   }
   // @ts-ignore
-  if (cache.dividendMonths[stock.name]) {
+  if (cache.dividendMonths[stock.ticker]) {
     // @ts-ignore
-    return cache.dividendMonths[stock.name]
+    return cache.dividendMonths[stock.ticker]
   }
   if (stock.dividend_frequency === 'Monthly') {
     return cacheResult(stock, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
@@ -162,13 +152,13 @@ function getDividendMonths (stock) {
 function getDividendInterimMonths (stock) {
   function cacheResult (stock, result) {
     // @ts-ignore
-    cache.dividendInterimMonths[stock.name] = result
+    cache.dividendInterimMonths[stock.ticker] = result
     return result
   }
   // @ts-ignore
-  if (cache.dividendInterimMonths[stock.name]) {
+  if (cache.dividendInterimMonths[stock.ticker]) {
     // @ts-ignore
-    return cache.dividendInterimMonths[stock.name]
+    return cache.dividendInterimMonths[stock.ticker]
   }
   if (stock.dividend_frequency === 'Monthly' ||
     stock.dividend_frequency === 'Quarterly') {
@@ -226,8 +216,12 @@ function recordShareBuy (amount, position, currentPeriod, year, forecastChartDat
   return forecastChartData
 }
 
-function calculateNewShares (dividendAmount, sharePrice) {
-  return parseFloat(dividendAmount / parseCurrency(sharePrice))
+function calculateNewShares (dividendAmount, stock) {
+  let sharePrice = parseCurrency(stock.share_price)
+  if (stock.currency === 'GBX p') {
+    sharePrice = sharePrice * rates.gbx.gbp
+  }
+  return parseFloat(dividendAmount / sharePrice)
 }
 
 function performMonthForecast (jsMonth, currentPeriod, year, positions, forecastChartData, logEntries = [], pies, pieContributions = []) {
@@ -254,13 +248,8 @@ function performMonthForecast (jsMonth, currentPeriod, year, positions, forecast
     // Post a message to say which stock we are forecasting
     const qty = getPositionQuantity(p)
     const stock = p.stock
-    const lastDividend = parseCurrency(getLastDividend(p))
-    const thisDividend = calculateRealDividend(stock, lastDividend, qty)
-    const interimDividend = parseCurrency(getLastInterimDividend(p))
-    const thisInterimDividend = calculateRealDividend(stock, interimDividend, qty)
     const dividendMonths = getDividendMonths(stock)
     const interimMonths = getDividendInterimMonths(stock)
-
     const isDividendMonth = dividendMonths.includes(calendarMonth)
     const isInterimMonth = interimMonths.includes(calendarMonth)
 
@@ -293,13 +282,17 @@ function performMonthForecast (jsMonth, currentPeriod, year, positions, forecast
       }
 
       if (isDividendMonth) {
-        newShares = calculateNewShares(thisInterimDividend, p.stock.share_price)
-        dividendAmount = thisInterimDividend
+        const lastDividend = parseCurrency(stock.getLastDividend())
+        const thisDividend = calculateRealDividend(stock, lastDividend, qty)
+        newShares = calculateNewShares(thisDividend, p.stock)
+        dividendAmount = thisDividend
         sendDividendPayoutLogEntry(p, year, calendarMonth, thisDividend)
       }
       if (isInterimMonth) {
-        newShares = calculateNewShares(thisDividend, p.stock.share_price)
-        dividendAmount = thisDividend
+        const interimDividend = parseCurrency(stock.getLastInterimDividend())
+        const thisInterimDividend = calculateRealDividend(stock, interimDividend, qty)
+        newShares = calculateNewShares(thisInterimDividend, p.stock)
+        dividendAmount = thisInterimDividend
         sendDividendPayoutLogEntry(p, year, calendarMonth, thisInterimDividend)
       }
 
@@ -354,14 +347,15 @@ function performMonthForecast (jsMonth, currentPeriod, year, positions, forecast
       }
 
       const qty = getPositionQuantity(piePosition)
-      const lastDividend = parseCurrency(getLastDividend(piePosition))
-      const thisDividend = calculateRealDividend(stock, lastDividend, qty)
-      const interimDividend = parseCurrency(getLastInterimDividend(piePosition))
-      const thisInterimDividend = calculateRealDividend(stock, interimDividend, qty)
       let dividendAmount = 0
 
-      if (isDividendMonth) { dividendAmount = thisDividend }
-      if (isInterimMonth) { dividendAmount = thisInterimDividend }
+      if (isDividendMonth) {
+        const lastDividend = parseCurrency(stock.getLastDividend())
+        dividendAmount = calculateRealDividend(stock, lastDividend, qty)
+      } else if (isInterimMonth) {
+        const interimDividend = parseCurrency(stock.getLastInterimDividend())
+        dividendAmount = calculateRealDividend(stock, interimDividend, qty)
+      }
 
       forecastChartData = recordDividend(dividendAmount, stock, currentPeriod, year, forecastChartData)
 
@@ -387,8 +381,6 @@ function performMonthForecast (jsMonth, currentPeriod, year, positions, forecast
             positionWeightedDrip = positionWeightedDrip * rates.gbp.usd
             break
           case 'GBX p':
-            positionWeightedDrip = positionWeightedDrip * rates.gbx.gbp
-            break
           case 'GBP':
             // No action required
             break
@@ -396,7 +388,7 @@ function performMonthForecast (jsMonth, currentPeriod, year, positions, forecast
             console.warn(`currency not handled for ${piePosition.stock.currency}`)
             break
         }
-        const newshares = positionWeightedDrip / parseCurrency(piePosition.stock.share_price)
+        const newshares = calculateNewShares(positionWeightedDrip, piePosition.stock)
         if (newshares < 0) {
           console.error('newshares is negative')
           return piePosition
@@ -475,7 +467,10 @@ function generatePieData (positions) {
 
 function handlePerformForecast (event) {
   if (isForecasting) { return }
-  let positions = event.positions
+  let positions = event.positions.map(p => {
+    p.stock = new Stock(p.stock)
+    return p
+  })
   const pieContributions = event.pieContributions
   let pies = generatePieData(positions)
   let forecastChartData = {
@@ -573,3 +568,52 @@ self.addEventListener('message', function (e) {
     handlePerformForecast(event)
   }
 }, false)
+
+// Stock class to simplify logic
+class Stock {
+  constructor (s) {
+    Object.keys(s).forEach(key => {
+      this[key] = s[key]
+    })
+  }
+
+  getLastDividend () {
+    if (typeof this['last_dividend amount'] !== 'undefined') {
+      return this.parseCurrency(this['last_dividend amount'])
+    }
+    if (typeof this.last_dividend_amount !== 'undefined') {
+      return this.parseCurrency(this.last_dividend_amount)
+    }
+    return 0
+  }
+
+  getLastInterimDividend () {
+    if (typeof this['latest_interim amount'] !== 'undefined') {
+      return this.parseCurrency(this['latest_interim amount'])
+    }
+    if (typeof this.latest_interim_amount !== 'undefined') {
+      return this.parseCurrency(this.latest_interim_amount)
+    }
+    return 0
+  }
+
+  parseCurrency (value) {
+    if (!value) {
+      return 0
+    }
+    switch (typeof value) {
+      case 'number':
+        return value
+      case 'string':
+        return parseFloat(value
+          .replace('$', '')
+          .replace('p', '')
+          .replace('£', '')
+        )
+      case undefined:
+        return 0
+      default:
+        console.warn('uncaught typeof', typeof value)
+    }
+  }
+}
