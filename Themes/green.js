@@ -2,7 +2,7 @@ import ratingColours from './base/ratingColours'
 
 const link = '#29bb15'
 
-const baseHue = '150deg';
+const baseHue = '100deg';
 
 const styles = [
   { var: '--color-bg', val: `hsl(${baseHue} 12% 21%)` },
