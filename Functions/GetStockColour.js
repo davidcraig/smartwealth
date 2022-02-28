@@ -145,11 +145,14 @@ function GetStockColour (stock) {
     case 'Tesco': return '#ee1c2e'
     case 'The Clorox Company': return '#297CA5'
     case 'Unilever': return '#1f36c7'
-    case 'Vanguard FTSE 100 GBP': return '#96151d'
-    case 'Vanguard FTSE All-World High Dividend Yield': return '#96151d'
-    case 'Vanguard Global Aggregate Bond': return '#96151d'
-    case 'Vanguard S&P 500': return '#96151d'
-    case 'Vanguard USD Treasury Bond': return '#96151d'
+    case 'Vanguard FTSE 100 GBP':
+    case 'Vanguard FTSE All-World High Dividend Yield':
+    case 'Vanguard FTSE All-World':
+    case 'Vanguard Global Aggregate Bond':
+    case 'Vanguard S&P 500':
+    case 'Vanguard U.K. Gilt UCITS ETF':
+    case 'Vanguard USD Treasury Bond':
+      return '#96151d'
     case 'Verizon Communications Inc': return '#000000'
     case 'VF Corp': return '#004c97'
     case 'W.P. Carey': return '#007cba'
