@@ -52,7 +52,8 @@ function Settings ({ preferences, setPreferences, dividends, contributions, posi
     { value: 'darkdiamond', name: 'Dark Diamond' },
     { value: 'light', name: 'Light' },
     { value: 'darkmode', name: 'Dark Mode' },
-    { value: 'maroon', name: 'Maroon' }
+    { value: 'maroon', name: 'Maroon' },
+    { value: 'green', name: 'Green' }
   ]
 
   return (

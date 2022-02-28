@@ -38,6 +38,11 @@ function handlePreferences (preferences) {
             loadTheme(theme.default)
           })
           break
+        case 'green':
+          import('../Themes/green').then(theme => {
+            loadTheme(theme.default)
+          })
+          break
         case 'maroon':
           import('../Themes/maroon').then(theme => {
             loadTheme(theme.default)
