@@ -311,38 +311,53 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
               (hasPositions) && (
                 <Column class='is-one-quarter'>
                   <Card className='is-compact' title='Forecasting'>
+                    {/* Legacy */}
+                    {
+                      pies && pies.length > 0 && (
+                        <table className='table is-compact pie-forecast-controls'>
+                          <thead>
+                            <tr>
+                              <th>Pie</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {
+                              pies.map(pie => {
+                                const [pieAvg, pieYield] = calculatePieYields(pie, stocks)
+
+                                return (
+                                  <Fragment key={pie.name}>
+                                    <tr key={pie.name}>
+                                      <td>{pie.name} <span style={{ float: 'right' }}>avg.yld: {pieAvg} pie.yld: {pieYield}</span></td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <input
+                                          placeholder='£ / month, blank = 0'
+                                          data-pie={pie.name}
+                                          onChange={(e) => {
+                                            pie.monthlyContribution = parseFloat(e.target.value)
+                                          }}
+                                        />
+                                      </td>
+                                    </tr>
+                                  </Fragment>
+                                )
+                              })
+                            }
+                          </tbody>
+                        </table>
+                      )
+                    }
+
+                    {/* Accounts */}
                     <table className='table is-compact pie-forecast-controls'>
                       <thead>
                         <tr>
-                          <th>Pie</th>
+                          <th>Accounts</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {/* Legacy Pies */}
-                        {
-                          pies && pies.length > 0 && pies.map(pie => {
-                            const [pieAvg, pieYield] = calculatePieYields(pie, stocks)
-
-                            return (
-                              <Fragment key={pie.name}>
-                                <tr key={pie.name}>
-                                  <td>{pie.name} <span style={{ float: 'right' }}>avg.yld: {pieAvg} pie.yld: {pieYield}</span></td>
-                                </tr>
-                                <tr>
-                                  <td>
-                                    <input
-                                      placeholder='£ / month, blank = 0'
-                                      data-pie={pie.name}
-                                      onChange={(e) => {
-                                        pie.monthlyContribution = parseFloat(e.target.value)
-                                      }}
-                                    />
-                                  </td>
-                                </tr>
-                              </Fragment>
-                            )
-                          })
-                        }
                         {/* Account Based */}
                         {
                           accounts && accounts.length > 0 && accounts.map(account => {
@@ -352,29 +367,38 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
                             }
                             const accountPies = account.pies
 
-                            return accountPies.map(pie => {
-                              console.log(pie)
-                              const [pieAvg, pieYield] = calculatePieYields(pie, stocks)
+                            return (
+                              <Fragment key={account.name}>
+                                <tr key={account.name}>
+                                  <th>{account.name}</th>
+                                </tr>
+                                {
+                                  accountPies.map(pie => {
+                                    console.log(pie)
+                                    const [pieAvg, pieYield] = calculatePieYields(pie, stocks)
 
-                              return (
-                                <Fragment key={pie.name}>
-                                  <tr key={pie.name}>
-                                    <td>{pie.name} <span style={{ float: 'right' }}>avg.yld: {pieAvg} pie.yld: {pieYield}</span></td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <input
-                                        placeholder='£ / month, blank = 0'
-                                        data-pie={pie.name}
-                                        onChange={(e) => {
-                                          pie.monthlyContribution = parseFloat(e.target.value)
-                                        }}
-                                      />
-                                    </td>
-                                  </tr>
-                                </Fragment>
-                              )
-                            })
+                                    return (
+                                      <Fragment key={pie.name}>
+                                        <tr key={pie.name}>
+                                          <td>{pie.name} <span style={{ float: 'right' }}>avg.yld: {pieAvg} pie.yld: {pieYield}</span></td>
+                                        </tr>
+                                        <tr>
+                                          <td>
+                                            <input
+                                              placeholder='£ / month, blank = 0'
+                                              data-pie={pie.name}
+                                              onChange={(e) => {
+                                                pie.monthlyContribution = parseFloat(e.target.value)
+                                              }}
+                                            />
+                                          </td>
+                                        </tr>
+                                      </Fragment>
+                                    )
+                                  })
+                                }
+                              </Fragment>
+                            )
                           })
                         }
                       </tbody>
