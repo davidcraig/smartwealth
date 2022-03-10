@@ -83,21 +83,25 @@ const noPositions = (
   <p>To add stocks go to the <a href='/portfolio'>My Portfolio</a> page!</p>
 )
 
-const calculatePieYields = (pie) => {
+const calculatePieYields = (pie, stocks) => {
   const parsePercent = (v) => v.replace('%', '')
   const getPositionDividendYield = (pos) => {
-    if ('dividend_yield' in pos.stock) {
-      return parseFloat(parsePercent(pos.stock.dividend_yield))
+    const stock = GetStock(pos.ticker, stocks)
+    if (!stock) {
+      return 0
+    }
+    if ('dividend_yield' in stock) {
+      return parseFloat(parsePercent(stock.dividend_yield))
     }
 
-    if ('dividendYield' in pos.stock) {
-      return parseFloat(parsePercent(pos.stock.dividendYield))
+    if ('dividendYield' in stock) {
+      return parseFloat(parsePercent(stock.dividendYield))
     }
 
     return 0
   }
 
-  const sliceCount = pie.holdings
+  const sliceCount = pie.positions.length
   const avgYield = (
     pie
       .positions
@@ -115,15 +119,17 @@ const calculatePieYields = (pie) => {
   return [avgYield, weightedYield]
 }
 
-function PortfolioValue ({ positionsHeld, stocks }) {
-  return BaseCurrency(positionsHeld.reduce((prev, pos) => {
-    const stock = GetStock(pos.stock.ticker, stocks)
+function PortfolioValue ({ accounts, stocks }) {
+  return BaseCurrency(accounts.reduce((prev, account) => {
+    return account.positions.map(pos => {
+      const stock = GetStock(pos.ticker, stocks)
 
-    if (typeof prev === 'object') {
-      return GetPositionValue(pos, stock)
-    }
+      if (typeof prev === 'object') {
+        return GetPositionValue(pos, stock)
+      }
 
-    return prev + GetPositionValue(pos, stock)
+      return prev + GetPositionValue(pos, stock)
+    })
   }))
 }
 
@@ -274,7 +280,7 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
     })
   }
 
-  const hasPositions = positionsHeld && positionsHeld.length > 0
+  const hasPositions = true // positionsHeld && positionsHeld.length > 0
 
   pies.sort((a, b) => {
     return a.name.localeCompare(b.name)
@@ -312,9 +318,10 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
                         </tr>
                       </thead>
                       <tbody>
+                        {/* Legacy Pies */}
                         {
                           pies && pies.length > 0 && pies.map(pie => {
-                            const [pieAvg, pieYield] = calculatePieYields(pie)
+                            const [pieAvg, pieYield] = calculatePieYields(pie, stocks)
 
                             return (
                               <Fragment key={pie.name}>
@@ -336,6 +343,40 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
                             )
                           })
                         }
+                        {/* Account Based */}
+                        {
+                          accounts && accounts.length > 0 && accounts.map(account => {
+                            console.log(account)
+                            if (!('pies' in account)) {
+                              return false
+                            }
+                            const accountPies = account.pies
+
+                            return accountPies.map(pie => {
+                              console.log(pie)
+                              const [pieAvg, pieYield] = calculatePieYields(pie, stocks)
+
+                              return (
+                                <Fragment key={pie.name}>
+                                  <tr key={pie.name}>
+                                    <td>{pie.name} <span style={{ float: 'right' }}>avg.yld: {pieAvg} pie.yld: {pieYield}</span></td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <input
+                                        placeholder='£ / month, blank = 0'
+                                        data-pie={pie.name}
+                                        onChange={(e) => {
+                                          pie.monthlyContribution = parseFloat(e.target.value)
+                                        }}
+                                      />
+                                    </td>
+                                  </tr>
+                                </Fragment>
+                              )
+                            })
+                          })
+                        }
                       </tbody>
                     </table>
 
@@ -344,7 +385,7 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
 
                   <Card title='Stats'>
                     <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
-                    <p>Portfolio Value: <PortfolioValue positionsHeld={positionsHeld} /></p>
+                    <p>Portfolio Value: <PortfolioValue accounts={accounts} /></p>
                     <p>Dividends</p>
                     <table className='table is-narrow'>
                       <tbody>
