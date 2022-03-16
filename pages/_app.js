@@ -106,30 +106,6 @@ function MyApp ({ Component, pageProps, stocks }) {
     }
   }, [])
 
-  // Load any held positions from localStorage.
-  // useEffect(() => {
-  //   const positions = localStorage.getItem('positions')
-
-  //   if (positions == null) {
-  //     //
-  //   } else {
-  //     if (stocks.length === 0) {
-  //     } else {
-  //       let pos = JSON.parse(positions)
-  //       if (pos) {
-  //         import('../Functions/GetStock').then(f => {
-  //           pos = pos.map(p => {
-  //             const stock = f.GetStock(p.stock.ticker, stocks)
-  //             p.stock = stock
-  //             return p
-  //           })
-  //         })
-  //         setPositionsHeld(pos)
-  //       }
-  //     }
-  //   }
-  // }, [stocks])
-
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
