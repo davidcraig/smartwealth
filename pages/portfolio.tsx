@@ -35,9 +35,7 @@ export function Holdings({ accounts, stocks, positionsHeld, setPositionsHeld }) 
             )
           }
           {accounts.length === 0 && positionsHeld.length === 0 && (
-            <Card title='Create Account'>
-              AccountCreationWidget
-            </Card>
+            <AccountCreationWidget />
           )}
           {accounts.length > 0 && (
             <>
