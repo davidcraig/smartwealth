@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:calculations": "tsc ./public/ts/calculations.ts --outDir ./public/js --isolatedModules false",
     "start": "next start",
     "test": "jest"
   },
