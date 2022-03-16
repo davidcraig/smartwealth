@@ -39,25 +39,34 @@ const rates = {
   }
 }
 
-function getLastDividend (position) {
-  const stock = position.stock
-  if (typeof stock['last_dividend amount'] !== 'undefined') {
+function getStockByTicker (ticker, stocks) {
+  if (!stocks) { return null }
+  return stocks.filter((s) => {
+    return s.ticker === ticker
+  })[0]
+}
+
+function getLastDividend (position, stocks) {
+  const stock = getStockByTicker(position.ticker, stocks)
+  if ('last_dividend amount' in stock) {
     return stock['last_dividend amount']
   }
-  if (typeof stock.last_dividend_amount !== 'undefined') {
+  if ('last_dividend_amount' in stock) {
     return stock.last_dividend_amount
   }
+
   return 0
 }
 
-function getLastInterimDividend (position) {
-  const stock = position.stock
-  if (typeof stock['latest_interim amount'] !== 'undefined') {
+function getLastInterimDividend (position, stocks) {
+  const stock = getStockByTicker(position.ticker, stocks)
+  if ('latest_interim amount' in stock) {
     return stock['latest_interim amount']
   }
-  if (typeof stock.latest_interim_amount !== 'undefined') {
+  if ('latest_interim_amount' in stock) {
     return stock.latest_interim_amount
   }
+
   return 0
 }
 
@@ -230,8 +239,8 @@ function calculateNewShares (dividendAmount, sharePrice) {
   return parseFloat(dividendAmount / parseCurrency(sharePrice))
 }
 
-function performMonthForecast (jsMonth, currentPeriod, year, positions, forecastChartData, logEntries = [], pies, pieContributions = []) {
-  if (!positions || positions.length === 0) {
+function performMonthForecast (jsMonth, currentPeriod, year, positions, accounts, forecastChartData, logEntries = [], pies, pieContributions = [], stocks) {
+  if (!positions || positions.length === 0 || !accounts || accounts.length === 0) {
     return [
       positions,
       pies,
@@ -254,7 +263,7 @@ function performMonthForecast (jsMonth, currentPeriod, year, positions, forecast
     // Post a message to say which stock we are forecasting
     const qty = getPositionQuantity(p)
     const stock = p.stock
-    const lastDividend = parseCurrency(getLastDividend(p))
+    const lastDividend = parseCurrency(getLastDividend(p, stocks))
     const thisDividend = calculateRealDividend(stock, lastDividend, qty)
     const interimDividend = parseCurrency(getLastInterimDividend(p))
     const thisInterimDividend = calculateRealDividend(stock, interimDividend, qty)
@@ -439,6 +448,118 @@ function performMonthForecast (jsMonth, currentPeriod, year, positions, forecast
     pies[key] = pie
   })
 
+  /* TODO : For each accounts pies */
+  console.log(pieContributions)
+
+  accounts.forEach(account => {
+    const accountPies = account.pies
+    // Calculate pie dividends + contribution amount
+    Object.keys(accountPies).forEach(key => {
+      const pie = pies[key]
+
+      pie.dripValue = pie.dripValue + pie.monthlyContribution
+
+      pie.positions = pie.positions.map((piePosition) => {
+        const stock = piePosition.stock
+
+        const dividendMonths = getDividendMonths(stock)
+        const interimMonths = getDividendInterimMonths(stock)
+        const isDividendMonth = dividendMonths.includes(calendarMonth)
+        const isInterimMonth = interimMonths.includes(calendarMonth)
+
+        if (!isDividendMonth && !isInterimMonth) {
+          // Is not a dividend month
+          return piePosition
+        }
+
+        const qty = getPositionQuantity(piePosition)
+        const lastDividend = parseCurrency(getLastDividend(piePosition))
+        const thisDividend = calculateRealDividend(stock, lastDividend, qty)
+        const interimDividend = parseCurrency(getLastInterimDividend(piePosition))
+        const thisInterimDividend = calculateRealDividend(stock, interimDividend, qty)
+        let dividendAmount = 0
+
+        if (isDividendMonth) { dividendAmount = thisDividend }
+        if (isInterimMonth) { dividendAmount = thisInterimDividend }
+
+        forecastChartData = recordDividend(dividendAmount, stock, currentPeriod, year, forecastChartData)
+
+        pie.dripValue = pie.dripValue + dividendAmount
+        return piePosition
+      })
+      pies[key] = pie
+    })
+
+    // Calculate the pie share buys
+    Object.keys(accountPies).forEach(key => {
+      const pie = pies[key]
+      const pieWeights = pie.positions.map((p) => parseFloat(p.pieWeight))
+      const minOrderValue = 1.00 / (Math.min(...pieWeights) / 100)
+
+      if (pie.dripValue > minOrderValue) {
+        pie.positions = pie.positions.map((piePosition) => {
+          // This value is in base currency (gbp)
+          let positionWeightedDrip = (pie.dripValue / 100) * parseFloat(piePosition.pieWeight)
+          switch (piePosition.stock.currency) {
+            case 'USD':
+            case 'usd':
+              positionWeightedDrip = positionWeightedDrip * rates.gbp.usd
+              break
+            case 'GBX p':
+              positionWeightedDrip = positionWeightedDrip * rates.gbx.gbp
+              break
+            case 'GBP':
+              // No action required
+              break
+            default:
+              console.warn(`currency not handled for ${piePosition.stock.currency}`)
+              break
+          }
+          const newshares = positionWeightedDrip / parseCurrency(piePosition.stock.share_price)
+          if (newshares < 0) {
+            console.error('newshares is negative')
+            return piePosition
+          }
+
+          const logEntry = {
+            year: year,
+            id: uuidv4(),
+            month: calendarMonth,
+            level: 'success',
+            message: `Pie [${key}] BUY [${newshares.toFixed(6)}] shares of [${piePosition.stock.ticker}] for [${positionWeightedDrip.toFixed(2)}]`
+          }
+          logEntries.push(logEntry)
+          forecastChartData = recordShareBuy(newshares, piePosition, currentPeriod, year, forecastChartData)
+          piePosition.quantity = parseFloat((getPositionQuantity(piePosition) + newshares).toFixed(6))
+
+          return piePosition
+        })
+
+        pie.dripValue = 0
+      } else {
+        const logEntry = {
+          year: year,
+          id: uuidv4(),
+          month: calendarMonth,
+          level: 'warning',
+          message: `
+            Pie: ${key} not enough dripValue to buy shares,
+            dripValue: ${pie.dripValue},
+            minOrderValue: ${minOrderValue.toFixed(2)}
+          `
+        }
+        logEntries.push(logEntry)
+        pie.positions.map(piePosition => {
+          forecastChartData = recordShareBuy(0, piePosition, currentPeriod, year, forecastChartData)
+          return piePosition
+        })
+      }
+
+      pies[key] = pie
+    })
+  })
+  /* END TODO */
+
   // return the updated positions for the next forecast
   return [
     positions,
@@ -476,6 +597,8 @@ function generatePieData (positions) {
 function handlePerformForecast (event) {
   if (isForecasting) { return }
   let positions = event.positions
+  const stocks = event.stocks
+  const accounts = event.accounts
   const pieContributions = event.pieContributions
   let pies = generatePieData(positions)
   let forecastChartData = {
@@ -505,12 +628,11 @@ function handlePerformForecast (event) {
       shareData: {}
     }
   }
-  if (positions.length === 0) {
+  if (positions.length === 0 && (!accounts || accounts.pies.length === 0)) {
     self.postMessage({
       type: 'forecast-results',
       data: JSON.stringify(forecastChartData)
     })
-    return
   }
 
   isForecasting = true
@@ -524,6 +646,26 @@ function handlePerformForecast (event) {
       time.shareData[stock.name] = []
     })
   })
+
+  // Same as above but for accounts pie positions
+  if (accounts) {
+    accounts.forEach(account => {
+      if (account.pies.length > 0) {
+        account.pies.forEach(pie => {
+          if (pie.positions.length > 0) {
+            pie.positions.forEach((position) => {
+              const stock = getStockByTicker(position.ticker)
+              Object.keys(forecastChartData).forEach(key => {
+                const time = forecastChartData[key]
+                time.dividendData[stock.name] = []
+                time.shareData[stock.name] = []
+              })
+            })
+          }
+        })
+      }
+    })
+  }
 
   let logEntries = []
   const date = new Date()
@@ -542,7 +684,7 @@ function handlePerformForecast (event) {
       thisMonth = 0
     }
     // Perform the forecast
-    [positions, pies, forecastChartData, logEntries] = performMonthForecast(thisMonth, currPeriod, year, positions, forecastChartData, logEntries, pies, pieContributions)
+    [positions, pies, forecastChartData, logEntries] = performMonthForecast(thisMonth, currPeriod, year, positions, accounts, forecastChartData, logEntries, pies, pieContributions, stocks)
     switch (currPeriod) {
       // case 11: // 1 Year
       // case 59: // 5 Years
