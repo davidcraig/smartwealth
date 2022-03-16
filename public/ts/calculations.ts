@@ -53,7 +53,6 @@ function getLastDividend (position, stocks): number {
     console.error('stock is null', position, stocks)
     return 0
   }
-  console.log(stock)
   if ('last_dividend amount' in stock) {
     return stock['last_dividend amount']
   }
@@ -339,8 +338,6 @@ function performMonthForecast ({
         const isDividendMonth: boolean = dividendMonths.includes(calendarMonth)
         const isInterimMonth: boolean = interimMonths.includes(calendarMonth)
 
-        console.log('isDivMonth', isDividendMonth)
-        console.log('isInterMonth', isInterimMonth)
         if (!isDividendMonth && !isInterimMonth) {
           // Is not a dividend month
           return piePosition
@@ -352,10 +349,6 @@ function performMonthForecast ({
         const interimDividend = parseCurrency(getLastInterimDividend(piePosition, stocks))
         const thisInterimDividend = calculateRealDividend(stock, interimDividend, qty)
         let dividendAmount = 0
-
-        console.log(lastDividend, 'lastDividend')
-        console.log(thisDividend, 'thisDividend')
-        console.log(interimDividend, 'interimDividend')
 
         if (isDividendMonth) { dividendAmount = thisDividend }
         if (isInterimMonth) { dividendAmount = thisInterimDividend }
@@ -453,7 +446,6 @@ function performMonthForecast ({
 
 function handlePerformForecast (event): void {
   if (isForecasting) { return }
-  console.log('event', event)
   const stocks = event.stocks
   let accounts = event.accounts
   let forecastChartData = {

@@ -48,7 +48,6 @@ function getLastDividend(position, stocks) {
         console.error('stock is null', position, stocks);
         return 0;
     }
-    console.log(stock);
     if ('last_dividend amount' in stock) {
         return stock['last_dividend amount'];
     }
@@ -284,8 +283,6 @@ function performMonthForecast(_a) {
                 var interimMonths = getDividendInterimMonths(stock);
                 var isDividendMonth = dividendMonths.includes(calendarMonth);
                 var isInterimMonth = interimMonths.includes(calendarMonth);
-                console.log('isDivMonth', isDividendMonth);
-                console.log('isInterMonth', isInterimMonth);
                 if (!isDividendMonth && !isInterimMonth) {
                     // Is not a dividend month
                     return piePosition;
@@ -296,9 +293,6 @@ function performMonthForecast(_a) {
                 var interimDividend = parseCurrency(getLastInterimDividend(piePosition, stocks));
                 var thisInterimDividend = calculateRealDividend(stock, interimDividend, qty);
                 var dividendAmount = 0;
-                console.log(lastDividend, 'lastDividend');
-                console.log(thisDividend, 'thisDividend');
-                console.log(interimDividend, 'interimDividend');
                 if (isDividendMonth) {
                     dividendAmount = thisDividend;
                 }
@@ -314,7 +308,6 @@ function performMonthForecast(_a) {
         // Calculate the pie share buys
         Object.keys(accountPies).forEach(function (key) {
             var pie = accountPies[key];
-            console.log(pie);
             var pieWeights = pie.positions.map(function (p) { return parseFloat(p.weight); });
             var minOrderValue = 1.00 / (Math.min.apply(Math, pieWeights) / 100);
             if (pie.dripValue > minOrderValue) {
@@ -391,7 +384,6 @@ function handlePerformForecast(event) {
     if (isForecasting) {
         return;
     }
-    console.log('event', event);
     var stocks = event.stocks;
     var accounts = event.accounts;
     var forecastChartData = {
