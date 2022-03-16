@@ -1,10 +1,10 @@
-import { connect } from "react-redux"
-import { Columns, Column, Card, TabbedContent } from '@davidcraig/react-bulma'
-import React, { useState } from "react"
-import { addAccount } from "../src/features/accounts/accountsSlice"
-import uuid from "../Functions/uuid"
+import { connect } from 'react-redux'
+import { Card } from '@davidcraig/react-bulma'
+import React, { useState } from 'react'
+import { addAccount } from '../src/features/accounts/accountsSlice'
+import uuid from '../Functions/uuid'
 
-const AccountCreationWidget = ({ dispatch }) => {
+const AccountCreationWidget = ({ dispatch }): void => {
   const [name, setName] = useState(null)
   const [pies, setPies] = useState(false)
   const [nestedPies, setNestedPies] = useState(false)
@@ -30,7 +30,6 @@ const AccountCreationWidget = ({ dispatch }) => {
           <input type='text' placeholder='Account Name' onChange={({target}) => {
             setName(target.value)
           }} />
-          
         </label>
       </section>
       <section>
@@ -60,13 +59,6 @@ const AccountCreationWidget = ({ dispatch }) => {
           )}
         </div>
       </section>
-
-      <h2>Debug</h2>
-      <div>
-        <p>Name: {name}</p>
-        <p>{pies ? 'Pies enabled': 'Pies disabled'}</p>
-        <p>{nestedPies ? 'Nested pies enabled': 'Nested pies disabled'}</p>
-      </div>
 
       <button onClick={createAccount}>Create Account</button>
     </Card>
