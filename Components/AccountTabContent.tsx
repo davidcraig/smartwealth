@@ -284,7 +284,6 @@ const AccountPieCreate = ({ stocks, account, dispatch }) => {
 const AccountTabContent = ({ stocks, account, dispatch }) => {
   const emojiTick = '✔️'
   const emojiCross = '❌'
-  console.log(stocks)
 
   return (
     <div className="columns">
