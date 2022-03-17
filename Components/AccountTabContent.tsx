@@ -206,7 +206,7 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
                                         }
                                       }}
                                     >
-                                      ❌
+                                      🗑️
                                     </a>
                                   </td>
                                 </tr>
@@ -290,7 +290,7 @@ const AccountTabContent = ({ stocks, account, dispatch }) => {
   return (
     <div className="columns">
       <Column class='is-two-thirds'>
-        AccountId: {account.id} - Pies: {renderBooleanAsEmoji(account.piesEnabled)} - Nested Pies: {renderBooleanAsEmoji(account.nestedPiesEnabled)}
+        {/* AccountId: {account.id} - Pies: {renderBooleanAsEmoji(account.piesEnabled)} - Nested Pies: {renderBooleanAsEmoji(account.nestedPiesEnabled)} */}
         {
           account.piesEnabled && account.pies && account.pies.length > 0 && (
             <div>
