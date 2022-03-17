@@ -1,6 +1,6 @@
 /* global localStorage, confirm */
 import Head from 'next/head'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../Components/Navbar'
 import PositionHeldInterface from '../types/PositionHeld'
 import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
@@ -144,7 +144,6 @@ function SearchResults({ searchFilteredStocks, addStock }) {
 function LegacyHoldings({ stocks, positionsHeld, setPositionsHeld }) {
   const [searchFilteredStocks, setSearchFilteredStocks] = useState([])
 
-  const hasPositions = positionsHeld && positionsHeld.length > 0
   /**
    * Adds ability to search stocks.
    * @param {*} e Search input event
@@ -231,14 +230,17 @@ function LegacyHoldings({ stocks, positionsHeld, setPositionsHeld }) {
   }
 
   function deletePositionByIndex(idx) {
-    const positions = positionsHeld.map((p, index) => {
-      if (index === idx) {
-        return null
-      }
-      return p
-    }).filter(Boolean)
-
-    setPositionsHeld(positions)
+    if (positionsHeld.length === 1 && idx === 0) {
+      setPositionsHeld([])
+    } else {
+      const positions = positionsHeld.map((p, index) => {
+        if (index === idx) {
+          return null
+        }
+        return p
+      }).filter(Boolean)
+      setPositionsHeld(positions)
+    }
   }
 
   function sortByPieName() {
@@ -271,196 +273,208 @@ function LegacyHoldings({ stocks, positionsHeld, setPositionsHeld }) {
 
   return (
     <>
-          <h1 className='h1'>Individual Stocks</h1>
-          <p className='note red'>Note: These stocks will no longer be counted in the forecasting on the dashboard, so you should use them as a reference to move your stocks to the new format (accounts)</p>
-          <div className='columns is-desktop'>
-            <Column class='is-three-quarters-widescreen'>
-              <Card title='Positions' className='positions-table-card'>
-                <table className='table is-hidden-mobile is-striped is-narrow holdings-table'>
-                  <thead>
-                    <tr>
-                      <th className='header-ticker'>Ticker</th>
-                      <th onClick={sortByStockName}>Stock</th>
-                      <th colSpan={2}>Quantity</th>
-                      <th onClick={sortByPieName}>Pie</th>
-                      <th>Pie Weight</th>
-                      <th>Div. Yield</th>
-                      <th>5 Yr Avg Return</th>
-                      <th colSpan={2}>5 Yr Total Return</th>
+      <h1 className='h1'>Individual Stocks</h1>
+      <p className='note red'>Note: These stocks will no longer be counted in the forecasting on the dashboard, so you should use them as a reference to move your stocks to the new format (accounts)</p>
+      <div className='columns is-desktop'>
+        <Column class='is-three-quarters-widescreen'>
+          <Card title='Positions' className='positions-table-card'>
+            <table className='table is-hidden-mobile is-striped is-narrow holdings-table'>
+              <thead>
+                <tr>
+                  <th className='header-ticker'>Ticker</th>
+                  <th onClick={sortByStockName}>Stock</th>
+                  <th colSpan={2}>Quantity</th>
+                  <th onClick={sortByPieName}>Pie</th>
+                  <th>Pie Weight</th>
+                  <th>Div. Yield</th>
+                  <th>5 Yr Avg Return</th>
+                  <th colSpan={2}>5 Yr Total Return</th>
+                </tr>
+              </thead>
+              <tbody>
+                {positionsHeld && positionsHeld.length > 0 && positionsHeld.map((p, idx) => {
+                  const stockObj = GetStock(p.stock.ticker, stocks) ?? p.stock
+                  return p && (
+                    <tr key={`${p.stock.ticker}${p.stock.name}`}>
+                      <td className='ticker'>{stockObj.ticker}</td>
+                      <td>{stockObj.name}</td>
+                      <td>{FormattedDecimal(p.quantity)}</td>
+                      <td>
+                        <input
+                          type='text'
+                          placeholder='Quantity owned'
+                          value={p.quantity}
+                          onChange={updatePositionQuantity.bind(p)}
+                          pattern='[0-9.]+'
+                          data-ticker={stockObj.ticker}
+                          style={{ maxWidth: '9em' }}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type='text'
+                          placeholder='Pie Name? or blank if individual'
+                          value={p.pie}
+                          onChange={updatePositionPieName.bind(p)}
+                          data-ticker={p.stock.ticker}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type='text'
+                          placeholder='Pie Weight (%)'
+                          value={p.pieWeight}
+                          onChange={updatePositionPieWeight.bind(p)}
+                          pattern='[0-9.]+'
+                          data-ticker={p.stock.ticker}
+                          style={{ maxWidth: '3em' }}
+                        />
+                      </td>
+                      <td>{stockObj.dividend_yield}</td>
+                      <td>{GetFiveYearAverageReturn(stockObj)}</td>
+                      <td>{GetFiveYearTotalReturn(stockObj)}</td>
+                      <td>
+                        <a
+                          onClick={() => {
+                            const x = confirm('Are you sure')
+                            if (x) {
+                              deletePositionByIndex(idx)
+                            }
+                          }}
+                        >
+                          x
+                        </a>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {positionsHeld && positionsHeld.length > 0 && positionsHeld.map((p, idx) => {
-                      const stockObj = GetStock(p.stock.ticker, stocks) ?? p.stock
-                      return p && (
-                        <tr key={`${p.stock.ticker}${p.stock.name}`}>
-                          <td className='ticker'>{stockObj.ticker}</td>
-                          <td>{stockObj.name}</td>
-                          <td>{FormattedDecimal(p.quantity)}</td>
-                          <td>
-                            <input
-                              type='text'
-                              placeholder='Quantity owned'
-                              value={p.quantity}
-                              onChange={updatePositionQuantity.bind(p)}
-                              pattern='[0-9.]+'
-                              data-ticker={stockObj.ticker}
-                              style={{ maxWidth: '9em' }}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type='text'
-                              placeholder='Pie Name? or blank if individual'
-                              value={p.pie}
-                              onChange={updatePositionPieName.bind(p)}
-                              data-ticker={p.stock.ticker}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type='text'
-                              placeholder='Pie Weight (%)'
-                              value={p.pieWeight}
-                              onChange={updatePositionPieWeight.bind(p)}
-                              pattern='[0-9.]+'
-                              data-ticker={p.stock.ticker}
-                              style={{ maxWidth: '3em' }}
-                            />
-                          </td>
-                          <td>{stockObj.dividend_yield}</td>
-                          <td>{GetFiveYearAverageReturn(stockObj)}</td>
-                          <td>{GetFiveYearTotalReturn(stockObj)}</td>
-                          <td>
-                            <a
-                              onClick={() => {
-                                const x = confirm('Are you sure')
-                                if (x) {
-                                  deletePositionByIndex(idx)
-                                }
-                              }}
-                            >
-                              x
-                            </a>
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-                <table className='table is-hidden-tablet holdings-table'>
-                  <tbody>
-                    {positionsHeld && positionsHeld.length > 0 && positionsHeld.map((p, idx) => {
-                      return p && (
-                        <>
-                          <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                          </tr>
-                          <tr key={`${p.stock.ticker}${p.stock.name}`}>
-                            <td className='ticker'>{p.stock.ticker}</td>
-                            <td>{p.stock.name}</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              Quantity {FormattedDecimal(p.quantity)}</td>
-                            <td>
-                              <input
-                                type='text'
-                                placeholder='Quantity owned'
-                                value={p.quantity}
-                                onChange={updatePositionQuantity.bind(p)}
-                                pattern='[0-9.]+'
-                                data-ticker={p.stock.ticker}
-                              />
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              Pie
-                            </td>
-                            <td>
-                              <input
-                                type='text'
-                                className='pie-name'
-                                placeholder='Pie Name? or blank if individual'
-                                value={p.pie}
-                                onChange={updatePositionPieName.bind(p)}
-                                data-ticker={p.stock.ticker}
-                              />
-                              <input
-                                type='text'
-                                placeholder='Pie Weight (%)'
-                                value={p.pieWeight}
-                                onChange={updatePositionPieWeight.bind(p)}
-                                pattern='[0-9.]+'
-                                data-ticker={p.stock.ticker}
-                                style={{ maxWidth: '3em' }}
-                              />
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>Yield: {p.stock.dividend_yield}</td>
-                            <td>
-                              <a onClick={() => {
-                                const x = confirm('Are you sure')
-                                if (x) {
-                                  deletePositionByIndex(idx)
-                                }
-                              }}
-                              >
-                                x
-                              </a>
-                            </td>
-                          </tr>
-                        </>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </Card>
-            </Column>
-            <Column class='is-one-quarter-widescreen'>
-              <Card title='Stock Search'>
-                <input type='text' className='input' onKeyUp={searchStocks} />
-                <SearchResults searchFilteredStocks={searchFilteredStocks} addStock={addStock} />
-              </Card>
+                  )
+                })}
+              </tbody>
+            </table>
+            <table className='table is-hidden-tablet holdings-table'>
+              <tbody>
+                {positionsHeld && positionsHeld.length > 0 && positionsHeld.map((p, idx) => {
+                  return p && (
+                    <>
+                      <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                      </tr>
+                      <tr key={`${p.stock.ticker}${p.stock.name}`}>
+                        <td className='ticker'>{p.stock.ticker}</td>
+                        <td>{p.stock.name}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Quantity {FormattedDecimal(p.quantity)}</td>
+                        <td>
+                          <input
+                            type='text'
+                            placeholder='Quantity owned'
+                            value={p.quantity}
+                            onChange={updatePositionQuantity.bind(p)}
+                            pattern='[0-9.]+'
+                            data-ticker={p.stock.ticker}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Pie
+                        </td>
+                        <td>
+                          <input
+                            type='text'
+                            className='pie-name'
+                            placeholder='Pie Name? or blank if individual'
+                            value={p.pie}
+                            onChange={updatePositionPieName.bind(p)}
+                            data-ticker={p.stock.ticker}
+                          />
+                          <input
+                            type='text'
+                            placeholder='Pie Weight (%)'
+                            value={p.pieWeight}
+                            onChange={updatePositionPieWeight.bind(p)}
+                            pattern='[0-9.]+'
+                            data-ticker={p.stock.ticker}
+                            style={{ maxWidth: '3em' }}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Yield: {p.stock.dividend_yield}</td>
+                        <td>
+                          <a onClick={() => {
+                            const x = confirm('Are you sure')
+                            if (x) {
+                              deletePositionByIndex(idx)
+                            }
+                          }}
+                          >
+                            x
+                          </a>
+                        </td>
+                      </tr>
+                    </>
+                  )
+                })}
+              </tbody>
+            </table>
+          </Card>
+        </Column>
+        <Column class='is-one-quarter-widescreen'>
+          <Card title='Stock Search'>
+            <input type='text' className='input' onKeyUp={searchStocks} />
+            <SearchResults searchFilteredStocks={searchFilteredStocks} addStock={addStock} />
+          </Card>
 
-              <Card title='Actions'>
-                <button className='button is-danger' onClick={resetPies}>Reset Pies</button>
-              </Card>
+          <Card title='Actions'>
+            <button className='button is-danger' onClick={resetPies}>Reset Pies</button>
+          </Card>
 
-              <Card title='Pies'>
-                <PieStats positionsHeld={positionsHeld} />
-              </Card>
-            </Column>
-          </div>
-        </>
+          <Card title='Pies'>
+            <PieStats positionsHeld={positionsHeld} />
+          </Card>
+        </Column>
+      </div>
+    </>
   )
 }
 
 function Accounts ({ stocks, accounts, positionsHeld, setPositionsHeld }) {
-  const tabContent = []
-  accounts.forEach(account => {
-    tabContent.push({
-      title: account.name,
-      content: (
-        <AccountTabContent account={account} />
-      )
-    })
-  });
+  const [tabContent, setTabContent] = useState([])
 
-  if (positionsHeld && positionsHeld.length > 0) {
-    tabContent.push({
-      title: 'Legacy',
-      content: (
-        <LegacyHoldings
-          stocks={stocks}
-          positionsHeld={positionsHeld}
-          setPositionsHeld={setPositionsHeld}
-        />
-      )
+  useEffect(() => {
+    const newContent = []
+    accounts.forEach(account => {
+      newContent.push({
+        title: account.name,
+        content: (
+          <AccountTabContent account={account} />
+        )
+      })
     })
+
+    if (positionsHeld.length > 0) {
+      newContent.push({
+        title: 'Legacy',
+        content: (
+          <LegacyHoldings
+            stocks={stocks}
+            positionsHeld={positionsHeld}
+            setPositionsHeld={setPositionsHeld}
+          />
+        )
+      })
+    }
+
+    setTabContent(newContent)
+  }, [accounts, positionsHeld])
+
+  console.log(tabContent)
+
+  if (tabContent.length === 0) {
+    return <p>No tabs to show</p>
   }
 
   return (
