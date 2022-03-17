@@ -123,111 +123,113 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
         {
           expanded && (
             <>
-            <div className="columns">
-              <Column class='is-three-quarters'>
-                {
-                  pie.positions && !pieIsComplete && (
-                    <p className="error">Pie is not 100% weighted</p>
-                  )
-                }
-                {
-                  pie.positions && pie.positions.length > 0 && (
-                    <>
-                      <table className='table is-hidden-mobile is-striped is-narrow holdings-table'>
-                        <thead>
-                          <tr>
-                            <th className='header-ticker'>Ticker</th>
-                            <th>Stock</th>
-                            <th colSpan={2}>Quantity</th>
-                            <th>Pie Weight</th>
-                            <th>Div. Yield</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {pie.positions.map((p, idx) => {
-                            const stockObj = GetStock(p.ticker, stocks) ?? p.stock
-                            return p && (
-                              <tr key={p.ticker}>
-                                <td className='ticker'>{p.ticker}</td>
-                                <td>{stockObj.name}</td>
-                                <td>{FormattedDecimal(p.quantity)}</td>
-                                <td>
-                                  <input
-                                    type='text'
-                                    data-prop='quantity'
-                                    placeholder='Quantity owned'
-                                    defaultValue={p.quantity}
-                                    pattern='[0-9.]+'
-                                    data-ticker={stockObj.ticker}
-                                    style={{ maxWidth: '9em' }}
-                                  />
-                                </td>
-                                <td>
-                                  <input
-                                    type='text'
-                                    placeholder='Pie Weight (%)'
-                                    data-prop='weight'
-                                    defaultValue={p.weight}
-                                    pattern='[0-9.]+'
-                                    data-ticker={p.ticker}
-                                    style={{ maxWidth: '3em' }}
-                                  />
-                                </td>
-                                <td>{stockObj.dividend_yield}</td>
-                                <td>
-                                  <a
-                                    onClick={() => {
-                                      const weight = parseFloat(
-                                        document.querySelector(`input[data-ticker='${p.ticker}'][data-prop='weight']`).value || 0
-                                      )
-                                      const quantity = parseFloat(
-                                        document.querySelector(`input[data-ticker='${p.ticker}'][data-prop='quantity']`).value || 0
-                                      )
+              <div className="columns">
+                <Column class='is-three-quarters'>
+                  {
+                    pie.positions && !pieIsComplete && (
+                      <p className="error">Pie is not 100% weighted</p>
+                    )
+                  }
+                  {
+                    pie.positions && pie.positions.length > 0 && (
+                      <>
+                        <table className='table is-hidden-mobile is-striped is-narrow holdings-table'>
+                          <thead>
+                            <tr>
+                              <th className='header-ticker'>Ticker</th>
+                              <th>Stock</th>
+                              <th colSpan={2}>Quantity</th>
+                              <th>Pie Weight</th>
+                              <th>Div. Yield</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {pie.positions.map((p, idx) => {
+                              const stockObj = GetStock(p.ticker, stocks) ?? p.stock
+                              return p && (
+                                <tr key={p.ticker}>
+                                  <td className='ticker'>{p.ticker}</td>
+                                  <td>{stockObj.name}</td>
+                                  <td>{FormattedDecimal(p.quantity)}</td>
+                                  <td>
+                                    <input
+                                      type='text'
+                                      data-prop='quantity'
+                                      placeholder='Quantity owned'
+                                      defaultValue={p.quantity}
+                                      pattern='[0-9.]+'
+                                      data-ticker={stockObj.ticker}
+                                      style={{ maxWidth: '9em' }}
+                                    />
+                                  </td>
+                                  <td>
+                                    <input
+                                      type='text'
+                                      placeholder='Pie Weight (%)'
+                                      data-prop='weight'
+                                      defaultValue={p.weight}
+                                      pattern='[0-9.]+'
+                                      data-ticker={p.ticker}
+                                      style={{ maxWidth: '3em' }}
+                                    />
+                                  </td>
+                                  <td>{stockObj.dividend_yield}</td>
+                                  <td>
+                                    <a
+                                      onClick={() => {
+                                        const weight = parseFloat(
+                                          document.querySelector(`input[data-ticker='${p.ticker}'][data-prop='weight']`).value || 0
+                                        )
+                                        const quantity = parseFloat(
+                                          document.querySelector(`input[data-ticker='${p.ticker}'][data-prop='quantity']`).value || 0
+                                        )
 
-                                      if (p.weight !== weight || p.quantity !== quantity) {
-                                        updatePiePosition({
-                                          pie: pie,
-                                          position: p,
-                                          weight,
-                                          quantity
-                                        })
-                                      } else {
-                                        console.debug('No change')
-                                      }
-                                    }}
-                                  >
-                                    ✔️
-                                  </a>
-                                  <a
-                                    onClick={() => {
-                                      const x = confirm('Are you sure')
-                                      if (x) {
-                                        deletePiePosition(stockObj.ticker)
-                                      }
-                                    }}
-                                  >
-                                    x
-                                  </a>
-                                </td>
-                              </tr>
-                            )
-                          })}
-                        </tbody>
-                      </table>
-                    </>
-                  )
-                }
-              </Column>
-              <Column>
-                Add Stock
-                <input type='text' className='input' onKeyUp={({ target }) => {searchStocks({target})}} />
-                <SearchResults searchFilteredStocks={searchFilteredStocks} addStock={addPieStock} />
-              </Column>
-            </div>
-            <button
-              style={{position: 'absolute', top: '0.8rem', right: '0.8rem'}}
-              onClick={() => { setExpanded(false) }}
-            >-</button>
+                                        if (p.weight !== weight || p.quantity !== quantity) {
+                                          updatePiePosition({
+                                            pie: pie,
+                                            position: p,
+                                            weight,
+                                            quantity
+                                          })
+                                        } else {
+                                          console.debug('No change')
+                                        }
+                                      }}
+                                    >
+                                      ✔️
+                                    </a>
+                                    <a
+                                      onClick={() => {
+                                        const x = confirm('Are you sure')
+                                        if (x) {
+                                          deletePiePosition(stockObj.ticker)
+                                        }
+                                      }}
+                                    >
+                                      ❌
+                                    </a>
+                                  </td>
+                                </tr>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                      </>
+                    )
+                  }
+                </Column>
+                <Column>
+                  Add Stock
+                  <input type='text' className='input' onKeyUp={({ target }) => {searchStocks({target})}} />
+                  <SearchResults searchFilteredStocks={searchFilteredStocks} addStock={addPieStock} />
+                </Column>
+              </div>
+              <button
+                style={{ position: 'absolute', top: '0.8rem', right: '0.8rem' }}
+                onClick={() => { setExpanded(false) }}
+              >
+                -
+              </button>
             </>
           )
         }
