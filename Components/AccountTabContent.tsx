@@ -244,7 +244,7 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
   )
 }
 
-const renderBooleanAsEmoji = (bool) => {
+const renderBooleanAsEmoji = (bool): string => {
   const emojiTick = '✔️'
   const emojiCross = '❌'
   return bool ? emojiTick : emojiCross
@@ -257,7 +257,7 @@ const AccountPieCreate = ({ stocks, account, dispatch }) => {
     <Card title='Create Pie'>
       <div className="flex">
         <label>
-          Name: 
+          Name:
           <input className="input" type='text' onChange={({ target }) => {
             setName(target.value)
           }} />
@@ -284,9 +284,6 @@ const AccountPieCreate = ({ stocks, account, dispatch }) => {
 }
 
 const AccountTabContent = ({ stocks, account, dispatch }) => {
-  const emojiTick = '✔️'
-  const emojiCross = '❌'
-
   return (
     <div className="columns">
       <Column class='is-two-thirds'>
