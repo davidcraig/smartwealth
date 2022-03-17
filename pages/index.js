@@ -102,6 +102,7 @@ const calculatePieYields = (pie, stocks) => {
   }
 
   const sliceCount = pie.positions.length
+  if (sliceCount === 0) {return [0, 0]}
   const avgYield = (
     pie
       .positions
