@@ -4,10 +4,8 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../Components/Navbar'
 import PositionHeldInterface from '../types/PositionHeld'
 import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
-import GetFiveYearAverageReturn from '../Functions/Stock/GetFiveYearAverageReturn'
-import GetFiveYearTotalReturn from '../Functions/Stock/GetFiveYearTotalReturn'
 import GetStock from '../Functions/GetStock'
-import { Columns, Column, Card, TabbedContent } from '@davidcraig/react-bulma'
+import { Column, Card, TabbedContent } from '@davidcraig/react-bulma'
 import { connect } from 'react-redux'
 import AccountCreationWidget from '../Components/AccountCreationWidget'
 import AccountTabContent from '../Components/AccountTabContent'
@@ -154,7 +152,7 @@ function LegacyHoldings({ stocks, positionsHeld }) {
                 <tr>
                   <th className='header-ticker'>Ticker</th>
                   <th>Stock</th>
-                  <th colSpan={2}>Quantity</th>
+                  <th>Quantity</th>
                   <th>Pie</th>
                   <th>Pie Weight</th>
                 </tr>
@@ -168,35 +166,10 @@ function LegacyHoldings({ stocks, positionsHeld }) {
                       <td>{stockObj.name}</td>
                       <td>{FormattedDecimal(p.quantity)}</td>
                       <td>
-                        <input
-                          type='text'
-                          placeholder='Quantity owned'
-                          value={p.quantity}
-                          pattern='[0-9.]+'
-                          data-ticker={stockObj.ticker}
-                          style={{ maxWidth: '9em' }}
-                          disabled
-                        />
+                        {p.pie}
                       </td>
                       <td>
-                        <input
-                          type='text'
-                          placeholder='Pie Name? or blank if individual'
-                          value={p.pie}
-                          data-ticker={p.stock.ticker}
-                          disabled
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type='text'
-                          placeholder='Pie Weight (%)'
-                          value={p.pieWeight}
-                          pattern='[0-9.]+'
-                          data-ticker={p.stock.ticker}
-                          style={{ maxWidth: '3em' }}
-                          disabled
-                        />
+                        {p.pieWeight}
                       </td>
                     </tr>
                   )
