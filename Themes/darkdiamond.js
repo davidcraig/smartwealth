@@ -8,7 +8,7 @@ const styles = [
   { var: '--color-text', val: '#ececec' },
   { var: '--color-bg-alt', val: '#000a20' },
   { var: '--color-bg-card-header', val: '#132551' },
-  { var: '--color-border', val: '#494e5c' },
+  { var: '--color-border', val: '#132551' },
   { var: '--color-heading', val: '#e0e8ff' },
   { var: '--color-button', val: '#00a7e1' },
   { var: '--color-link', val: link },
