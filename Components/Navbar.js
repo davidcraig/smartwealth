@@ -11,6 +11,7 @@ function SmartWealthNavbar () {
         <Item href='/portfolio' title='My Portfolio' />
         <Item href='/logging' title='Log' />
         <Item href='/goals' title='Goals' />
+        <Item href='/brokers' title='Brokers' />
         <Item href='/settings' title='Settings' />
       </End>
     </Navbar>
