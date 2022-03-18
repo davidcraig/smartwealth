@@ -36,6 +36,14 @@ const brokerData = {
   }
 }
 
+function ExternalLink({ url, text }) {
+  return (
+    <a href={url} target='_blank' rel='noopener noreferrer'>
+      {text}
+    </a>
+  )
+}
+
 export function Brokers (): React.FunctionComponentElement<{}> {
   return (
     <div>
@@ -94,7 +102,7 @@ export function Brokers (): React.FunctionComponentElement<{}> {
                 <td>❌</td>
               </tr>
               <tr>
-                <td>Orca</td>
+                <td><ExternalLink url='https://orca.app/' text='Orca' /></td>
                 <td>✔️</td>
                 <td>❌</td>
                 <td>❌</td>
@@ -115,10 +123,10 @@ export function Brokers (): React.FunctionComponentElement<{}> {
           <h2>Reviews</h2>
           <h3>Trading 212</h3>
           <h3>InvestEngine</h3>
-          <a rel='noreferrer noopener' target='_blank' href='https://investengine.com/?utm_medium=share&utm_source=growsurf&grsf=wzfinq'>Referral Link</a>
+          <ExternalLink url='https://investengine.com/?utm_medium=share&utm_source=growsurf&grsf=wzfinq' text='Referral Link' />
           <h3>FreeTrade</h3>
           <h3>Orca</h3>
-          <a rel='noreferrer noopener' target='_blank' href='https://orca.app/rBD6SJ'>Referral Link</a>
+          <ExternalLink url='https://orca.app/rBD6SJ' text='Referral Link' />
           <h3>InteractiveBrokers</h3>
         </div>
       </div>
