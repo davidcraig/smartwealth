@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: smartwealth.netlify.app
+Token: 216b57c747e6c2c283fdf23d31d5ef52fe59de52f2429e468860ab925af2755e
