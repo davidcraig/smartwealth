@@ -22,10 +22,6 @@ const brokerData = {
     pros: [],
     cons: []
   },
-  orca: {
-    pros: [],
-    cons: []
-  },
   interactivebrokers: {
     pros: [],
     cons: []
@@ -102,14 +98,6 @@ export function Brokers (): React.FunctionComponentElement<{}> {
                 <td>❌</td>
               </tr>
               <tr>
-                <td><ExternalLink url='https://orca.app/' text='Orca' /></td>
-                <td>✔️</td>
-                <td>❌</td>
-                <td>❌</td>
-                <td>❌</td>
-                <td>✔️</td>
-              </tr>
-              <tr>
                 <td>InteractiveBrokers</td>
                 <td>✔️</td>
                 <td>❌</td>
@@ -125,8 +113,6 @@ export function Brokers (): React.FunctionComponentElement<{}> {
           <h3>InvestEngine</h3>
           <ExternalLink url='https://investengine.com/?utm_medium=share&utm_source=growsurf&grsf=wzfinq' text='Referral Link' />
           <h3>FreeTrade</h3>
-          <h3>Orca</h3>
-          <ExternalLink url='https://orca.app/rBD6SJ' text='Referral Link' />
           <h3>InteractiveBrokers</h3>
         </div>
       </div>
