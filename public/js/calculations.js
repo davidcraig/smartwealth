@@ -269,107 +269,109 @@ function performMonthForecast(_a) {
     /* TODO : For each accounts pies */
     accounts.forEach(function (account) {
         var accountPies = account.pies;
-        // Calculate pie dividends + contribution amount
-        Object.keys(accountPies).forEach(function (key) {
-            var _a, _b;
-            var pie = accountPies[key];
-            if (isNaN(pie.dripValue)) {
-                pie.dripValue = 0;
-            }
-            pie.dripValue = ((_a = pie.dripValue) !== null && _a !== void 0 ? _a : 0) + ((_b = pie.monthlyContribution) !== null && _b !== void 0 ? _b : 0);
-            pie.positions = pie.positions.map(function (piePosition) {
-                var stock = getStockByTicker(piePosition.ticker, stocks);
-                var dividendMonths = getDividendMonths(stock);
-                var interimMonths = getDividendInterimMonths(stock);
-                var isDividendMonth = dividendMonths.includes(calendarMonth);
-                var isInterimMonth = interimMonths.includes(calendarMonth);
-                if (!isDividendMonth && !isInterimMonth) {
-                    // Is not a dividend month
-                    return piePosition;
+        if (account.pies && account.pies.length > 0) {
+            // Calculate pie dividends + contribution amount
+            Object.keys(accountPies).forEach(function (key) {
+                var _a, _b;
+                var pie = accountPies[key];
+                if (isNaN(pie.dripValue)) {
+                    pie.dripValue = 0;
                 }
-                var qty = getPositionQuantity(piePosition);
-                var lastDividend = parseCurrency(getLastDividend(piePosition, stocks));
-                var thisDividend = calculateRealDividend(stock, lastDividend, qty);
-                var interimDividend = parseCurrency(getLastInterimDividend(piePosition, stocks));
-                var thisInterimDividend = calculateRealDividend(stock, interimDividend, qty);
-                var dividendAmount = 0;
-                if (isDividendMonth) {
-                    dividendAmount = thisDividend;
-                }
-                if (isInterimMonth) {
-                    dividendAmount = thisInterimDividend;
-                }
-                forecastChartData = recordDividend(dividendAmount, stock, currentPeriod, year, forecastChartData);
-                pie.dripValue = pie.dripValue + dividendAmount;
-                return piePosition;
-            });
-            accountPies[key] = pie;
-        });
-        // Calculate the pie share buys
-        Object.keys(accountPies).forEach(function (key) {
-            var pie = accountPies[key];
-            var pieWeights = pie.positions.map(function (p) { return parseFloat(p.weight); });
-            var minOrderValue = 1.00 / (Math.min.apply(Math, pieWeights) / 100);
-            if (pie.dripValue > minOrderValue) {
+                pie.dripValue = ((_a = pie.dripValue) !== null && _a !== void 0 ? _a : 0) + ((_b = pie.monthlyContribution) !== null && _b !== void 0 ? _b : 0);
                 pie.positions = pie.positions.map(function (piePosition) {
                     var stock = getStockByTicker(piePosition.ticker, stocks);
-                    if (stock === null) {
+                    var dividendMonths = getDividendMonths(stock);
+                    var interimMonths = getDividendInterimMonths(stock);
+                    var isDividendMonth = dividendMonths.includes(calendarMonth);
+                    var isInterimMonth = interimMonths.includes(calendarMonth);
+                    if (!isDividendMonth && !isInterimMonth) {
+                        // Is not a dividend month
                         return piePosition;
                     }
-                    // This value is in base currency (gbp)
-                    var positionWeightedDrip = (pie.dripValue / 100) * parseFloat(piePosition.weight);
-                    switch (stock.currency) {
-                        case 'USD':
-                        case 'usd':
-                            positionWeightedDrip = positionWeightedDrip * rates.gbp.usd;
-                            break;
-                        case 'GBX p':
-                            positionWeightedDrip = positionWeightedDrip * rates.gbx.gbp;
-                            break;
-                        case 'GBP':
-                            // No action required
-                            break;
-                        default:
-                            console.warn("currency not handled for " + stock.currency);
-                            break;
+                    var qty = getPositionQuantity(piePosition);
+                    var lastDividend = parseCurrency(getLastDividend(piePosition, stocks));
+                    var thisDividend = calculateRealDividend(stock, lastDividend, qty);
+                    var interimDividend = parseCurrency(getLastInterimDividend(piePosition, stocks));
+                    var thisInterimDividend = calculateRealDividend(stock, interimDividend, qty);
+                    var dividendAmount = 0;
+                    if (isDividendMonth) {
+                        dividendAmount = thisDividend;
                     }
-                    var newshares = positionWeightedDrip / parseCurrency(stock.share_price);
-                    if (newshares < 0) {
-                        console.error('newshares is negative');
+                    if (isInterimMonth) {
+                        dividendAmount = thisInterimDividend;
+                    }
+                    forecastChartData = recordDividend(dividendAmount, stock, currentPeriod, year, forecastChartData);
+                    pie.dripValue = pie.dripValue + dividendAmount;
+                    return piePosition;
+                });
+                accountPies[key] = pie;
+            });
+            // Calculate the pie share buys
+            Object.keys(accountPies).forEach(function (key) {
+                var pie = accountPies[key];
+                var pieWeights = pie.positions.map(function (p) { return parseFloat(p.weight); });
+                var minOrderValue = 1.00 / (Math.min.apply(Math, pieWeights) / 100);
+                if (pie.dripValue > minOrderValue) {
+                    pie.positions = pie.positions.map(function (piePosition) {
+                        var stock = getStockByTicker(piePosition.ticker, stocks);
+                        if (stock === null) {
+                            return piePosition;
+                        }
+                        // This value is in base currency (gbp)
+                        var positionWeightedDrip = (pie.dripValue / 100) * parseFloat(piePosition.weight);
+                        switch (stock.currency) {
+                            case 'USD':
+                            case 'usd':
+                                positionWeightedDrip = positionWeightedDrip * rates.gbp.usd;
+                                break;
+                            case 'GBX p':
+                                positionWeightedDrip = positionWeightedDrip * rates.gbx.gbp;
+                                break;
+                            case 'GBP':
+                                // No action required
+                                break;
+                            default:
+                                console.warn("currency not handled for " + stock.currency);
+                                break;
+                        }
+                        var newshares = positionWeightedDrip / parseCurrency(stock.share_price);
+                        if (newshares < 0) {
+                            console.error('newshares is negative');
+                            return piePosition;
+                        }
+                        var logEntry = {
+                            year: year,
+                            id: uuidv4(),
+                            month: calendarMonth,
+                            level: 'success',
+                            message: "Pie [" + key + "] BUY [" + newshares.toFixed(6) + "] shares of [" + stock.ticker + "] for [" + positionWeightedDrip.toFixed(2) + "]"
+                        };
+                        logEntries.push(logEntry);
+                        forecastChartData = recordShareBuy(newshares, piePosition, currentPeriod, year, forecastChartData, stocks);
+                        piePosition.quantity = parseFloat((getPositionQuantity(piePosition) + newshares).toFixed(6));
                         return piePosition;
-                    }
+                    });
+                    pie.dripValue = 0;
+                }
+                else {
+                    var dripValueString = pie.dripValue.toString();
                     var logEntry = {
                         year: year,
                         id: uuidv4(),
                         month: calendarMonth,
-                        level: 'success',
-                        message: "Pie [" + key + "] BUY [" + newshares.toFixed(6) + "] shares of [" + stock.ticker + "] for [" + positionWeightedDrip.toFixed(2) + "]"
+                        level: 'warning',
+                        message: "\n              Pie: " + key + " not enough dripValue to buy shares,\n              dripValue: " + dripValueString + ",\n              minOrderValue: " + minOrderValue.toFixed(2) + "\n            "
                     };
                     logEntries.push(logEntry);
-                    forecastChartData = recordShareBuy(newshares, piePosition, currentPeriod, year, forecastChartData, stocks);
-                    piePosition.quantity = parseFloat((getPositionQuantity(piePosition) + newshares).toFixed(6));
-                    return piePosition;
-                });
-                pie.dripValue = 0;
-            }
-            else {
-                var dripValueString = pie.dripValue.toString();
-                var logEntry = {
-                    year: year,
-                    id: uuidv4(),
-                    month: calendarMonth,
-                    level: 'warning',
-                    message: "\n            Pie: " + key + " not enough dripValue to buy shares,\n            dripValue: " + dripValueString + ",\n            minOrderValue: " + minOrderValue.toFixed(2) + "\n          "
-                };
-                logEntries.push(logEntry);
-                pie.positions.map(function (piePosition) {
-                    forecastChartData = recordShareBuy(0, piePosition, currentPeriod, year, forecastChartData, stocks);
-                    return piePosition;
-                });
-            }
-            accountPies[key] = pie;
-        });
-        account.pies = accountPies;
+                    pie.positions.map(function (piePosition) {
+                        forecastChartData = recordShareBuy(0, piePosition, currentPeriod, year, forecastChartData, stocks);
+                        return piePosition;
+                    });
+                }
+                accountPies[key] = pie;
+            });
+            account.pies = accountPies;
+        }
     });
     /* END TODO */
     // return the updated positions for the next forecast
@@ -423,7 +425,7 @@ function handlePerformForecast(event) {
     isForecasting = true;
     // Same as above but for accounts pie positions
     accounts.forEach(function (account) {
-        if (account.pies.length > 0) {
+        if (account.pies && account.pies.length > 0) {
             account.pies.forEach(function (pie) {
                 pie.dripValue = 0;
                 if (pie.positions.length > 0) {
