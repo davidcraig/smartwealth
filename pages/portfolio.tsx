@@ -263,6 +263,12 @@ function Accounts ({ stocks, accounts, positionsHeld, setPositionsHeld }) {
         )
       })
     })
+    newContent.push({
+      title: 'Add Account',
+      content: (
+        <AccountCreationWidget />
+      )
+    })
 
     if (positionsHeld.length > 0) {
       newContent.push({
