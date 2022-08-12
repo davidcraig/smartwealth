@@ -107,13 +107,6 @@ export function Brokers (): React.FunctionComponentElement<{}> {
               </tr>
             </tbody>
           </table>
-
-          <h2>Reviews</h2>
-          <h3>Trading 212</h3>
-          <h3>InvestEngine</h3>
-          <ExternalLink url='https://investengine.com/?utm_medium=share&utm_source=growsurf&grsf=wzfinq' text='Referral Link' />
-          <h3>FreeTrade</h3>
-          <h3>InteractiveBrokers</h3>
         </div>
       </div>
     </div>
