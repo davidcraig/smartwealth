@@ -126,6 +126,9 @@ function PortfolioValue ({ accounts, stocks }) {
   return BaseCurrency(
     accounts.length > 0
       ? accounts.reduce((prev, account) => {
+        if ((!account.positions) || account.positions.length === 0) {
+          return 0
+        }
         return account.positions.map(pos => {
           const stock = GetStock(pos.ticker, stocks)
 
