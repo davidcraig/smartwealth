@@ -12,6 +12,7 @@ const config = {
       year1: false,
       year5: true,
       year10: true,
+      year20: true,
       year30: true,
       year40: true
     }
@@ -20,12 +21,14 @@ const config = {
 
 const is5Year = (months) => months.length === 59 || months.length === 60
 const is10Year = (months) => months.length === 119 || months.length === 120
+const is20Year = (months) => months.length === 239 || months.length === 240
 const is30Year = (months) => months.length === 359 || months.length === 360
 const is40Year = (months) => months.length === 479 || months.length === 480
 
 const shouldBeGrouped = (months) => {
   if (is5Year(months)) { return config.chart.grouped.year5 }
   if (is10Year(months)) { return config.chart.grouped.year10 }
+  if (is20Year(months)) { return config.chart.grouped.year20 }
   if (is30Year(months)) { return config.chart.grouped.year30 }
   if (is40Year(months)) { return config.chart.grouped.year40 }
 }

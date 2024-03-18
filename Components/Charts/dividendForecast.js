@@ -13,6 +13,7 @@ const config = {
       year1: 'company',
       year5: 'frequency',
       year10: 'frequency',
+      year20: 'frequency',
       year30: 'frequency',
       year40: 'frequency'
     }
@@ -22,12 +23,14 @@ const config = {
 const is1Year = (months) => months.length === 11 || months.length === 12
 const is5Year = (months) => months.length === 59 || months.length === 60
 const is10Year = (months) => months.length === 119 || months.length === 120
+const is20Year = (months) => months.length === 239 || months.length === 240
 const is30Year = (months) => months.length === 359 || months.length === 360
 const is40Year = (months) => months.length === 479 || months.length === 480
 
 const shouldBeGroupedByFrequency = (months) => {
   if (is5Year(months)) { return config.chart.groupedBy.year5 === 'frequency' }
   if (is10Year(months)) { return config.chart.groupedBy.year10 === 'frequency' }
+  if (is20Year(months)) { return config.chart.groupedBy.year20 === 'frequency' }
   if (is30Year(months)) { return config.chart.groupedBy.year30 === 'frequency' }
   if (is40Year(months)) { return config.chart.groupedBy.year40 === 'frequency' }
 }

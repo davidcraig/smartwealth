@@ -67,6 +67,10 @@ function ForecastContent (forecast, forecastLog, stocks) {
       content: forTimeframe('10 Years', forecast.tenYears, forecastLog.filter(f => f.year < 11), stocks)
     },
     {
+      title: '20 Years',
+      content: forTimeframe('20 Years', forecast.twentyYears, forecastLog.filter(f => f.year < 21), stocks)
+    },
+    {
       title: '30 Years',
       content: forTimeframe('30 Years', forecast.thirtyYears, forecastLog.filter(f => f.year < 31), stocks)
     },
@@ -161,12 +165,14 @@ function netWorthForForecastKey (forecast, forecastKey, stocks) {
 const nextTwelveMonthsDividends = (forecast) => dividendSumForForecastKey(forecast, 'oneYear')
 const nextFiveYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'fiveYears')
 const nextTenYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'tenYears')
+const nextTwentyYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'twentyYears')
 const nextThirtyYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'thirtyYears')
 const nextFortyYearsDividends = (forecast) => dividendSumForForecastKey(forecast, 'fortyYears')
 
 const nextTwelveMonthsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'oneYear', stocks)
 const nextFiveYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'fiveYears', stocks)
 const nextTenYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'tenYears', stocks)
+const nextTwentyYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'twentyYears', stocks)
 const nextThirtyYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'thirtyYears', stocks)
 const nextFortyYearsNetWorth = (forecast, stocks) => netWorthForForecastKey(forecast, 'fortyYears', stocks)
 
@@ -349,6 +355,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
                         <tr><td>12 Months</td><td>{BaseCurrency(nextTwelveMonthsDividends(forecast))}</td></tr>
                         <tr><td>5 Years</td><td>{BaseCurrency(nextFiveYearsDividends(forecast))}</td></tr>
                         <tr><td>10 Years</td><td>{BaseCurrency(nextTenYearsDividends(forecast))}</td></tr>
+                        <tr><td>20 Years</td><td>{BaseCurrency(nextTwentyYearsDividends(forecast))}</td></tr>
                         <tr><td>30 Years</td><td>{BaseCurrency(nextThirtyYearsDividends(forecast))}</td></tr>
                         <tr><td>40 Years</td><td>{BaseCurrency(nextFortyYearsDividends(forecast))}</td></tr>
                       </tbody>
@@ -359,6 +366,7 @@ export function SmartWealth ({ positionsHeld, stocks, ...props }) {
                         <tr><td>12 Months</td><td>{BaseCurrency(nextTwelveMonthsNetWorth(forecast, stocks))}</td></tr>
                         <tr><td>5 Years</td><td>{BaseCurrency(nextFiveYearsNetWorth(forecast, stocks))}</td></tr>
                         <tr><td>10 Years</td><td>{BaseCurrency(nextTenYearsNetWorth(forecast, stocks))}</td></tr>
+                        <tr><td>20 Years</td><td>{BaseCurrency(nextTwentyYearsNetWorth(forecast, stocks))}</td></tr>
                         <tr><td>30 Years</td><td>{BaseCurrency(nextThirtyYearsNetWorth(forecast, stocks))}</td></tr>
                         <tr><td>40 Years</td><td>{BaseCurrency(nextFortyYearsNetWorth(forecast, stocks))}</td></tr>
                       </tbody>
