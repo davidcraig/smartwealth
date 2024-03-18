@@ -128,9 +128,6 @@ function PortfolioValue ({ accounts, stocks }) {
     return BaseCurrency(0);
   }
 
-  console.log('accounts', accounts)
-  console.log('stocks', stocks)
-
   accounts.forEach(account => {
     if (account.piesEnabled) {
       if (account.pies.length == 0) {
