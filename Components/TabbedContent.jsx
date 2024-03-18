@@ -36,7 +36,7 @@ class TabbedContent extends React.Component {
 
   render () {
     if (Object.keys(this.props.content).length > 0) {
-      const tabs = <div className='tabs'><ul>{this.renderTabs()}</ul></div>
+      const tabs = <div className='tabs'><ul className='tabs flex flex-row gap-2 p-2'>{this.renderTabs()}</ul></div>
       const content = this.renderActiveTabContent()
 
       return (

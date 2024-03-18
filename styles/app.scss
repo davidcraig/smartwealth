@@ -1,4 +1,6 @@
-@import '~bulma';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --color-worst: #8a0000;
@@ -119,7 +121,6 @@ input { background-color: var(--color-bg-alt); }
 @import './base/table.scss';
 @import './base/form.scss';
 @import './component/card.scss';
-@import './component/navbar.scss';
 @import './highcharts.scss';
 @import './pages/holdings.scss';
 @import './pages/goals.scss';
@@ -146,6 +147,10 @@ input { background-color: var(--color-bg-alt); }
   color: var(--color-text);
 }
 
+button {
+  @apply px-2 py-1;
+}
+
 .button.is-primary {
   margin-top: 0.25rem;
   border-radius: 0;
@@ -153,17 +158,5 @@ input { background-color: var(--color-bg-alt); }
 
   &:hover {
     background: hsl(127deg 100% 36%);
-  }
-}
-
-.flex {
-  display: flex;
-  flex-direction: column;
-}
-
-@media screen and (max-width: 768px) {
-  .container.is-fluid {
-    padding-left: 8px;
-    padding-right: 8px;
   }
 }

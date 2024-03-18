@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
-import { Columns, Column, Card } from '@davidcraig/react-bulma'
+import Card from '../Components/Card'
 import ThemeElementsPreview from '../Components/Settings/ThemeElementsPreview'
 import { hasProp } from '../Functions/Helpers'
 
@@ -64,10 +64,10 @@ function Settings ({ preferences, setPreferences, dividends, contributions, posi
 
       <Navbar />
 
-      <div className='container is-fluid'>
+      <div className=''>
         <div className='content'>
-          <Columns>
-            <Column class='is-two-thirds'>
+          <div className='grid'>
+            <div className='is-two-thirds'>
               <Card title='User Preferences'>
                 <label className='label'>
                   Theme
@@ -117,11 +117,11 @@ function Settings ({ preferences, setPreferences, dividends, contributions, posi
                   value={exportData}
                 />
               </Card>
-            </Column>
-            <Column class='is-one-thirds'>
+            </div>
+            <div className='is-one-thirds'>
               <ThemeElementsPreview />
-            </Column>
-          </Columns>
+            </div>
+          </div>
         </div>
       </div>
     </div>

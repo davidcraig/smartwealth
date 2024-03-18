@@ -47,3 +47,9 @@ export function getMonthName (monthIndex: number): string {
   ]
   return months[monthIndex]
 }
+
+export const renderBooleanAsEmoji = (bool): string => {
+  const emojiTick = '✔️'
+  const emojiCross = '❌'
+  return bool ? emojiTick : emojiCross
+}

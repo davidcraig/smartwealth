@@ -1,6 +1,6 @@
 import { connect } from "react-redux"
 import { useState } from "react"
-import { Column, Card } from '@davidcraig/react-bulma'
+import Card from "./Card"
 import { addPie, updatePie } from "../src/features/accounts/accountsSlice"
 import uuid from "../Functions/uuid"
 import GetStock from "../Functions/GetStock"
@@ -119,12 +119,17 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
 
   if (expanded) {
     return (
-      <Card key={pie.id} title={pie.name} style={{position: 'relative'}}>
+      <Card key={pie.id} title={( <div className="flex flex-row justify-between">{pie.name} <button
+        onClick={() => { setExpanded(false) }}
+        className="px-2"
+      >
+        -
+      </button></div> )}>
         {
           expanded && (
             <>
-              <div className="columns">
-                <Column class='is-three-quarters'>
+              <div className="grid grid-cols-2 relative">
+                <div className='is-three-quarters'>
                   {
                     pie.positions && !pieIsComplete && (
                       <p className="error">Pie is not 100% weighted</p>
@@ -217,19 +222,13 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
                       </>
                     )
                   }
-                </Column>
-                <Column>
+                </div>
+                <div>
                   Add Stock
                   <input type='text' className='input' onKeyUp={({ target }) => {searchStocks({target})}} />
                   <SearchResults searchFilteredStocks={searchFilteredStocks} addStock={addPieStock} />
-                </Column>
+                </div>
               </div>
-              <button
-                style={{ position: 'absolute', top: '0.8rem', right: '0.8rem' }}
-                onClick={() => { setExpanded(false) }}
-              >
-                -
-              </button>
             </>
           )
         }
@@ -238,16 +237,10 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
   }
 
   return (
-    <div>
-      {pie.name} <button onClick={() => { setExpanded(true) }}>+</button>
+    <div className="w-full flex flex-row justify-between">
+      {pie.name} <button className="px-2" onClick={() => { setExpanded(true) }}>+</button>
     </div>
   )
-}
-
-const renderBooleanAsEmoji = (bool): string => {
-  const emojiTick = '✔️'
-  const emojiCross = '❌'
-  return bool ? emojiTick : emojiCross
 }
 
 const AccountPieCreate = ({ stocks, account, dispatch }) => {
@@ -285,13 +278,12 @@ const AccountPieCreate = ({ stocks, account, dispatch }) => {
 
 const AccountTabContent = ({ stocks, account, dispatch }) => {
   return (
-    <div className="columns">
-      <Column class='is-two-thirds'>
+    <div className="grid grid-cols-[1fr_30%] gap-2">
+      <div className='is-two-thirds'>
         {/* AccountId: {account.id} - Pies: {renderBooleanAsEmoji(account.piesEnabled)} - Nested Pies: {renderBooleanAsEmoji(account.nestedPiesEnabled)} */}
         {
           account.piesEnabled && account.pies && account.pies.length > 0 && (
-            <div>
-              <h3>Pies</h3>
+            <Card title='Pies'>
               {
                 account.pies.map(pie => {
                   return <PieWidget
@@ -303,7 +295,7 @@ const AccountTabContent = ({ stocks, account, dispatch }) => {
                   />
                 })
               }
-            </div>
+            </Card>
           )
         }
         {
@@ -311,8 +303,8 @@ const AccountTabContent = ({ stocks, account, dispatch }) => {
             <p>TODO</p>
           )
         }
-      </Column>
-      <Column>
+      </div>
+      <div>
         {
           account.piesEnabled && (
             <AccountPieCreate
@@ -327,7 +319,7 @@ const AccountTabContent = ({ stocks, account, dispatch }) => {
             <p>TODO</p>
           )
         }
-      </Column>
+      </div>
     </div>
   )
 }

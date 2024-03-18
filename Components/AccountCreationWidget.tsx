@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { Card } from '@davidcraig/react-bulma'
+import Card from './Card'
 import React, { useState } from 'react'
 import { addAccount } from '../src/features/accounts/accountsSlice'
 import uuid from '../Functions/uuid'

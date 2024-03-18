@@ -6,7 +6,6 @@ import Navbar from '../Components/Navbar'
 import GetStock from '../Functions/GetStock'
 import GetStockByName from '../Functions/Stock/GetStockByName'
 import GetPositionValue from '../Functions/GetPositionValue'
-import { Column, Columns } from '@davidcraig/react-bulma'
 import Card from '../Components/Card'
 import TabbedContent from '../Components/TabbedContent'
 import DividendForecast from '../Components/Charts/dividendForecast'
@@ -300,10 +299,10 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
 
       <Navbar />
 
-      <div className='container is-fluid'>
+      <div className='p-4'>
         <div className='content'>
-          <Columns>
-            <Column class='is-three-quarters'>
+          <div className='grid gap-2 grid-cols-[1fr_25%]'>
+            <div className='is-three-quarters'>
               <Card className={hasPositions ? 'is-semi-compact' : ''} title={hasPositions ? 'Forecast' : 'Welcome'}>
                 {
                   hasPositions
@@ -311,10 +310,10 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
                     : noPositions
                 }
               </Card>
-            </Column>
+            </div>
             {
               (hasPositions) && (
-                <Column class='is-one-quarter'>
+                <div className='is-one-quarter'>
                   <Card className='is-compact' title='Forecasting'>
                     {/* Accounts */}
                     <table className='table is-compact pie-forecast-controls'>
@@ -402,10 +401,10 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
                     <h4 className='h4'>Stock Value by Sector</h4>
                     <StockValueBySector positionsHeld={positionsHeld} stocks={stocks} />
                   </Card>
-                </Column>
+                </div>
               )
             }
-          </Columns>
+          </div>
         </div>
       </div>
     </div>

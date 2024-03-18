@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { reduceSumByKey } from '@davidcraig/utils'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
-import { Columns, Column, Card } from '@davidcraig/react-bulma'
+import Card from '../Components/Card'
 import { getYear, hasProp, getMonthsOptionsArray, getMonthName } from '../Functions/Helpers'
 import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
 import DividendsByMonth from '../Components/Charts/Log/DividendsByMonth'
@@ -97,7 +97,7 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
   }
 
   const months = getMonthsOptionsArray()
-  const years = [2019, 2020, 2021, 2022, 2023]
+  const years = [2019, 2020, 2021, 2022, 2023, 2024]
 
   return (
     <div>
@@ -108,10 +108,10 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
 
       <Navbar />
 
-      <div className='container is-fluid'>
+      <div className=''>
         <div className='content'>
-          <Columns>
-            <Column class='is-two-thirds'>
+          <div className='grid gap-2 grid-cols-2'>
+            <div className='is-two-thirds'>
               <Card title='Log'>
                 <table className='is-narrow'>
                   <thead>
@@ -170,8 +170,8 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                   <ContributionsByMonth contributions={contributions} />
                 )}
               </Card>}
-            </Column>
-            <Column class='is-one-third'>
+            </div>
+            <div className='is-one-third'>
               <Card title='Logging'>
                 Log dividends or contribution.
 
@@ -282,8 +282,8 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
                   <p>Total contributions to date: {reduceSumByKey(contributions, 'amount')}</p>
                 )}
               </Card>
-            </Column>
-          </Columns>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -5,7 +5,6 @@ import Navbar from '../Components/Navbar'
 import PositionHeldInterface from '../types/PositionHeld'
 import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
 import GetStock from '../Functions/GetStock'
-import { Column } from '@davidcraig/react-bulma'
 import Card from '../Components/Card'
 import TabbedContent from '../Components/TabbedContent'
 import { connect } from 'react-redux'
@@ -22,7 +21,7 @@ export function Holdings({ accounts, stocks, positionsHeld, setPositionsHeld }) 
 
       <Navbar />
 
-      <main className='container is-fluid'>
+      <main className='p-2'>
         <div className='content'>
           {
             accounts.length === 0 && positionsHeld.length > 0 && (
@@ -120,35 +119,14 @@ function PieStats({ positionsHeld }) {
   )
 }
 
-function SearchResults({ searchFilteredStocks, addStock }) {
-  if (!searchFilteredStocks || searchFilteredStocks.length === 0) {
-    return null
-  }
-
-  return (
-    <>
-      <p>Results</p>
-      <ul>
-        {searchFilteredStocks.map((stock, index) => {
-          return (
-            <li key={`${stock.ticker}${stock.name}${index}`}>
-              {stock.ticker} {stock.name} <button onClick={addStock.bind(stock)}>+</button>
-            </li>
-          )
-        })}
-      </ul>
-    </>
-  )
-}
-
 function LegacyHoldings({ stocks, positionsHeld }) {
   return (
     <>
       <h1 className='h1'>Legacy Positions</h1>
       <p className='note red'>Note: These stocks will no longer be counted in the forecasting on the dashboard, so you should use them as a reference to move your stocks to the new format (accounts). We will add ability to delete this tab later.</p>
-      <div className='columns is-desktop'>
-        <Column class='is-three-quarters-widescreen'>
-          <Card title='Positions' className='positions-table-card'>
+      <div className='grid grid-cols-2 is-desktop'>
+        <div className='is-three-quarters-widescreen'>
+          <Card title='Positions'>
             <table className='table is-hidden-mobile is-striped is-narrow holdings-table'>
               <thead>
                 <tr>
@@ -246,7 +224,7 @@ function LegacyHoldings({ stocks, positionsHeld }) {
               </tbody>
             </table>
           </Card>
-        </Column>
+        </div>
       </div>
     </>
   )
@@ -303,17 +281,17 @@ function Accounts ({ stocks, accounts, positionsHeld, setPositionsHeld }) {
 function PortfolioUpgrade({ accounts, stocks, positionsHeld, setPositionsHeld }) {
   return (
     <>
-      <div className='columns'>
-        <Column class='is-three-quarters-widescreen'>
+      <div className='grid grid-cols-2'>
+        <div className='is-three-quarters-widescreen'>
           <Card title='Upgrade'>
             <p>We have updated the old positions page to be an entire portfolio, because of this you need to tell us how to map your old data</p>
             <p>First of all, create one or more accounts -&gt;</p>
             <p>Then you will be able to move your old positions into the account(s)</p>
           </Card>
-        </Column>
-        <Column>
+        </div>
+        <div>
           <AccountCreationWidget />
-        </Column>
+        </div>
       </div>
     </>
   )

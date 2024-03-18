@@ -2,7 +2,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React from 'react'
 import Navbar from '../../../../Components/Navbar'
-import { Columns, Column } from '@davidcraig/react-bulma'
 import StockInterface from '../../../../types/Stock'
 import DividendCard from '../../../../Components/Stock/DividendCard'
 
@@ -39,7 +38,7 @@ function StockComparison ({ stocks }) {
 
         <Navbar />
 
-        <main className='container is-fluid'>
+        <main className='p-2'>
           <div className='content'>
             <h1>Stock not found</h1>
           </div>
@@ -61,28 +60,28 @@ function StockComparison ({ stocks }) {
 
       <Navbar />
 
-      <main className='container is-fluid'>
+      <main className='p-2'>
         <div className='content'>
 
           {/* Headings */}
-          <Columns>
-            <Column class='is-one-half'>
+          <div className='grid'>
+            <div className='is-one-half'>
               {stockHeader(stock)}
-            </Column>
-            <Column class='is-one-half'>
+            </div>
+            <div className='is-one-half'>
               {stockHeader(stockTwo)}
-            </Column>
-          </Columns>
+            </div>
+          </div>
 
           {/* Dividend Info */}
-          <Columns>
-            <Column class='is-one-half'>
+          <div className='grid'>
+            <div className='is-one-half'>
               <DividendCard stock={stock} />
-            </Column>
-            <Column class='is-one-half'>
+            </div>
+            <div className='is-one-half'>
               <DividendCard stock={stockTwo} />
-            </Column>
-          </Columns>
+            </div>
+          </div>
           
         </div>
       </main>

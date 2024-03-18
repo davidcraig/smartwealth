@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Column, Columns } from '@davidcraig/react-bulma'
 import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import StockTable from '../Components/StockTable'
@@ -113,15 +112,14 @@ export function Screener ({ ...props }) {
 
       <Navbar />
 
-      <div className='content'>
-        <div className='container is-fluid'>
-          <Columns>
-            <Column>
-              <div className='control'>
-                <input className='input' type='text' placeholder='Search' onChange={changeTextFilter} />
-              </div>
-            </Column>
-            <Column>
+      <div className='content p-4'>
+      <div className='grid'>
+        <div>
+          <div className='control'>
+            <input className='input' type='text' placeholder='Search' onChange={changeTextFilter} />
+          </div>
+          </div>
+            <div className='flex flex-row'>
               <div className='select'>
                 <select onChange={changeStatusFilter}>
                   <option value='any'>Type: Any</option>
@@ -155,11 +153,10 @@ export function Screener ({ ...props }) {
                   {/* <option value='vanguard'>Vanguard</option> */}
                 </select>
               </div>
-            </Column>
-          </Columns>
+            </div>
+          </div>
 
           <StockTable stocks={filteredStocks} />
-        </div>
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card } from '@davidcraig/react-bulma'
+import Card from '../Card'
 import StockInterface from '../../types/Stock'
 import GetSharePrice, { GetSharePriceAsGBP } from '../../Functions/Stock/GetSharePrice'
 import GetAnnualDividendAsGBP from '../../Functions/Stock/GetAnnualDividendAsGBP'
@@ -16,7 +16,7 @@ function DividendCard ({ stock }: DividendCardProps) {
   const amountFor100PerMonth = sharesFor100PerMonth * GetSharePriceAsGBP(stock)
 
   return (
-    <Card className='is-compact' title='Dividend Information'>
+    <Card title='Dividend Information'>
       <div className='grid'>
         <div>
           Stocks for £10/mo: {(sharesFor10PerMonth).toFixed(4)}

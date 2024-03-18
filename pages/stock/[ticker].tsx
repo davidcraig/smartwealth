@@ -1,9 +1,8 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { connect } from 'react-redux'
-import React, { useState, ReactFragment } from 'react'
 import Navbar from '../../Components/Navbar'
-import { Columns, Column, Card } from '@davidcraig/react-bulma'
+import Card from '../../Components/Card'
 import StockInterface from '../../types/Stock'
 import { GetSharePriceAsGBP, GetSharePriceFormatted } from '../../Functions/Stock/GetSharePrice'
 import GetAnnualDividendAsGBP from '../../Functions/Stock/GetAnnualDividendAsGBP'
@@ -31,7 +30,7 @@ function StockView ({ stocks }) {
 
   if (!stock) {
     return (
-      <React.Fragment>
+      <>
         <Head>
           <title>Smart Wealth</title>
           <link rel='icon' href='/favicon.ico' />
@@ -39,12 +38,12 @@ function StockView ({ stocks }) {
 
         <Navbar />
 
-        <main className='container is-fluid'>
+        <main className='p-2'>
           <div className='content'>
             <h1>Stock not found</h1>
           </div>
         </main>
-      </React.Fragment>
+      </>
     )
   }
 
@@ -55,7 +54,7 @@ function StockView ({ stocks }) {
   const amountFor1000PerMonth = amountFor100PerMonth * 10
 
   return (
-    <React.Fragment>
+    <>
       <Head>
         <title>Smart Wealth</title>
         <link rel='icon' href='/favicon.ico' />
@@ -63,20 +62,20 @@ function StockView ({ stocks }) {
 
       <Navbar />
 
-      <main className='container is-fluid'>
+      <main className='p-2'>
         <div className='content'>
           <h1 className='h1'>[{stock.ticker}] {stock.name} - {GetSharePriceFormatted(stock)}</h1>
-          <Columns>
-            <Column class='is-two-thirds'>
+          <div className='grid'>
+            <div className='is-two-thirds'>
               <DividendCard stock={stock} />
-            </Column>
-            <Column class='is-one-third'>
+            </div>
+            <div className='is-one-third'>
               <Card title='Dividend Data'>
                 <p>Last Dividend: {stock.last_dividend_amount}</p>
                 <p>Dividend Yield: {stock.dividend_yield}</p>
               </Card>
-            </Column>
-          </Columns>
+            </div>
+          </div>
           <Card title='Time to reach income goals'>
             <table className='table'>
               <thead>
@@ -127,7 +126,7 @@ function StockView ({ stocks }) {
           </Card>
         </div>
       </main>
-    </React.Fragment>
+    </>
   )
 }
 

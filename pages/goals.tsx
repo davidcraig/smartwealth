@@ -4,8 +4,8 @@ import Head from 'next/head'
 import Navbar from '../Components/Navbar'
 import StockInterface from '../types/Stock'
 import FormattedDecimal from '../Functions/Formatting/FormattedDecimal'
+import Card from '../Components/Card'
 import PositionHeldInterface from '../types/PositionHeld'
-import { Column, Columns, Card } from '@davidcraig/react-bulma'
 import useStorageState from '../Functions/useStorageState'
 import uuid from '../Functions/uuid'
 import { connect } from 'react-redux'
@@ -367,20 +367,20 @@ export function Goals ({ stocks, positionsHeld }) {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Navbar />
-      <div className='container is-fluid page-goals'>
-        <div className='content'>
+      <div className='page-goals'>
+        <div className='content p-2'>
           <h1>FIRE Goals</h1>
-          <Columns>
-            <Column class='is-one-quarter'>
+          <div className='grid grid-cols-4 gap-2'>
+            <div className='is-one-quarter'>
               <RenderGoals goals={goals} keyName='invested' title='Amount Invested' setGoals={setGoals} />
-            </Column>
-            <Column class='is-one-quarter'>
+            </div>
+            <div className='is-one-quarter'>
               <RenderGoals goals={goals} keyName='monthlyDividends' title='Monthly Dividends' setGoals={setGoals} />
-            </Column>
-            <Column class='is-one-quarter'>
+            </div>
+            <div className='is-one-quarter'>
               <RenderGoals goals={goals} keyName='emergencyFund' title='Emergency Fund' setGoals={setGoals} />
-            </Column>
-            <Column class='is-one-quarter'>
+            </div>
+            <div className='is-one-quarter'>
               {
                 renderCustomGoals(
                   customGoals,
@@ -401,8 +401,8 @@ export function Goals ({ stocks, positionsHeld }) {
                   setFilteredStocks
                 )
               }
-            </Column>
-          </Columns>
+            </div>
+          </div>
         </div>
       </div>
     </div>
