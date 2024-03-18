@@ -123,23 +123,80 @@ const calculatePieYields = (pie, stocks) => {
 }
 
 function PortfolioValue ({ accounts, stocks }) {
-  return BaseCurrency(
-    accounts.length > 0
-      ? accounts.reduce((prev, account) => {
-        if ((!account.positions) || account.positions.length === 0) {
-          return 0
+  let value = 0
+  if (accounts.length <= 0) {
+    return BaseCurrency(0);
+  }
+
+  console.log('accounts', accounts)
+  console.log('stocks', stocks)
+
+  accounts.forEach(account => {
+    if (account.piesEnabled) {
+      if (account.pies.length == 0) {
+        return
+      }
+
+      account.pies.forEach(pie => {
+        if (pie.positions.length > 0) {
+          pie.positions.forEach(pos => {
+            const stock = GetStock(pos.ticker, stocks)
+            value += GetPositionValue(pos, stock) || 0
+          })
         }
-        return account.positions.map(pos => {
+      })
+    } else {
+      console.log('no pies')
+      if (account.positions && account.positions.length > 0) {
+        account.positions.forEach(pos => {
           const stock = GetStock(pos.ticker, stocks)
-
-          if (typeof prev === 'object') {
-            return GetPositionValue(pos, stock)
-          }
-
-          return prev + GetPositionValue(pos, stock)
+          value += GetPositionValue(pos, stock) || 0
         })
-      }) : 0
-  )
+      }
+    }
+    
+    console.log(value)
+  })
+
+  // Account Positions
+  // value += accounts.reduce((prev, account) => {
+  //   let ret = (typeof prev === 'object') ? GetPositionValue(pos, stock)
+
+  //   if (account.piesEnabled) {
+  //     // Account Pie Positions
+  //     // if ((!account.piesEnabled) || (account.pies.length <= 0)) {
+  //     //   return 0
+  //     // }
+  //     console.log('has pies')
+  //     return account.pies.map(pie => pie.positions.map(pos => {
+  //       const stock = GetStock(pos.ticker, stocks)
+  //       console.log(stock)
+  
+  //       if (typeof prev === 'object') {
+  //         return GetPositionValue(pos, stock)
+  //       }
+  
+  //       return prev + GetPositionValue(pos, stock)
+  //     }))
+  //   } else {
+  //     console.log('no pies')
+  //     // Account Positions
+  //     if ((!account.positions) || account.positions.length === 0) {
+  //       return 0
+  //     }
+  //     return account.positions.map(pos => {
+  //       const stock = GetStock(pos.ticker, stocks)
+  
+  //       if (typeof prev === 'object') {
+  //         return GetPositionValue(pos, stock)
+  //       }
+  
+  //       return prev + GetPositionValue(pos, stock)
+  //     })
+  //   }
+  // })
+
+  return BaseCurrency(value)
 }
 
 function dividendSumForForecastKey (forecast, forecastKey) {
@@ -353,7 +410,7 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
 
                   <Card title='Stats'>
                     <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
-                    <p>Portfolio Value: <PortfolioValue accounts={accounts} /></p>
+                    <p>Portfolio Value: <PortfolioValue accounts={accounts} stocks={stocks} /></p>
                     <p>Dividends</p>
                     <table className='table is-narrow'>
                       <tbody>
