@@ -14,10 +14,12 @@ function GetPositionValue (pos, stock, options = { currency: 'GBP' }) {
   }
 
   if (!('currency' in stockObject)) {
+    console.debug(`stock: `, stockObject, 'no currency')
     return 0
   }
 
   if (!('share_price' in stockObject)) {
+    console.debug(`stock: `, stockObject, '0 share price')
     return 0
   }
 
@@ -34,6 +36,10 @@ function GetPositionValue (pos, stock, options = { currency: 'GBP' }) {
   }
 
   const numShares = parseFloat(pos.quantity)
+  if (numShares === 0) {
+    return 0
+  }
+
   const price = parseFloat(
     stockObject?.share_price
       .replace(',', '')

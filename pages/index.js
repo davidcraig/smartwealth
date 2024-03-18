@@ -123,8 +123,8 @@ function PortfolioValue ({ positionsHeld, stocks }) {
   return BaseCurrency(positionsHeld.reduce((prev, pos) => {
     const stock = GetStock(pos.stock.ticker, stocks)
 
-    if (typeof prev === 'object') {
-      return GetPositionValue(pos, stock)
+    if (typeof prev === 'object' && prev.stock) {
+      return GetPositionValue(prev, stock) + GetPositionValue(pos, stock)
     }
 
     return prev + GetPositionValue(pos, stock)
