@@ -1,5 +1,5 @@
-import { TabbedContent } from '@davidcraig/react-bulma'
 import Card from '../Card'
+import TabbedContent from '../TabbedContent'
 
 function ThemeElementsPreview () {
   return (
