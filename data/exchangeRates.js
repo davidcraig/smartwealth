@@ -1,4 +1,4 @@
-// Last Updated 7/9/2021
+// Last Updated 18/3/2024
 
 const exchangeRates = {
   EURO: {
@@ -9,10 +9,10 @@ const exchangeRates = {
   },
   GBP: {
     EURO: 1.16390,
-    USD: 1.37833
+    USD: 1.27303
   },
   USD: {
-    GBP: 0.725517
+    GBP: 0.7855289
   }
 }
 
