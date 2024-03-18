@@ -49,7 +49,7 @@ function getLastDividend(position, stocks) {
         return 0;
     }
     if ('last_dividend amount' in stock) {
-        return stock['last_dividend amount'];
+        return parseCurrency(stock['last_dividend amount']);
     }
     if ('last_dividend_amount' in stock) {
         if (typeof stock.last_dividend_amount === 'string') {
@@ -62,7 +62,7 @@ function getLastDividend(position, stocks) {
 function getLastInterimDividend(position, stocks) {
     var stock = getStockByTicker(position.ticker, stocks);
     if ('latest_interim amount' in stock) {
-        return stock['latest_interim amount'];
+        return parseCurrency(stock['latest_interim amount']);
     }
     if ('latest_interim_amount' in stock) {
         if (typeof stock.latest_interim_amount === 'string') {
@@ -124,7 +124,7 @@ function calculateRealDividend(stock, dividendAmount, quantity) {
             dividendAmount = dividend;
             break;
         default:
-            console.warn("unhandled case for currency: " + currency);
+            console.warn("unhandled case for currency: ".concat(currency));
             break;
     }
     return parseFloat(dividendAmount.toFixed(2));
@@ -196,6 +196,9 @@ function recordDividend(amount, stock, currentPeriod, year, forecastChartData) {
     if (year < 31) {
         forecastChartData.thirtyYears.dividendData[stock.name][currentPeriod] = amount;
     }
+    if (year < 21) {
+        forecastChartData.twentyYears.dividendData[stock.name][currentPeriod] = amount;
+    }
     if (year < 11) {
         forecastChartData.tenYears.dividendData[stock.name][currentPeriod] = amount;
     }
@@ -225,6 +228,9 @@ function recordShareBuy(amount, position, currentPeriod, year, forecastChartData
     if (year < 31) {
         forecastChartData.thirtyYears.shareData[stock.name][currentPeriod] = newQuantity;
     }
+    if (year < 21) {
+        forecastChartData.twentyYears.shareData[stock.name][currentPeriod] = newQuantity;
+    }
     if (year < 11) {
         forecastChartData.tenYears.shareData[stock.name][currentPeriod] = newQuantity;
     }
@@ -251,11 +257,14 @@ function performMonthForecast(_a) {
         ];
     }
     var calendarMonth = jsMonth + 1;
-    var categoryName = "(" + year + ") " + MONTHS[jsMonth];
+    var categoryName = "(".concat(year, ") ").concat(MONTHS[jsMonth]);
     // Create all the months
     forecastChartData.fortyYears.months.push(categoryName);
     if (year < 31) {
         forecastChartData.thirtyYears.months.push(categoryName);
+    }
+    if (year < 21) {
+        forecastChartData.twentyYears.months.push(categoryName);
     }
     if (year < 11) {
         forecastChartData.tenYears.months.push(categoryName);
@@ -268,47 +277,55 @@ function performMonthForecast(_a) {
     }
     /* TODO : For each accounts pies */
     accounts.forEach(function (account) {
-        var accountPies = account.pies;
-        if (account.pies && account.pies.length > 0) {
+        if (account.piesEnabled && account.pies && account.pies.length > 0) {
+            var accountPies_1 = account.pies;
             // Calculate pie dividends + contribution amount
-            Object.keys(accountPies).forEach(function (key) {
+            Object.keys(accountPies_1).forEach(function (key) {
                 var _a, _b;
-                var pie = accountPies[key];
+                var pie = accountPies_1[key];
                 if (isNaN(pie.dripValue)) {
                     pie.dripValue = 0;
                 }
                 pie.dripValue = ((_a = pie.dripValue) !== null && _a !== void 0 ? _a : 0) + ((_b = pie.monthlyContribution) !== null && _b !== void 0 ? _b : 0);
-                pie.positions = pie.positions.map(function (piePosition) {
-                    var stock = getStockByTicker(piePosition.ticker, stocks);
-                    var dividendMonths = getDividendMonths(stock);
-                    var interimMonths = getDividendInterimMonths(stock);
-                    var isDividendMonth = dividendMonths.includes(calendarMonth);
-                    var isInterimMonth = interimMonths.includes(calendarMonth);
-                    if (!isDividendMonth && !isInterimMonth) {
-                        // Is not a dividend month
+                if (!pie.positions) {
+                    return;
+                }
+                if (pie.positions && pie.positions.length > 0) {
+                    pie.positions = pie.positions.map(function (piePosition) {
+                        var stock = getStockByTicker(piePosition.ticker, stocks);
+                        var dividendMonths = getDividendMonths(stock);
+                        var interimMonths = getDividendInterimMonths(stock);
+                        var isDividendMonth = dividendMonths.includes(calendarMonth);
+                        var isInterimMonth = interimMonths.includes(calendarMonth);
+                        if (!isDividendMonth && !isInterimMonth) {
+                            // Is not a dividend month
+                            return piePosition;
+                        }
+                        var qty = getPositionQuantity(piePosition);
+                        var lastDividend = parseCurrency(getLastDividend(piePosition, stocks));
+                        var thisDividend = calculateRealDividend(stock, lastDividend, qty);
+                        var interimDividend = parseCurrency(getLastInterimDividend(piePosition, stocks));
+                        var thisInterimDividend = calculateRealDividend(stock, interimDividend, qty);
+                        var dividendAmount = 0;
+                        if (isDividendMonth) {
+                            dividendAmount = thisDividend;
+                        }
+                        if (isInterimMonth) {
+                            dividendAmount = thisInterimDividend;
+                        }
+                        forecastChartData = recordDividend(dividendAmount, stock, currentPeriod, year, forecastChartData);
+                        pie.dripValue = pie.dripValue + dividendAmount;
                         return piePosition;
-                    }
-                    var qty = getPositionQuantity(piePosition);
-                    var lastDividend = parseCurrency(getLastDividend(piePosition, stocks));
-                    var thisDividend = calculateRealDividend(stock, lastDividend, qty);
-                    var interimDividend = parseCurrency(getLastInterimDividend(piePosition, stocks));
-                    var thisInterimDividend = calculateRealDividend(stock, interimDividend, qty);
-                    var dividendAmount = 0;
-                    if (isDividendMonth) {
-                        dividendAmount = thisDividend;
-                    }
-                    if (isInterimMonth) {
-                        dividendAmount = thisInterimDividend;
-                    }
-                    forecastChartData = recordDividend(dividendAmount, stock, currentPeriod, year, forecastChartData);
-                    pie.dripValue = pie.dripValue + dividendAmount;
-                    return piePosition;
-                });
-                accountPies[key] = pie;
+                    });
+                }
+                accountPies_1[key] = pie;
             });
             // Calculate the pie share buys
-            Object.keys(accountPies).forEach(function (key) {
-                var pie = accountPies[key];
+            Object.keys(accountPies_1).forEach(function (key) {
+                var pie = accountPies_1[key];
+                if (!pie.positions) {
+                    return;
+                }
                 var pieWeights = pie.positions.map(function (p) { return parseFloat(p.weight); });
                 var minOrderValue = 1.00 / (Math.min.apply(Math, pieWeights) / 100);
                 if (pie.dripValue > minOrderValue) {
@@ -331,7 +348,7 @@ function performMonthForecast(_a) {
                                 // No action required
                                 break;
                             default:
-                                console.warn("currency not handled for " + stock.currency);
+                                console.warn("currency not handled for ".concat(stock.currency));
                                 break;
                         }
                         var newshares = positionWeightedDrip / parseCurrency(stock.share_price);
@@ -344,7 +361,7 @@ function performMonthForecast(_a) {
                             id: uuidv4(),
                             month: calendarMonth,
                             level: 'success',
-                            message: "Pie [" + key + "] BUY [" + newshares.toFixed(6) + "] shares of [" + stock.ticker + "] for [" + positionWeightedDrip.toFixed(2) + "]"
+                            message: "Pie [".concat(key, "] BUY [").concat(newshares.toFixed(6), "] shares of [").concat(stock.ticker, "] for [").concat(positionWeightedDrip.toFixed(2), "]")
                         };
                         logEntries.push(logEntry);
                         forecastChartData = recordShareBuy(newshares, piePosition, currentPeriod, year, forecastChartData, stocks);
@@ -360,7 +377,7 @@ function performMonthForecast(_a) {
                         id: uuidv4(),
                         month: calendarMonth,
                         level: 'warning',
-                        message: "\n              Pie: " + key + " not enough dripValue to buy shares,\n              dripValue: " + dripValueString + ",\n              minOrderValue: " + minOrderValue.toFixed(2) + "\n            "
+                        message: "\n              Pie: ".concat(key, " not enough dripValue to buy shares,\n              dripValue: ").concat(dripValueString, ",\n              minOrderValue: ").concat(minOrderValue.toFixed(2), "\n            ")
                     };
                     logEntries.push(logEntry);
                     pie.positions.map(function (piePosition) {
@@ -368,9 +385,9 @@ function performMonthForecast(_a) {
                         return piePosition;
                     });
                 }
-                accountPies[key] = pie;
+                accountPies_1[key] = pie;
             });
-            account.pies = accountPies;
+            account.pies = accountPies_1;
         }
     });
     /* END TODO */
@@ -404,6 +421,11 @@ function handlePerformForecast(event) {
             dividendData: {},
             shareData: {}
         },
+        twentyYears: {
+            months: [],
+            dividendData: {},
+            shareData: {}
+        },
         thirtyYears: {
             months: [],
             dividendData: {},
@@ -425,10 +447,10 @@ function handlePerformForecast(event) {
     isForecasting = true;
     // Same as above but for accounts pie positions
     accounts.forEach(function (account) {
-        if (account.pies && account.pies.length > 0) {
+        if (account.piesEnabled && account.pies && account.pies.length > 0) {
             account.pies.forEach(function (pie) {
                 pie.dripValue = 0;
-                if (pie.positions.length > 0) {
+                if (pie.positions && pie.positions.length > 0) {
                     pie.positions.forEach(function (position) {
                         var stock = getStockByTicker(position.ticker, stocks);
                         if (stock === null) {

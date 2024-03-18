@@ -54,7 +54,7 @@ function getLastDividend (position, stocks): number {
     return 0
   }
   if ('last_dividend amount' in stock) {
-    return stock['last_dividend amount']
+    return parseCurrency(stock['last_dividend amount'])
   }
   if ('last_dividend_amount' in stock) {
     if (typeof stock.last_dividend_amount === 'string') {
@@ -69,7 +69,7 @@ function getLastDividend (position, stocks): number {
 function getLastInterimDividend (position: AccountPiePosition, stocks): number {
   const stock = getStockByTicker(position.ticker, stocks)
   if ('latest_interim amount' in stock) {
-    return stock['latest_interim amount']
+    return parseCurrency(stock['latest_interim amount'])
   }
   if ('latest_interim_amount' in stock) {
     if (typeof stock.latest_interim_amount === 'string') {
@@ -322,9 +322,8 @@ function performMonthForecast ({
 
   /* TODO : For each accounts pies */
   accounts.forEach(account => {
-    const accountPies = account.pies
-
-    if (account.pies && account.pies.length > 0) {
+    if (account.piesEnabled && account.pies && account.pies.length > 0) {
+      const accountPies = account.pies
       // Calculate pie dividends + contribution amount
       Object.keys(accountPies).forEach(key => {
         const pie = accountPies[key] as AccountPie
@@ -335,40 +334,50 @@ function performMonthForecast ({
 
         pie.dripValue = (pie.dripValue ?? 0) + (pie.monthlyContribution ?? 0)
 
-        pie.positions = pie.positions.map((piePosition) => {
-          const stock: Stock = getStockByTicker(piePosition.ticker, stocks)
+        if (!pie.positions) {
+          return
+        }
 
-          const dividendMonths = getDividendMonths(stock)
-          const interimMonths = getDividendInterimMonths(stock)
-          const isDividendMonth: boolean = dividendMonths.includes(calendarMonth)
-          const isInterimMonth: boolean = interimMonths.includes(calendarMonth)
-
-          if (!isDividendMonth && !isInterimMonth) {
-            // Is not a dividend month
+        if (pie.positions && pie.positions.length > 0) {
+          pie.positions = pie.positions.map((piePosition) => {
+            const stock: Stock = getStockByTicker(piePosition.ticker, stocks)
+  
+            const dividendMonths = getDividendMonths(stock)
+            const interimMonths = getDividendInterimMonths(stock)
+            const isDividendMonth: boolean = dividendMonths.includes(calendarMonth)
+            const isInterimMonth: boolean = interimMonths.includes(calendarMonth)
+  
+            if (!isDividendMonth && !isInterimMonth) {
+              // Is not a dividend month
+              return piePosition
+            }
+  
+            const qty = getPositionQuantity(piePosition)
+            const lastDividend = parseCurrency(getLastDividend(piePosition, stocks))
+            const thisDividend = calculateRealDividend(stock, lastDividend, qty)
+            const interimDividend = parseCurrency(getLastInterimDividend(piePosition, stocks))
+            const thisInterimDividend = calculateRealDividend(stock, interimDividend, qty)
+            let dividendAmount = 0
+  
+            if (isDividendMonth) { dividendAmount = thisDividend }
+            if (isInterimMonth) { dividendAmount = thisInterimDividend }
+  
+            forecastChartData = recordDividend(dividendAmount, stock, currentPeriod, year, forecastChartData)
+  
+            pie.dripValue = pie.dripValue + dividendAmount
             return piePosition
-          }
+          })
+        }
 
-          const qty = getPositionQuantity(piePosition)
-          const lastDividend = parseCurrency(getLastDividend(piePosition, stocks))
-          const thisDividend = calculateRealDividend(stock, lastDividend, qty)
-          const interimDividend = parseCurrency(getLastInterimDividend(piePosition, stocks))
-          const thisInterimDividend = calculateRealDividend(stock, interimDividend, qty)
-          let dividendAmount = 0
-
-          if (isDividendMonth) { dividendAmount = thisDividend }
-          if (isInterimMonth) { dividendAmount = thisInterimDividend }
-
-          forecastChartData = recordDividend(dividendAmount, stock, currentPeriod, year, forecastChartData)
-
-          pie.dripValue = pie.dripValue + dividendAmount
-          return piePosition
-        })
         accountPies[key] = pie
       })
 
       // Calculate the pie share buys
       Object.keys(accountPies).forEach(key => {
         const pie = accountPies[key]
+        if (!pie.positions) {
+          return
+        }
         const pieWeights = pie.positions.map((p) => parseFloat(p.weight))
         const minOrderValue = 1.00 / (Math.min(...pieWeights) / 100)
 
@@ -498,10 +507,10 @@ function handlePerformForecast (event): void {
 
   // Same as above but for accounts pie positions
   accounts.forEach(account => {
-    if (account.pies && account.pies.length > 0) {
+    if (account.piesEnabled && account.pies && account.pies.length > 0) {
       account.pies.forEach((pie: AccountPie) => {
         pie.dripValue = 0
-        if (pie.positions.length > 0) {
+        if (pie.positions && pie.positions.length > 0) {
           pie.positions.forEach((position) => {
             const stock = getStockByTicker(position.ticker, stocks)
             if (stock === null) { return }
