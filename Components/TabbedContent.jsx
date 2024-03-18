@@ -1,3 +1,5 @@
+import React from "react"
+
 class TabbedContent extends React.Component {
   constructor (props) {
     super(props)
@@ -46,14 +48,6 @@ class TabbedContent extends React.Component {
     }
     return ''
   }
-}
-TabbedContent.propTypes = {
-  content: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      content: PropTypes.any.isRequired
-    })
-  )
 }
 
 export default TabbedContent
