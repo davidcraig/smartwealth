@@ -1,5 +1,6 @@
 interface Stock {
-  "3 Jan 2017"?: number; // 5 Years as of 30/12/2021
+  "3 Jan 2017"?: string; // 5 Years as of 30/12/2021
+  "3_jan_2017"?: string; // 5 Years as of 30/12/2021
   ticker: string;
   currency: string;
   dividend_aristocrat?: string;
