@@ -209,6 +209,7 @@ function recordDividend (amount: number, stock, currentPeriod, year, forecastCha
 
   forecastChartData.fortyYears.dividendData[stock.name][currentPeriod] = amount
   if (year < 31) { forecastChartData.thirtyYears.dividendData[stock.name][currentPeriod] = amount }
+  if (year < 21) { forecastChartData.twentyYears.dividendData[stock.name][currentPeriod] = amount }
   if (year < 11) { forecastChartData.tenYears.dividendData[stock.name][currentPeriod] = amount }
   if (year < 6) { forecastChartData.fiveYears.dividendData[stock.name][currentPeriod] = amount }
   if (year < 2) { forecastChartData.oneYear.dividendData[stock.name][currentPeriod] = amount }
@@ -235,6 +236,7 @@ function recordShareBuy (amount: number, position, currentPeriod, year, forecast
 
   forecastChartData.fortyYears.shareData[stock.name][currentPeriod] = newQuantity
   if (year < 31) { forecastChartData.thirtyYears.shareData[stock.name][currentPeriod] = newQuantity }
+  if (year < 21) { forecastChartData.twentyYears.shareData[stock.name][currentPeriod] = newQuantity }
   if (year < 11) { forecastChartData.tenYears.shareData[stock.name][currentPeriod] = newQuantity }
   if (year < 6) { forecastChartData.fiveYears.shareData[stock.name][currentPeriod] = newQuantity }
   if (year < 2) { forecastChartData.oneYear.shareData[stock.name][currentPeriod] = newQuantity }
@@ -313,6 +315,7 @@ function performMonthForecast ({
   // Create all the months
   forecastChartData.fortyYears.months.push(categoryName)
   if (year < 31) { forecastChartData.thirtyYears.months.push(categoryName) }
+  if (year < 21) { forecastChartData.twentyYears.months.push(categoryName) }
   if (year < 11) { forecastChartData.tenYears.months.push(categoryName) }
   if (year < 6) { forecastChartData.fiveYears.months.push(categoryName) }
   if (year < 2) { forecastChartData.oneYear.months.push(categoryName) }
@@ -463,6 +466,11 @@ function handlePerformForecast (event): void {
       shareData: {}
     },
     tenYears: {
+      months: [],
+      dividendData: {},
+      shareData: {}
+    },
+    twentyYears: {
       months: [],
       dividendData: {},
       shareData: {}
