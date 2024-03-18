@@ -101,6 +101,10 @@ const calculatePieYields = (pie, stocks) => {
     return 0
   }
 
+  if (!pie.positions) {
+    return [0,0]
+  }
+
   const sliceCount = pie.positions.length
   if (sliceCount === 0) {
     return [0, 0]
@@ -135,7 +139,8 @@ function PortfolioValue ({ accounts, stocks }) {
       }
 
       account.pies.forEach(pie => {
-        if (pie.positions.length > 0) {
+        // TODO: Support for Nested Pies
+        if (pie.positions && pie.positions.length > 0) {
           pie.positions.forEach(pos => {
             const stock = GetStock(pos.ticker, stocks)
             value += GetPositionValue(pos, stock) || 0
@@ -151,48 +156,7 @@ function PortfolioValue ({ accounts, stocks }) {
         })
       }
     }
-    
-    console.log(value)
   })
-
-  // Account Positions
-  // value += accounts.reduce((prev, account) => {
-  //   let ret = (typeof prev === 'object') ? GetPositionValue(pos, stock)
-
-  //   if (account.piesEnabled) {
-  //     // Account Pie Positions
-  //     // if ((!account.piesEnabled) || (account.pies.length <= 0)) {
-  //     //   return 0
-  //     // }
-  //     console.log('has pies')
-  //     return account.pies.map(pie => pie.positions.map(pos => {
-  //       const stock = GetStock(pos.ticker, stocks)
-  //       console.log(stock)
-  
-  //       if (typeof prev === 'object') {
-  //         return GetPositionValue(pos, stock)
-  //       }
-  
-  //       return prev + GetPositionValue(pos, stock)
-  //     }))
-  //   } else {
-  //     console.log('no pies')
-  //     // Account Positions
-  //     if ((!account.positions) || account.positions.length === 0) {
-  //       return 0
-  //     }
-  //     return account.positions.map(pos => {
-  //       const stock = GetStock(pos.ticker, stocks)
-  
-  //       if (typeof prev === 'object') {
-  //         return GetPositionValue(pos, stock)
-  //       }
-  
-  //       return prev + GetPositionValue(pos, stock)
-  //     })
-  //   }
-  // })
-
   return BaseCurrency(value)
 }
 
