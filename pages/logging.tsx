@@ -97,7 +97,7 @@ function Logging ({ dividends, setDividends, contributions, setContributions }) 
   }
 
   const months = getMonthsOptionsArray()
-  const years = [2019, 2020, 2021, 2022, 2023]
+  const years = [2019, 2020, 2021, 2022, 2023, 2024]
 
   return (
     <div>
