@@ -299,10 +299,16 @@ const AccountTabContent = ({ stocks, account, dispatch }) => {
                     stocks={stocks}
                     pie={pie}
                     dispatch={dispatch}
+                    key={pie}
                   />
                 })
               }
             </div>
+          )
+        }
+        {
+          !account.piesEnabled && (
+            <p>TODO</p>
           )
         }
       </Column>
@@ -314,6 +320,11 @@ const AccountTabContent = ({ stocks, account, dispatch }) => {
               account={account}
               dispatch={dispatch}
             />
+          )
+        }
+        {
+          !account.piesEnabled && (
+            <p>TODO</p>
           )
         }
       </Column>
