@@ -373,7 +373,7 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
                   <Card title='Stats'>
                     <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
                     <p>Portfolio Value: <PortfolioValue accounts={accounts} stocks={stocks} /></p>
-                    <p>Dividends</p>
+                    <p className='font-bold text-lg text-dark-3'>Dividends</p>
                     <table className='table is-narrow'>
                       <tbody>
                         <tr><td>12 Months</td><td>{BaseCurrency(nextTwelveMonthsDividends(forecast))}</td></tr>
@@ -383,7 +383,7 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
                         <tr><td>40 Years</td><td>{BaseCurrency(nextFortyYearsDividends(forecast))}</td></tr>
                       </tbody>
                     </table>
-                    <p>Net Worth</p>
+                    <p className='font-bold text-lg text-dark-1'>Net Worth</p>
                     <table className='table is-narrow'>
                       <tbody>
                         <tr><td>12 Months</td><td>{BaseCurrency(nextTwelveMonthsNetWorth(forecast, stocks))}</td></tr>

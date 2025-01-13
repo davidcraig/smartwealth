@@ -128,8 +128,8 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
         {
           expanded && (
             <>
-              <div className="grid grid-cols-2 relative">
-                <div className='is-three-quarters'>
+              <div className="grid gap-2 grid-cols-[1fr_30%] relative">
+                <div>
                   {
                     pie.positions && !pieIsComplete && (
                       <p className="error">Pie is not 100% weighted</p>

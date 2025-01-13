@@ -160,3 +160,15 @@ button {
     background: hsl(127deg 100% 36%);
   }
 }
+
+.tabs li.is-active {
+  cursor: default;
+}
+
+.table {
+  @apply w-full;
+}
+
+a {
+  cursor: pointer;
+}
