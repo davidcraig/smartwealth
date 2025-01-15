@@ -2,12 +2,12 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { connect } from 'react-redux'
 import React, { useState, ReactFragment } from 'react'
-import Navbar from '../../Components/Navbar'
+import Navbar from '../../../Components/Navbar'
 import { Columns, Column, Card } from '@davidcraig/react-bulma'
-import StockInterface from '../../types/Stock'
-import { GetSharePriceAsGBP, GetSharePriceFormatted } from '../../Functions/Stock/GetSharePrice'
-import GetAnnualDividendAsGBP from '../../Functions/Stock/GetAnnualDividendAsGBP'
-import DividendCard from '../../Components/Stock/DividendCard'
+import StockInterface from '../../../types/Stock'
+import { GetSharePriceAsGBP, GetSharePriceFormatted } from '../../../Functions/Stock/GetSharePrice'
+import GetAnnualDividendAsGBP from '../../../Functions/Stock/GetAnnualDividendAsGBP'
+import DividendCard from '../../../Components/Stock/DividendCard'
 
 function displayTimeToReachGoal (months) {
   if (months > 12) {
