@@ -18,6 +18,7 @@ function displayTimeToReachGoal (months) {
 
 function StockView ({ stocks }) {
   const router = useRouter()
+  console.debug('path', '/pages/stock/[ticker].tsx');
   let { ticker } = router.query
   let tickerSymbol = Array.isArray(ticker) ? ticker[0] : ticker
   console.debug('stocks', stocks)
