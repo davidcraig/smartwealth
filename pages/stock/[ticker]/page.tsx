@@ -21,11 +21,16 @@ function StockView ({ stocks }) {
   let { ticker } = router.query
   let tickerSymbol = Array.isArray(ticker) ? ticker[0] : ticker
 
+  console.debug('stocks', stocks)
+  console.debug('tickerSymbol', tickerSymbol)
+
   let stock: (StockInterface | null) = null
   if (typeof tickerSymbol === 'string' && Array.isArray(stocks)) {
     const matched = stocks.filter((s: StockInterface) => s.ticker.toLowerCase() === tickerSymbol.toLowerCase())
+    console.debug('matched', matched)
     if (matched.length === 1) {
       stock = matched[0]
+      console.debug('stock', stock)
     }
   }
 
