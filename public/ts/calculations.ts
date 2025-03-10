@@ -1,6 +1,50 @@
 /* global self */
 // ts-ignore
 
+interface Stock {
+  name: string
+  currency: string
+  dividend_frequency?: string
+  dividend_months?: string
+  last_dividend_amount?: number | string
+  latest_interim_amount?: number | string
+  ticker: string
+  share_price?: number | string
+}
+
+interface AccountPiePosition {
+  ticker: string
+  weight: number
+  quantity: number
+}
+
+interface AccountPie {
+  dripValue: number
+  id: string
+  monthlyContribution: number
+  name: string
+  positions?: AccountPiePosition[]
+}
+
+interface Account {
+  id: string
+  name: string
+  nestedPiesEnabled: boolean
+  pies?: AccountPie[]
+  piesEnabled: boolean
+}
+
+interface IPerformMonthForecastParams {
+  thisMonth: number
+  currPeriod: number
+  year: number
+  accounts: Account[]
+  forecastChartData: any
+  logEntries: any[]
+  stocks: any
+}
+
+
 // Handles: { type: 'perform-forecast', positions }
 // Messages out: forecast-log-entry, forecast-results
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -247,49 +291,6 @@ function recordShareBuy (amount: number, position, currentPeriod, year, forecast
 
 function calculateNewShares (dividendAmount: number, sharePrice: number): number {
   return parseFloat((dividendAmount / parseCurrency(sharePrice)).toFixed(6))
-}
-
-interface Stock {
-  name: string
-  currency: string
-  dividend_frequency?: string
-  dividend_months?: string
-  last_dividend_amount?: number | string
-  latest_interim_amount?: number | string
-  ticker: string
-  share_price?: number | string
-}
-
-interface AccountPiePosition {
-  ticker: string
-  weight: number
-  quantity: number
-}
-
-interface AccountPie {
-  dripValue: number
-  id: string
-  monthlyContribution: number
-  name: string
-  positions?: AccountPiePosition[]
-}
-
-interface Account {
-  id: string
-  name: string
-  nestedPiesEnabled: boolean
-  pies?: AccountPie[]
-  piesEnabled: boolean
-}
-
-interface IPerformMonthForecastParams {
-  thisMonth: number
-  currPeriod: number
-  year: number
-  accounts: Account[]
-  forecastChartData: any
-  logEntries: any[]
-  stocks: any
 }
 
 function performMonthForecast ({
