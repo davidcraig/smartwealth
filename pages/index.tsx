@@ -15,6 +15,8 @@ import StockValueBySector from '../Components/Charts/StockValueBySector'
 import BaseCurrency from '../Functions/Formatting/BaseCurrency'
 import { hasProp } from '../Functions/Helpers'
 
+declare const window: any;
+
 function ForecastContent (forecast, forecastLog, stocks) {
   if (typeof forecast === 'undefined') { return }
 
@@ -118,6 +120,12 @@ const calculatePieYields = (pie, stocks) => {
   )
     .toFixed(2)
 
+    console.log(pie.positions)
+
+    console.log(pie.positions.map(p => {
+      return getPositionDividendYield(p) * (p.pieWeight / 100)
+    }))
+
   const weightedYield = pie
     .positions
     .map(p => { return getPositionDividendYield(p) * (p.pieWeight / 100) })
@@ -149,7 +157,6 @@ function PortfolioValue ({ accounts, stocks }) {
         }
       })
     } else {
-      console.log('no pies')
       if (account.positions && account.positions.length > 0) {
         account.positions.forEach(pos => {
           const stock = GetStock(pos.ticker, stocks)
@@ -182,12 +189,14 @@ function netWorthForForecastKey (forecast, forecastKey, stocks) {
   }
 
   let total = 0
-  Object.keys(forecast[forecastKey].shareData).forEach(key => {
-    const shareArr = forecast[forecastKey].shareData[key]
-    const company = key
+  Object.keys(forecast[forecastKey].shareData).forEach(ticker => {
+    const shareArr = forecast[forecastKey].shareData[ticker]
+    const company = ticker
     const stock = GetStockByName(stocks, company) // Works
-    const shares = shareArr[shareArr.length - 1]
-    total += (GetPositionValue({ quantity: shares }, stock) || 0)
+
+    const latestShares = shareArr[shareArr.length - 1]
+
+    total += (GetPositionValue({ quantity: latestShares }, stock) || 0)
   })
   return total
 }
@@ -303,7 +312,7 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
         <div className='content'>
           <div className='grid gap-2 grid-cols-[1fr_25%]'>
             <div className='is-three-quarters'>
-              <Card className={hasPositions ? 'is-semi-compact' : ''} title={hasPositions ? 'Forecast' : 'Welcome'}>
+              <Card title={hasPositions ? 'Forecast' : 'Welcome'}>
                 {
                   hasPositions
                     ? forecastOutput
@@ -314,7 +323,7 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
             {
               (hasPositions) && (
                 <div className='is-one-quarter'>
-                  <Card className='is-compact' title='Forecasting'>
+                  <Card title='Forecasting'>
                     {/* Accounts */}
                     <table className='table is-compact pie-forecast-controls'>
                       <thead>

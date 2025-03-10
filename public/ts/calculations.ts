@@ -94,6 +94,7 @@ function getPositionQuantity (position: AccountPiePosition): number {
 }
 
 function parseCurrency (value: any): number {
+  console.log(value, 'parseCurrency initial value')
   if (!value) {
     return 0
   }
@@ -103,6 +104,7 @@ function parseCurrency (value: any): number {
     case 'string':
       return parseFloat(value
         .replace('$', '')
+        .replace(',', '')
         .replace('p', '')
         .replace('£', '')
       )
@@ -320,7 +322,6 @@ function performMonthForecast ({
   if (year < 6) { forecastChartData.fiveYears.months.push(categoryName) }
   if (year < 2) { forecastChartData.oneYear.months.push(categoryName) }
 
-  /* TODO : For each accounts pies */
   accounts.forEach(account => {
     if (account.piesEnabled && account.pies && account.pies.length > 0) {
       const accountPies = account.pies
@@ -339,7 +340,7 @@ function performMonthForecast ({
         }
 
         if (pie.positions && pie.positions.length > 0) {
-          pie.positions = pie.positions.map((piePosition) => {
+          pie.positions = pie.positions.map((piePosition: AccountPiePosition) => {
             const stock: Stock = getStockByTicker(piePosition.ticker, stocks)
   
             const dividendMonths = getDividendMonths(stock)
@@ -376,24 +377,28 @@ function performMonthForecast ({
       Object.keys(accountPies).forEach(key => {
         const pie = accountPies[key]
         if (!pie.positions) {
+          console.warn("Pie has no positions, exiting performMonthForecast")
           return
         }
         const pieWeights = pie.positions.map((p) => parseFloat(p.weight))
         const minOrderValue = 1.00 / (Math.min(...pieWeights) / 100)
 
-        if (pie.dripValue > minOrderValue) {
+        if (pie.dripValue >= minOrderValue) {
           pie.positions = pie.positions.map((piePosition) => {
             const stock = getStockByTicker(piePosition.ticker, stocks)
             if (stock === null) { return piePosition }
             // This value is in base currency (gbp)
             let positionWeightedDrip = (pie.dripValue / 100) * parseFloat(piePosition.weight)
+            let currencyConverter = 1
             switch (stock.currency) {
               case 'USD':
               case 'usd':
-                positionWeightedDrip = positionWeightedDrip * rates.gbp.usd
+                currencyConverter = rates.gbp.usd
+                positionWeightedDrip = positionWeightedDrip * currencyConverter
                 break
               case 'GBX p':
-                positionWeightedDrip = positionWeightedDrip * rates.gbx.gbp
+                currencyConverter = rates.gbp.gbx
+                positionWeightedDrip = positionWeightedDrip * currencyConverter
                 break
               case 'GBP':
                 // No action required
@@ -402,8 +407,8 @@ function performMonthForecast ({
                 console.warn(`currency not handled for ${stock.currency}`)
                 break
             }
-            const newshares = positionWeightedDrip / parseCurrency(stock.share_price)
-            if (newshares < 0) {
+            const newShares: number = positionWeightedDrip / parseCurrency(stock.share_price)
+            if (newShares < 0) {
               console.error('newshares is negative')
               return piePosition
             }
@@ -413,13 +418,14 @@ function performMonthForecast ({
               id: uuidv4(),
               month: calendarMonth,
               level: 'success',
-              message: `Pie [${key}] BUY [${newshares.toFixed(6)}] shares of [${stock.ticker}] for [${positionWeightedDrip.toFixed(2)}]`
+              message: `Pie [${key}] BUY [${newShares.toFixed(6)}] shares of [${stock.ticker}] for [${positionWeightedDrip.toFixed(2)}]`
             }
             logEntries.push(logEntry)
-            forecastChartData = recordShareBuy(newshares, piePosition, currentPeriod, year, forecastChartData, stocks)
-            piePosition.quantity = parseFloat((getPositionQuantity(piePosition) + newshares).toFixed(6))
-
-            return piePosition
+            forecastChartData = recordShareBuy(parseFloat(newShares.toFixed(6)), piePosition, currentPeriod, year, forecastChartData, stocks)
+            return {
+              ...piePosition,
+              quantity: parseFloat((getPositionQuantity(piePosition) + newShares).toFixed(6))
+            }
           })
 
           pie.dripValue = 0
@@ -449,7 +455,6 @@ function performMonthForecast ({
       account.pies = accountPies
     }
   })
-  /* END TODO */
 
   // return the updated positions for the next forecast
   return [

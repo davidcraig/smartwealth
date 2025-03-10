@@ -1,5 +1,16 @@
 /* global self */
 // ts-ignore
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 // Handles: { type: 'perform-forecast', positions }
 // Messages out: forecast-log-entry, forecast-results
 var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -84,6 +95,7 @@ function getPositionQuantity(position) {
     }
 }
 function parseCurrency(value) {
+    console.log(value, 'parseCurrency initial value');
     if (!value) {
         return 0;
     }
@@ -91,8 +103,10 @@ function parseCurrency(value) {
         case 'number':
             return value;
         case 'string':
+            console.debug(parseFloat(value.replace(',', '').replace('$', '').replace('p', '').replace('£', '')), "parseFloat(value.replace(...)");
             return parseFloat(value
                 .replace('$', '')
+                .replace(',', '')
                 .replace('p', '')
                 .replace('£', ''));
         case undefined:
@@ -275,7 +289,6 @@ function performMonthForecast(_a) {
     if (year < 2) {
         forecastChartData.oneYear.months.push(categoryName);
     }
-    /* TODO : For each accounts pies */
     accounts.forEach(function (account) {
         if (account.piesEnabled && account.pies && account.pies.length > 0) {
             var accountPies_1 = account.pies;
@@ -324,11 +337,12 @@ function performMonthForecast(_a) {
             Object.keys(accountPies_1).forEach(function (key) {
                 var pie = accountPies_1[key];
                 if (!pie.positions) {
+                    console.warn("Pie has no positions, exiting performMonthForecast");
                     return;
                 }
                 var pieWeights = pie.positions.map(function (p) { return parseFloat(p.weight); });
                 var minOrderValue = 1.00 / (Math.min.apply(Math, pieWeights) / 100);
-                if (pie.dripValue > minOrderValue) {
+                if (pie.dripValue >= minOrderValue) {
                     pie.positions = pie.positions.map(function (piePosition) {
                         var stock = getStockByTicker(piePosition.ticker, stocks);
                         if (stock === null) {
@@ -336,13 +350,19 @@ function performMonthForecast(_a) {
                         }
                         // This value is in base currency (gbp)
                         var positionWeightedDrip = (pie.dripValue / 100) * parseFloat(piePosition.weight);
+                        if (stock.name == "Rio Tinto Group") {
+                            console.log('positionWeightedDrip (before)', positionWeightedDrip);
+                        }
+                        var currencyConverter = 1;
                         switch (stock.currency) {
                             case 'USD':
                             case 'usd':
-                                positionWeightedDrip = positionWeightedDrip * rates.gbp.usd;
+                                currencyConverter = rates.gbp.usd;
+                                positionWeightedDrip = positionWeightedDrip * currencyConverter;
                                 break;
                             case 'GBX p':
-                                positionWeightedDrip = positionWeightedDrip * rates.gbx.gbp;
+                                currencyConverter = rates.gbp.gbx;
+                                positionWeightedDrip = positionWeightedDrip * currencyConverter;
                                 break;
                             case 'GBP':
                                 // No action required
@@ -351,8 +371,16 @@ function performMonthForecast(_a) {
                                 console.warn("currency not handled for ".concat(stock.currency));
                                 break;
                         }
-                        var newshares = positionWeightedDrip / parseCurrency(stock.share_price);
-                        if (newshares < 0) {
+                        if (stock.name == "Rio Tinto Group") {
+                            console.log('positionWeightedDrip', positionWeightedDrip);
+                            console.log('currencyConverter', currencyConverter);
+                            console.log('stock.currency', stock.currency);
+                            console.log('stock.share_price', stock.share_price);
+                            console.log('parseCurrency(stock.share_price)', parseCurrency(stock.share_price));
+                            console.log('newShares', positionWeightedDrip / parseCurrency(stock.share_price));
+                        }
+                        var newShares = positionWeightedDrip / parseCurrency(stock.share_price);
+                        if (newShares < 0) {
                             console.error('newshares is negative');
                             return piePosition;
                         }
@@ -361,12 +389,11 @@ function performMonthForecast(_a) {
                             id: uuidv4(),
                             month: calendarMonth,
                             level: 'success',
-                            message: "Pie [".concat(key, "] BUY [").concat(newshares.toFixed(6), "] shares of [").concat(stock.ticker, "] for [").concat(positionWeightedDrip.toFixed(2), "]")
+                            message: "Pie [".concat(key, "] BUY [").concat(newShares.toFixed(6), "] shares of [").concat(stock.ticker, "] for [").concat(positionWeightedDrip.toFixed(2), "]")
                         };
                         logEntries.push(logEntry);
-                        forecastChartData = recordShareBuy(newshares, piePosition, currentPeriod, year, forecastChartData, stocks);
-                        piePosition.quantity = parseFloat((getPositionQuantity(piePosition) + newshares).toFixed(6));
-                        return piePosition;
+                        forecastChartData = recordShareBuy(parseFloat(newShares.toFixed(6)), piePosition, currentPeriod, year, forecastChartData, stocks);
+                        return __assign(__assign({}, piePosition), { quantity: parseFloat((getPositionQuantity(piePosition) + newShares).toFixed(6)) });
                     });
                     pie.dripValue = 0;
                 }
@@ -390,7 +417,6 @@ function performMonthForecast(_a) {
             account.pies = accountPies_1;
         }
     });
-    /* END TODO */
     // return the updated positions for the next forecast
     return [
         accounts,
