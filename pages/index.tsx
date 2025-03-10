@@ -120,15 +120,9 @@ const calculatePieYields = (pie, stocks) => {
   )
     .toFixed(2)
 
-    console.log(pie.positions)
-
-    console.log(pie.positions.map(p => {
-      return getPositionDividendYield(p) * (p.pieWeight / 100)
-    }))
-
   const weightedYield = pie
     .positions
-    .map(p => { return getPositionDividendYield(p) * (p.pieWeight / 100) })
+    .map((p: AccountPiePosition) => { return getPositionDividendYield(p) * (p.weight / 100) })
     .reduce((p, n) => { return (p || 0) + (n || 0) })
     .toFixed(2)
 
