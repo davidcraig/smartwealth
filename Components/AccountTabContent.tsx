@@ -183,10 +183,10 @@ const PieWidget = ({ account, pie, stocks, dispatch }) => {
                                     <a
                                       onClick={() => {
                                         const weight = parseFloat(
-                                          document.querySelector(`input[data-ticker='${p.ticker}'][data-prop='weight']`).value || 0
+                                          document.querySelector(`input[data-ticker='${p.ticker}'][data-prop='weight']`)[0]?.value || 0
                                         )
                                         const quantity = parseFloat(
-                                          document.querySelector(`input[data-ticker='${p.ticker}'][data-prop='quantity']`).value || 0
+                                          document.querySelector(`input[data-ticker='${p.ticker}'][data-prop='quantity']`)[0]?.value || 0
                                         )
 
                                         if (p.weight !== weight || p.quantity !== quantity) {
