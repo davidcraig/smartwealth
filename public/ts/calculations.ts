@@ -94,7 +94,6 @@ function getPositionQuantity (position: AccountPiePosition): number {
 }
 
 function parseCurrency (value: any): number {
-  console.log(value, 'parseCurrency initial value')
   if (!value) {
     return 0
   }

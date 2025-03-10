@@ -95,7 +95,6 @@ function getPositionQuantity(position) {
     }
 }
 function parseCurrency(value) {
-    console.log(value, 'parseCurrency initial value');
     if (!value) {
         return 0;
     }
@@ -103,7 +102,6 @@ function parseCurrency(value) {
         case 'number':
             return value;
         case 'string':
-            console.debug(parseFloat(value.replace(',', '').replace('$', '').replace('p', '').replace('£', '')), "parseFloat(value.replace(...)");
             return parseFloat(value
                 .replace('$', '')
                 .replace(',', '')
@@ -350,9 +348,6 @@ function performMonthForecast(_a) {
                         }
                         // This value is in base currency (gbp)
                         var positionWeightedDrip = (pie.dripValue / 100) * parseFloat(piePosition.weight);
-                        if (stock.name == "Rio Tinto Group") {
-                            console.log('positionWeightedDrip (before)', positionWeightedDrip);
-                        }
                         var currencyConverter = 1;
                         switch (stock.currency) {
                             case 'USD':
@@ -370,14 +365,6 @@ function performMonthForecast(_a) {
                             default:
                                 console.warn("currency not handled for ".concat(stock.currency));
                                 break;
-                        }
-                        if (stock.name == "Rio Tinto Group") {
-                            console.log('positionWeightedDrip', positionWeightedDrip);
-                            console.log('currencyConverter', currencyConverter);
-                            console.log('stock.currency', stock.currency);
-                            console.log('stock.share_price', stock.share_price);
-                            console.log('parseCurrency(stock.share_price)', parseCurrency(stock.share_price));
-                            console.log('newShares', positionWeightedDrip / parseCurrency(stock.share_price));
                         }
                         var newShares = positionWeightedDrip / parseCurrency(stock.share_price);
                         if (newShares < 0) {
