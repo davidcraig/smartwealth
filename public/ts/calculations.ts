@@ -94,7 +94,7 @@ function getStockByTicker (ticker, stocks): Stock | null {
 function getLastDividend (position, stocks): number {
   const stock = getStockByTicker(position.ticker, stocks)
   if (stock === null) {
-    console.error('stock is null', position, stocks)
+    console.error('Unable to fetch stock', position.ticker, stocks)
     return 0
   }
   if ('last_dividend amount' in stock) {
