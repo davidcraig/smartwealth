@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { addAccount } from '../src/features/accounts/accountsSlice'
 import uuid from '../Functions/uuid'
 
-const AccountCreationWidget = ({ dispatch }): void => {
+const AccountCreationWidget = ({ dispatch }) => {
   const [name, setName] = useState(null)
   const [pies, setPies] = useState(false)
   const [nestedPies, setNestedPies] = useState(false)
