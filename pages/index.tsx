@@ -376,7 +376,7 @@ export function SmartWealth ({ accounts, positionsHeld, stocks, ...props }) {
                   <Card title='Stats'>
 
                     <p>You currently own <span className='theme-text-secondary'>{positionsHeld.length || 0}</span> stocks.</p>
-                    <p>Portfolio Value: <PortfolioValue accounts={accounts} stocks={stocks} /></p>
+                    <p>Portfolio Value: ${PortfolioValue({accounts, stocks})}</p>
                     <p className='font-bold text-lg text-dark-3'>Dividends</p>
                     <table className='table is-narrow'>
                       <tbody>
